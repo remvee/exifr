@@ -1,0 +1,12 @@
+= EXIF Reader
+EXIF Reader is a module to read EXIF from JPEG images.
+
+== Examples
+  EXIFR::JPEG.new('IMG_3422.JPG').width         # -> 2272
+  EXIFR::JPEG.new('IMG_3422.JPG').exif.model    # -> "Canon PowerShot G3"
+
+== Author
+R.W. van 't Veer
+
+== Copyright
+Copyright (c) 2006 R.W. van 't Veer

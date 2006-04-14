@@ -5,11 +5,9 @@ require 'rational'
 module EXIFR
   # = JPEG decoder
   #
-  # JPEG decoder to read image meta data.
-  #
   # == Examples
-  #   JPEG.new('IMG_3422.JPG').width         # -> 2272
-  #   JPEG.new('IMG_3422.JPG').exif.model    # -> "Canon PowerShot G3"
+  #   EXIFR::JPEG.new('IMG_3422.JPG').width         # -> 2272
+  #   EXIFR::JPEG.new('IMG_3422.JPG').exif.model    # -> "Canon PowerShot G3"
   class JPEG
     # image height
     attr_reader :height
