@@ -4,7 +4,7 @@ require 'rake/gempackagetask'
 
 spec = Gem::Specification.new do |s|
   s.name = 'exifr'
-  s.version = '0.9'
+  s.version = '0.9.1'
   s.author = "R.W. van 't Veer"
   s.email = 'remco@remvee.net'
   s.homepage = 'http://exifr.rubyforge.org/'
@@ -12,7 +12,7 @@ spec = Gem::Specification.new do |s|
   s.autorequire = 'exifr'
   s.files = FileList['{bin,lib,test}/**/*'].exclude('rdoc').to_a
   s.has_rdoc = true
-  s.extra_rdoc_files = ['README']
+  s.extra_rdoc_files = ['README', 'CHANGELOG']
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|

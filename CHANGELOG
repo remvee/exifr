@@ -1,0 +1,6 @@
+EXIF Reader 0.9.1
+* bug fix "4321 Can't create object", division by zero when
+  denominator of rational value is zero
+
+EXIF Reader 0.9
+* 1st release
