@@ -1,6 +1,5 @@
-require 'rubygems'
-Gem::manage_gems
 require 'rake/gempackagetask'
+require 'rake/testtask'
 
 spec = Gem::Specification.new do |s|
   s.name = 'exifr'
@@ -17,4 +16,9 @@ end
 
 Rake::GemPackageTask.new(spec) do |pkg|
   pkg.need_tar = true
+end
+
+Rake::TestTask.new do |t|
+  t.libs << 'lib' << 'tests'
+  t.test_files = FileList['tests/test*.rb']
 end
