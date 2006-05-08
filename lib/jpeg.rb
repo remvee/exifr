@@ -22,10 +22,10 @@ module EXIFR
 
     # +file+ is a filename or an IO object
     def initialize(file)
-      if file.kind_of? IO
-        examine(file)
-      else
+      if file.kind_of? String
         File.open(file, 'rb') { |io| examine(io) }
+      else
+        examine(file)
       end
     end
 
