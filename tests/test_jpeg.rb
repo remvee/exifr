@@ -4,10 +4,6 @@ require 'test_helper'
 require 'stringio'
 
 class TestJPEG < Test::Unit::TestCase
-  def initialize(*args)
-    super(*args)
-  end
-  
   def test_initialize
     all_test_data.each do |fname|
       assert_nothing_raised do
