@@ -136,7 +136,7 @@ module EXIFR
     end
 
     def value2time(value)
-      if value.sub(/\0.*$/, '') =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
+      if value =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
         Time.mktime($1, $2, $3, $4, $5, $6)
       else
         value

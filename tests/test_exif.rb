@@ -9,4 +9,11 @@ class TestEXIF < Test::Unit::TestCase
       assert_equal EXIF.new(data).model, model
     end
   end
+  
+  def test_dates
+    all_test_exifs.each do |fname|
+      data = open(fname) { |rd| rd.read }
+      assert_kind_of Time, EXIF.new(data).date_time
+    end
+  end
 end
