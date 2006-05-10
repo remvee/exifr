@@ -49,7 +49,7 @@ module EXIFR
         # TODO handle signed bytes
         len, pack = count, proc { |d| d }
       when 2 # ascii
-        len, pack = count, proc { |d| d.sub(/\000.*$/, '').strip }
+        len, pack = count, proc { |d| d.sub(/\0.*$/, '').strip }
       when 3, 8 # short, signed short
         # TODO handle signed
         len, pack = count * 2, proc { |d| d.unpack(data.short + '*') }
