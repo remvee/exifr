@@ -49,6 +49,7 @@ module EXIFR
         end
       end
 
+      app1 = nil
       while marker = io.next
         case marker
           when 0xC0..0xC3, 0xC5..0xC7, 0xC9..0xCB, 0xCD..0xCF # SOF markers
@@ -61,7 +62,7 @@ module EXIFR
         end
       end
 
-      if app1 && EXIF
+      if app1 && app1[0..5] == "Exif\0\0"
         @exif = EXIF.new(app1[6..-1]) # rescue nil
       end
     end
