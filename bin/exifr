@@ -1,0 +1,33 @@
+include EXIFR
+
+def pp(fname)
+  jpeg = JPEG.new(fname)
+  ks = %w(width height comment bits)
+  ks += jpeg.exif.keys.map{|a|a.to_s}.sort{|a,b|a<=>b} if jpeg.exif?
+
+  l = []
+  ks[0..3].each do |k|
+    v = jpeg.send(k)
+    l << [k, v] if v
+  end
+  ks[4..-1].each do |k|
+    v = jpeg.exif[k.to_sym]
+    l << [k, v] if v
+  end
+  l.delete_if{|k,v|v.nil?}
+  
+  puts "#{fname}:"
+  f = "  %#{l.sort{|a,b|a[0].size <=> b[0].size}.last[0].size}s = %s\n"
+  l.each{|k,v|puts f  % [k, v]}
+end
+
+if ARGV.size == 0
+  STDERR.puts "Usage: #{$0} FILE .."
+elsif ARGV.size == 1
+  pp ARGV[0]
+else
+  ARGV.each do |fname|
+    pp fname
+    puts
+  end
+end
