@@ -5,7 +5,7 @@ require 'stringio'
 
 class TestJPEG < Test::Unit::TestCase
   def test_initialize
-    all_test_data.each do |fname|
+    all_test_images.each do |fname|
       assert_nothing_raised do
         JPEG.new(fname)
       end
