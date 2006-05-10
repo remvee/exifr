@@ -62,13 +62,13 @@ module EXIFR
           d.unpack(data.long + '*').each_with_index do |v,i|
             i % 2 == 0 ? r << [v] : r.last << v
           end
-	  r.map do |f|
-	    if f[1] == 0 # allow NaN and Infinity
-	      f[0].to_f.quo(f[1])
-	    else
-	      Rational.reduce(*f)
-	    end
-	  end
+          r.map do |f|
+            if f[1] == 0 # allow NaN and Infinity
+              f[0].to_f.quo(f[1])
+            else
+              Rational.reduce(*f)
+            end
+          end
         end
       end
 
