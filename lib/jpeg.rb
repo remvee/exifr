@@ -47,7 +47,7 @@ module EXIFR
           c = readchar while c == 0xFF
           c
         end
-      end
+      end unless io.respond_to? :readsof
 
       app1 = nil
       while marker = io.next

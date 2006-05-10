@@ -8,16 +8,18 @@ module EXIFR
       @data = data
       @fields = []
 
-      class << @data
-        attr_accessor :short, :long
-        def readshort(pos); self[pos..(pos + 1)].unpack(@short)[0]; end
-        def readlong(pos); self[pos..(pos + 3)].unpack(@long)[0]; end
-      end
+      unless @data.respond_to? :readshort
+        class << @data
+          attr_accessor :short, :long
+          def readshort(pos); self[pos..(pos + 1)].unpack(@short)[0]; end
+          def readlong(pos); self[pos..(pos + 3)].unpack(@long)[0]; end
+        end
 
-      case @data[0..1]
-      when 'II'; @data.short, @data.long = 'v', 'V'
-      when 'MM'; @data.short, @data.long = 'n', 'N'
-      else; raise 'no II or MM marker found'
+        case @data[0..1]
+        when 'II'; @data.short, @data.long = 'v', 'V'
+        when 'MM'; @data.short, @data.long = 'n', 'N'
+        else; raise 'no II or MM marker found'
+        end
       end
 
       readIfds(offset || @data.readlong(4))
