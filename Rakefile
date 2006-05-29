@@ -10,7 +10,7 @@ end
 
 spec = Gem::Specification.new do |s|
   s.name = 'exifr'
-  s.version = '0.9.1.0'
+  s.version = '0.9.1.1'
   s.author = "R.W. van 't Veer"
   s.email = 'remco@remvee.net'
   s.homepage = 'http://exifr.rubyforge.org/'

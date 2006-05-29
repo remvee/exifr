@@ -1,9 +1,9 @@
 # Copyright (c) 2006 - R.W. van 't Veer
 
-module EXIFR
+module EXIFR  
   # = EXIF decoder
   class EXIF < Hash
-    @@TAGS = {
+    TAGS = {
       0x0100 => :image_width,
       0x0101 => :image_length,
       0x0102 => :bits_per_sample,
@@ -103,8 +103,22 @@ module EXIFR
       0xa40c => :subject_dist_range,
       0xa420 => :image_unique_id
     }
-    @@EXIF_HEADERS = [0x8769, 0x8825, 0xa005]
-    @@TIME_TAGS = [:date_time, :date_time_original, :date_time_digitized]
+    EXIF_HEADERS = [0x8769, 0x8825, 0xa005]
+
+    time_proc = proc do |value|
+      if value =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
+        Time.mktime($1, $2, $3, $4, $5, $6)
+      else
+        value
+      end
+    end
+    
+    ADAPTERS = Hash.new { proc { |v| v } }
+    ADAPTERS.merge!({
+      :date_time_original => time_proc,
+      :date_time_digitized => time_proc,
+      :date_time => time_proc
+    })
 
     # +data+ the content of the JPEG APP1 frame without the EXIF marker
     def initialize(data)
@@ -121,25 +135,14 @@ module EXIFR
   private
     def traverse(tiff)
       tiff.fields.each do |f|
-        tag, value = @@TAGS[f.tag], f.value
+        tag = TAGS[f.tag]
+        value = f.value.map { |v| ADAPTERS[tag][v] } if f.value
         value = (value.kind_of?(Array) && value.size == 1) ? value.first : value
-        if @@EXIF_HEADERS.include?(f.tag)
+        if EXIF_HEADERS.include?(f.tag)
           traverse(TiffHeader.new(@data, f.offset))
         elsif tag
-          if @@TIME_TAGS.include? tag
-            self[tag] = value2time(value)
-          else
-            self[tag] = value
-          end
+          self[tag] = value
         end
-      end
-    end
-
-    def value2time(value)
-      if value =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
-        Time.mktime($1, $2, $3, $4, $5, $6)
-      else
-        value
       end
     end
   end
