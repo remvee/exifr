@@ -16,4 +16,14 @@ class TestEXIF < Test::Unit::TestCase
       assert_kind_of Time, EXIF.new(data).date_time
     end
   end
+  
+  def test_orientation
+    all_test_exifs.each do |fname|
+      data = open(fname) { |rd| rd.read }
+      orientation = EXIF.new(data).orientation
+      assert_kind_of Module, orientation
+      assert orientation.respond_to?(:to_i)
+      assert orientation.respond_to?(:transform_rmagick)
+    end
+  end
 end

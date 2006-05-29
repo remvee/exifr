@@ -113,52 +113,30 @@ module EXIFR
         value
       end
     end
-    
-    module TopLeftOrientation
-      def self.to_i; 1; end
-      def self.to_rmagic_proc; proc { |img| img }; end
+
+    ORIENTATIONS = []
+    [
+      nil,
+      [:TopLeft, 'img'],
+      [:TopRight, 'img.flop'],
+      [:BottomRight, 'img.rotate(180)'],
+      [:BottomLeft, 'img.flip'],
+      [:LeftTop, 'img.rotate(90).flop'],
+      [:RightTop, 'img.rotate(90)'],
+      [:RightBottom, 'img.rotate(270).flop'],
+      [:LeftBottom, 'img.rotate(270)'],
+    ].each_with_index do |tuple,index|
+      next unless tuple
+      name, rmagic_code = *tuple
+      
+      eval <<-EOS
+        module #{name}Orientation
+          def self.to_i; #{index}; end
+          def self.transform_rmagick(img); #{rmagic_code}; end
+        end
+        ORIENTATIONS[#{index}] = #{name}Orientation
+      EOS
     end
-    
-    module TopRightOrientation
-      def self.to_i; 2; end
-      def self.to_rmagic_proc; proc { |img| img.flop }; end
-    end
-    
-    module BottomRightOrientation
-      def self.to_i; 3; end
-      def self.to_rmagic_proc; proc { |img| img.rotate(180) }; end
-    end
-    
-    module BottomLeftOrientation
-      def self.to_i; 4; end
-      def self.to_rmagic_proc; proc { |img| img.flip }; end
-    end
-    
-    module LeftTopOrientation
-      def self.to_i; 5; end
-      def self.to_rmagic_proc; proc { |img| img.rotate(90).flop }; end
-    end
-    
-    module RightTopOrientation
-      def self.to_i; 6; end
-      def self.to_rmagic_proc; proc { |img| img.rotate(90) }; end
-    end
-    
-    module RightBottomOrientation
-      def self.to_i; 7; end
-      def self.to_rmagic_proc; proc { |img| img.rotate(270).flop }; end
-    end
-    
-    module LeftBottomOrientation
-      def self.to_i; 8; end
-      def self.to_rmagic_proc; proc { |img| img.rotate(270) }; end    
-    end
-    
-    ORIENTATIONS = [
-      nil, TopLeftOrientation, TopRightOrientation, BottomRightOrientation,
-      BottomLeftOrientation, LeftTopOrientation, RightTopOrientation,
-      RightBottomOrientation, LeftBottomOrientation
-    ]
     
     ADAPTERS = Hash.new { proc { |v| v } }
     ADAPTERS.merge!({
