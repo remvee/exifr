@@ -113,11 +113,58 @@ module EXIFR
       end
     end
     
+    module TopLeftOrientation
+      def self.to_i; 1; end
+      def to_rmagic_proc; proc { |img| img }; end
+    end
+    
+    module TopRightOrientation
+      def self.to_i; 2; end
+      def to_rmagic_proc; proc { |img| img.flop }; end
+    end
+    
+    module BottomRightOrientation
+      def self.to_i; 3; end
+      def to_rmagic_proc; proc { |img| img.rotate(180) }; end
+    end
+    
+    module BottomLeftOrientation
+      def self.to_i; 4; end
+      def to_rmagic_proc; proc { |img| img.flip }; end
+    end
+    
+    module LeftTopOrientation
+      def self.to_i; 5; end
+      def to_rmagic_proc; proc { |img| img.rotate(90).flop }; end
+    end
+    
+    module RightTopOrientation
+      def self.to_i; 6; end
+      def to_rmagic_proc; proc { |img| img.rotate(90) }; end
+    end
+    
+    module RightBottomOrientation
+      def self.to_i; 7; end
+      def to_rmagic_proc; proc { |img| img.rotate(270).flop }; end
+    end
+    
+    module LeftBottomOrientation
+      def self.to_i; 8; end
+      def to_rmagic_proc; proc { |img| img.rotate(270) }; end    
+    end
+    
+    ORIENTATIONS = [
+      nil, TopLeftOrientation, TopRightOrientation, BottomRightOrientation,
+      BottomLeftOrientation, LeftTopOrientation, RightTopOrientation,
+      RightBottomOrientation, LeftBottomOrientation
+    ]
+    
     ADAPTERS = Hash.new { proc { |v| v } }
     ADAPTERS.merge!({
       :date_time_original => time_proc,
       :date_time_digitized => time_proc,
-      :date_time => time_proc
+      :date_time => time_proc,
+      :orientation => proc { |v| ORIENTATIONS[v] }
     })
 
     # +data+ the content of the JPEG APP1 frame without the EXIF marker
