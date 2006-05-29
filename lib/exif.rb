@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # Copyright (c) 2006 - R.W. van 't Veer
 
 module EXIFR  
@@ -115,42 +116,42 @@ module EXIFR
     
     module TopLeftOrientation
       def self.to_i; 1; end
-      def to_rmagic_proc; proc { |img| img }; end
+      def self.to_rmagic_proc; proc { |img| img }; end
     end
     
     module TopRightOrientation
       def self.to_i; 2; end
-      def to_rmagic_proc; proc { |img| img.flop }; end
+      def self.to_rmagic_proc; proc { |img| img.flop }; end
     end
     
     module BottomRightOrientation
       def self.to_i; 3; end
-      def to_rmagic_proc; proc { |img| img.rotate(180) }; end
+      def self.to_rmagic_proc; proc { |img| img.rotate(180) }; end
     end
     
     module BottomLeftOrientation
       def self.to_i; 4; end
-      def to_rmagic_proc; proc { |img| img.flip }; end
+      def self.to_rmagic_proc; proc { |img| img.flip }; end
     end
     
     module LeftTopOrientation
       def self.to_i; 5; end
-      def to_rmagic_proc; proc { |img| img.rotate(90).flop }; end
+      def self.to_rmagic_proc; proc { |img| img.rotate(90).flop }; end
     end
     
     module RightTopOrientation
       def self.to_i; 6; end
-      def to_rmagic_proc; proc { |img| img.rotate(90) }; end
+      def self.to_rmagic_proc; proc { |img| img.rotate(90) }; end
     end
     
     module RightBottomOrientation
       def self.to_i; 7; end
-      def to_rmagic_proc; proc { |img| img.rotate(270).flop }; end
+      def self.to_rmagic_proc; proc { |img| img.rotate(270).flop }; end
     end
     
     module LeftBottomOrientation
       def self.to_i; 8; end
-      def to_rmagic_proc; proc { |img| img.rotate(270) }; end    
+      def self.to_rmagic_proc; proc { |img| img.rotate(270) }; end    
     end
     
     ORIENTATIONS = [
