@@ -25,7 +25,7 @@ module EXIFR
       if file.kind_of? String
         File.open(file, 'rb') { |io| examine(io) }
       else
-        examine(file)
+        examine(file.dup)
       end
     end
 
