@@ -8,6 +8,10 @@ class TestEXIF < Test::Unit::TestCase
       data = open(f(fname)) { |rd| rd.read }
       assert_equal EXIF.new(data).model, model
     end
+    
+    assert_raise RuntimeError, 'no II or MM marker found' do
+      EXIF.new('X' * 100)
+    end
   end
   
   def test_dates

@@ -8,6 +8,7 @@ Rake::TestTask.new do |t|
   t.test_files = FileList['tests/test*.rb']
 end
 
+
 require 'rcov/rcovtask'
 
 Rcov::RcovTask.new do |t|
