@@ -1,12 +1,22 @@
-require 'rake/gempackagetask'
-require 'rake/testtask'
-
 task :default => :test
+
+
+require 'rake/testtask'
 
 Rake::TestTask.new do |t|
   t.libs << 'lib' << 'tests'
   t.test_files = FileList['tests/test*.rb']
 end
+
+require 'rcov/rcovtask'
+
+Rcov::RcovTask.new do |t|
+  t.libs << 'lib' << 'tests'
+  t.test_files = FileList['tests/test*.rb']
+end
+
+
+require 'rake/gempackagetask'
 
 spec = Gem::Specification.new do |s|
   s.name = 'exifr'
