@@ -15,9 +15,10 @@ module EXIFR
     attr_reader :width
     # number of bits per ???
     attr_reader :bits
-    # image comment
+    # comment; a string if one comment found, an array if more,
+    # otherwise <tt>nil</tt>
     attr_reader :comment
-    # hash of exif data if available
+    # EXIF data if available
     attr_reader :exif
 
     # +file+ is a filename or an IO object

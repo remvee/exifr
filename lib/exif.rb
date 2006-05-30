@@ -3,8 +3,40 @@
 
 module EXIFR  
   # = EXIF decoder
+  #
+  # The EXIF class contains the EXIF properties.
+  #
+  #
+  # == Date properties
+  #
+  # The properties <tt>:date_time</tt>, <tt>:date_time_original</tt>,
+  # <tt>:date_time_digitized</tt> are stored in a EXIF tags as an ASCII
+  # string.  This class stores them as Time objects.
+  #
+  #
+  # == Orientation
+  #
+  # The property <tt>:orientation</tt> describes the subject rotated and/or
+  # mirrored in relation to the camera.  The value is stored in an EXIF tags
+  # as an integer.  This class stores this value as a module;
+  #
+  # * TopLeftOrientation
+  # * TopRightOrientation
+  # * BottomRightOrientation
+  # * BottomLeftOrientation
+  # * LeftTopOrientation
+  # * RightTopOrientation
+  # * RightBottomOrientation
+  # * LeftBottomOrientation
+  #
+  # These modules have two methods:
+  # * <tt>to_i</tt>; return the original EXIF tag integer
+  # * <tt>transform_rmagick(image)</tt>; transforms the given RMagick::Image
+  #   to a viewable version
+  #
   class EXIF < Hash
-    TAGS = {
+    TAGS = {} # :nodoc:
+    TAGS.merge!({
       0x0100 => :image_width,
       0x0101 => :image_length,
       0x0102 => :bits_per_sample,
@@ -103,8 +135,8 @@ module EXIFR
       0xa40b => :device_setting_descr,
       0xa40c => :subject_dist_range,
       0xa420 => :image_unique_id
-    }
-    EXIF_HEADERS = [0x8769, 0x8825, 0xa005]
+    })
+    EXIF_HEADERS = [0x8769, 0x8825, 0xa005] # :nodoc:
 
     time_proc = proc do |value|
       if value =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
@@ -114,7 +146,7 @@ module EXIFR
       end
     end
 
-    ORIENTATIONS = []
+    ORIENTATIONS = [] # :nodoc:
     [
       nil,
       [:TopLeft, 'img'],
@@ -138,7 +170,7 @@ module EXIFR
       EOS
     end
     
-    ADAPTERS = Hash.new { proc { |v| v } }
+    ADAPTERS = Hash.new { proc { |v| v } } # :nodoc:
     ADAPTERS.merge!({
       :date_time_original => time_proc,
       :date_time_digitized => time_proc,
@@ -159,7 +191,7 @@ module EXIFR
       @data[start..(start + length)] if start && length
     end
 
-    # convience
+    # convience; <tt>self[method]</tt>
     def method_missing(method, *args)
       self[method]
     end
