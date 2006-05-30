@@ -1,6 +1,10 @@
 task :default => :test
 
 
+desc 'Remove all artifacts left by testing and packaging'
+task :clean => [:clobber_package, :clobber_rcov]
+
+
 require 'rake/testtask'
 
 Rake::TestTask.new do |t|
@@ -21,7 +25,7 @@ require 'rake/gempackagetask'
 
 spec = Gem::Specification.new do |s|
   s.name = 'exifr'
-  s.version = '0.9.1.1'
+  s.version = '0.9.2'
   s.author = "R.W. van 't Veer"
   s.email = 'remco@remvee.net'
   s.homepage = 'http://exifr.rubyforge.org/'

@@ -1,5 +1,14 @@
+EXIF Reader 0.9.2
+* bug fix; "[#4595] EXIFR::JPEG doesn't support multiple comments", the
+  comment property of a JPEG object now contains an array instead of a string
+  when multiple COM frames are found
+* EXIF orientation modules including RMagick code to rotate to viewable state
+* access to thumbnail included in EXIF
+* simple commandline utility, "exifr", to view image properties
+* overall code improvements including documentation and tests
+
 EXIF Reader 0.9.1
-* bug fix "4321 Can't create object", division by zero when
+* bug fix; "4321 Can't create object", division by zero when
   denominator of rational value is zero
 
 EXIF Reader 0.9
