@@ -31,4 +31,8 @@ class TestJPEG < Test::Unit::TestCase
     assert_equal j.width, 1
     assert_equal j.height, 1
   end
+  
+  def test_comment
+    assert_equal JPEG.new(f('image.jpg')).comment, "Here's a comment!"
+  end
 end

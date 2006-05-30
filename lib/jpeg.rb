@@ -56,12 +56,14 @@ module EXIFR
             length, @bits, @height, @width, components = io.readsof
             raise 'malformed JPEG' unless length == 8 + components * 3
           when 0xD9, 0xDA:  break # EOI, SOS
-          when 0xFE:        @comment = io.readframe # COM
+          when 0xFE:        (@comment ||= []) << io.readframe # COM
           when 0xE1:        app1 = io.readframe # APP1, contains EXIF tag
           else              io.readframe # ignore frame
         end
       end
 
+      @comment = @comment.first if @comment && @comment.size == 1
+      
       if app1 && app1[0..5] == "Exif\0\0"
         @exif = EXIF.new(app1[6..-1]) # rescue nil
       end
