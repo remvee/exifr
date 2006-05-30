@@ -35,4 +35,9 @@ class TestJPEG < Test::Unit::TestCase
   def test_comment
     assert_equal JPEG.new(f('image.jpg')).comment, "Here's a comment!"
   end
+  
+  def test_exif
+    assert ! JPEG.new(f('image.jpg')).exif?
+    assert JPEG.new(f('exif.jpg')).exif?
+  end
 end
