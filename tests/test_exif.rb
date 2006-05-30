@@ -26,4 +26,16 @@ class TestEXIF < Test::Unit::TestCase
       assert orientation.respond_to?(:transform_rmagick)
     end
   end
+  
+  def test_thumbnail
+    assert_not_nil JPEG.new(f('exif.jpg')).exif.thumbnail
+    
+    all_test_exifs.each do |fname|
+      data = open(fname) { |rd| rd.read }
+      thumbnail = EXIF.new(data).thumbnail
+      assert_nothing_raised do
+        JPEG.new(StringIO.new(thumbnail))
+      end
+    end
+  end
 end

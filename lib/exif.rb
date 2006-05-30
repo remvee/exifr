@@ -32,8 +32,8 @@ module EXIFR
       0x013f => :primary_chromaticities,
       0x0156 => :transfer_range,
       0x0200 => :jpegproc,
-      0x0201 => :jpeginterchange_format,
-      0x0202 => :jpeginterchange_format_length,
+      0x0201 => :jpeg_interchange_format,
+      0x0202 => :jpeg_interchange_format_length,
       0x0211 => :ycb_cr_coefficients,
       0x0212 => :ycb_cr_sub_sampling,
       0x0213 => :ycb_cr_positioning,
@@ -151,6 +151,12 @@ module EXIFR
       @data = data
       traverse(TiffHeader.new(@data))
       freeze
+    end
+
+    # access to thumbnail, if included
+    def thumbnail
+      start, length = self[:jpeg_interchange_format], self[:jpeg_interchange_format_length]
+      @data[start..(start + length)] if start && length
     end
 
     # convience
