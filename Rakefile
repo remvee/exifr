@@ -25,7 +25,7 @@ require 'rake/gempackagetask'
 
 spec = Gem::Specification.new do |s|
   s.name = 'exifr'
-  s.version = '0.9.2'
+  s.version = '0.9.3'
   s.author = "R.W. van 't Veer"
   s.email = 'remco@remvee.net'
   s.homepage = 'http://exifr.rubyforge.org/'
