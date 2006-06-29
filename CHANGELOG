@@ -1,6 +1,7 @@
 EXIF Reader 0.9.3
 * bug fix; "[#4876] Unable to extract gpsinfo"
 * one-off bug in TiffHeader found and fixed
+* make "InteroperabilityIndex" available
 
 EXIF Reader 0.9.2
 * bug fix; "[#4595] EXIFR::JPEG doesn't support multiple comments", the
