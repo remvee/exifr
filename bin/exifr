@@ -18,7 +18,7 @@ def pp(fname)
   
   puts "#{fname}:"
   f = "  %#{l.sort{|a,b|a[0].size <=> b[0].size}.last[0].size}s = %s\n"
-  l.each{|k,v|puts f  % [k, v]}
+  l.each{|k,v|puts f  % [k, [v].flatten.map{|t|t.to_s}.join(', ')]}
 end
 
 if ARGV.size == 0
