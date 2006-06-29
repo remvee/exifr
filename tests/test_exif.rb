@@ -57,5 +57,10 @@ class TestEXIF < Test::Unit::TestCase
     assert_equal [5355537.quo(100000), 0.quo(1), 0.quo(1)], exif.gps_latitude
     assert_equal [678886.quo(100000), 0.quo(1), 0.quo(1)], exif.gps_longitude
     assert_equal 'WGS84', exif.gps_map_datum
+    
+    (all_test_exifs - [f('gps.exif')]).each do |fname|
+      data = open(fname) { |rd| rd.read }
+      assert EXIF.new(data).keys.map{|k|k.to_s}.grep(/gps/).empty?
+    end
   end
 end
