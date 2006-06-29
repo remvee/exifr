@@ -46,4 +46,16 @@ class TestEXIF < Test::Unit::TestCase
   def test_exif_offset
     assert JPEG.new(f('exif.jpg')).exif.include?(:exif_version)
   end
+  
+  def test_gps
+    data = open(f('gps.exif')){|rd|rd.read}
+    exif = EXIF.new(data)
+    assert exif.include?(:gps_version_id)
+    assert_equal "\2\2\0\0", exif.gps_version_id
+    assert_equal 'N', exif.gps_latitude_ref
+    assert_equal 'W', exif.gps_longitude_ref
+    assert_equal [5355537.quo(100000), 0.quo(1), 0.quo(1)], exif.gps_latitude
+    assert_equal [678886.quo(100000), 0.quo(1), 0.quo(1)], exif.gps_longitude
+    assert_equal 'WGS84', exif.gps_map_datum
+  end
 end
