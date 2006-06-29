@@ -136,7 +136,7 @@ module EXIFR
       0xa40c => :subject_dist_range,
       0xa420 => :image_unique_id
     })
-    EXIF_HEADERS = [0x8769, 0x8825, 0xa005] # :nodoc:
+    EXIF_HEADERS = [:exif_offset, :gpsinfo, :interoperability_offset] # :nodoc:
 
     time_proc = proc do |value|
       if value =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
@@ -197,13 +197,13 @@ module EXIFR
     end
 
   private
-    def traverse(tiff)
+    def traverse(tiff, ifd = :default)
       tiff.fields.each do |f|
         tag = TAGS[f.tag]
         value = f.value.map { |v| ADAPTERS[tag][v] } if f.value
         value = (value.kind_of?(Array) && value.size == 1) ? value.first : value
-        if EXIF_HEADERS.include?(f.tag)
-          traverse(TiffHeader.new(@data, f.offset))
+        if EXIF_HEADERS.include?(tag)
+          traverse(TiffHeader.new(@data, f.offset), tag)
         elsif tag
           self[tag] = value
         end

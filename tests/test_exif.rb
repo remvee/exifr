@@ -42,4 +42,8 @@ class TestEXIF < Test::Unit::TestCase
       end
     end
   end
+  
+  def test_exif_offset
+    assert JPEG.new(f('exif.jpg')).exif.include?(:exif_version)
+  end
 end
