@@ -50,7 +50,7 @@ module EXIFR
         end
       end unless io.respond_to? :readsof
 
-      app1 = nil
+      app1s = []
       while marker = io.next
         case marker
           when 0xC0..0xC3, 0xC5..0xC7, 0xC9..0xCB, 0xCD..0xCF # SOF markers
@@ -58,15 +58,18 @@ module EXIFR
             raise 'malformed JPEG' unless length == 8 + components * 3
           when 0xD9, 0xDA:  break # EOI, SOS
           when 0xFE:        (@comment ||= []) << io.readframe # COM
-          when 0xE1:        app1 = io.readframe # APP1, contains EXIF tag
+          when 0xE1:        app1s << io.readframe # APP1, may contain EXIF tag
           else              io.readframe # ignore frame
         end
       end
 
       @comment = @comment.first if @comment && @comment.size == 1
       
-      if app1 && app1[0..5] == "Exif\0\0"
-        @exif = EXIF.new(app1[6..-1]) # rescue nil
+      # last read exif tag wins
+      app1s.each do |app1|
+        if app1 && app1[0..5] == "Exif\0\0"
+          @exif = EXIF.new(app1[6..-1]) # rescue nil
+        end
       end
     end
   end
