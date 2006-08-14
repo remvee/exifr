@@ -1,5 +1,6 @@
 EXIF Reader 0.9.4
-* bug fix; multiple app1 frames will potentially overwrite EXIF tag
+* bug fix (thanks to Benjamin Storrier for providing me with sample date);
+  multiple app1 frames will potentially overwrite EXIF tag
 
 EXIF Reader 0.9.3
 * bug fix; "[#4876] Unable to extract gpsinfo"
