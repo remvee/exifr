@@ -40,4 +40,8 @@ class TestJPEG < Test::Unit::TestCase
     assert ! JPEG.new(f('image.jpg')).exif?
     assert JPEG.new(f('exif.jpg')).exif?
   end
+  
+  def test_multiple_app1
+    assert JPEG.new(f('multiple-app1.jpg')).exif?
+  end
 end
