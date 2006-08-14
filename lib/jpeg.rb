@@ -65,11 +65,8 @@ module EXIFR
 
       @comment = @comment.first if @comment && @comment.size == 1
       
-      # last read exif tag wins
-      app1s.each do |app1|
-        if app1 && app1[0..5] == "Exif\0\0"
-          @exif = EXIF.new(app1[6..-1]) # rescue nil
-        end
+      if app1 = app1s.find { |d| d[0..5] == "Exif\0\0" }
+        @exif = EXIF.new(app1[6..-1]) # rescue nil
       end
     end
   end
