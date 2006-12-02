@@ -1,32 +1,9 @@
-task :default => :test
-
-
-desc 'Remove all artifacts left by testing and packaging'
-task :clean => [:clobber_package, :clobber_rcov]
-
-
+require 'rake/rdoctask'
+require 'rake/gempackagetask'
 require 'rake/testtask'
-
-Rake::TestTask.new do |t|
-  t.libs << 'lib' << 'tests'
-  t.test_files = FileList['tests/test*.rb']
-end
-
-
 require 'rcov/rcovtask'
 
-Rcov::RcovTask.new do |t|
-  t.libs << 'lib' << 'tests'
-  t.test_files = FileList['tests/test*.rb']
-end
-
-require 'rake/rdoctask'
-Rake::RDocTask.new do |rd|
-  rd.main = "README"
-  rd.rdoc_files.include("README", "lib/**/*.rb")
-end
-
-require 'rake/gempackagetask'
+task :default => :test
 
 spec = Gem::Specification.new do |s|
   s.name = 'exifr'
@@ -49,3 +26,23 @@ end
 Rake::GemPackageTask.new(spec) do |pkg|
   pkg.need_tar = true
 end
+
+Rake::RDocTask.new do |rd|
+  rd.main = "README"
+  rd.rdoc_dir = "doc/api"
+  rd.rdoc_files.include("README", "lib/**/*.rb")
+end
+
+
+Rake::TestTask.new do |t|
+  t.libs << 'lib' << 'tests'
+  t.test_files = FileList['tests/test*.rb']
+end
+
+Rcov::RcovTask.new do |t|
+  t.libs << 'lib' << 'tests'
+  t.test_files = FileList['tests/test*.rb']
+end
+
+desc 'Remove all artifacts left by testing and packaging'
+task :clean => [:clobber_package, :clobber_rdoc, :clobber_rcov]
