@@ -44,4 +44,11 @@ class TestJPEG < Test::Unit::TestCase
   def test_multiple_app1
     assert JPEG.new(f('multiple-app1.jpg')).exif?
   end
+  
+  def test_patch_through
+    jpeg = JPEG.new(f('exif.jpg'))
+    jpeg.exif.each do |k,v|
+      assert_equal v, jpeg.send(k) 
+    end
+  end
 end

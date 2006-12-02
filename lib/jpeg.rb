@@ -35,6 +35,15 @@ module EXIFR
       !exif.nil?
     end
 
+    # patch through to exif
+    def method_missing(method, *args)
+      if args.empty?
+        exif[method] if exif?
+      else
+        super
+      end
+    end
+    
   private
     def examine(io)
       raise 'malformed JPEG' unless io.getc == 0xFF && io.getc == 0xD8 # SOI
