@@ -48,7 +48,7 @@ class TestJPEG < Test::Unit::TestCase
   def test_patch_through
     jpeg = JPEG.new(f('exif.jpg'))
     jpeg.exif.each do |k,v|
-      assert_equal v, jpeg.send(k) 
+      assert_equal v, jpeg.send(k)
     end
   end
 end
