@@ -28,6 +28,7 @@ Rake::GemPackageTask.new(spec) do |pkg|
 end
 
 Rake::RDocTask.new do |rd|
+  rd.title = 'EXIF Reader for Ruby API Documentation'
   rd.main = "README"
   rd.rdoc_dir = "doc/api"
   rd.rdoc_files.include("README", "lib/**/*.rb")
