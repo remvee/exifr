@@ -220,16 +220,13 @@ module EXIFR
 
     # +data+ the content of the JPEG APP1 frame without the EXIF marker
     def initialize(data)
-      @data = data
-      traverse(TiffHeader.new(@data))
+      traverse(data)
+      pull_thumbnail(data)
       freeze
     end
 
-    # access to thumbnail, if included
-    def thumbnail
-      start, length = self[:jpeg_interchange_format], self[:jpeg_interchange_format_length]
-      @data[start..(start + length)] if start && length
-    end
+    # thumbnail, if included
+    attr_reader :thumbnail
 
     # convience; <tt>self[method]</tt>
     def method_missing(method, *args)
@@ -237,17 +234,22 @@ module EXIFR
     end
 
   private
-    def traverse(tiff, ifd = :exif)
-      tiff.fields.each do |f|
+    def traverse(data, offset = nil, ifd = :exif)
+      TiffHeader.new(data, offset).fields.each do |f|
         tag = TAGS[ifd][f.tag]
         value = f.value.map { |v| ADAPTERS[tag][v] } if f.value
         value = (value.kind_of?(Array) && value.size == 1) ? value.first : value
         if EXIF_HEADERS.include?(tag)
-          traverse(TiffHeader.new(@data, f.offset), tag)
+          traverse(data, f.offset, tag)
         elsif tag
           self[tag] = value
         end
       end
+    end
+    
+    def pull_thumbnail(data)
+      start, length = self[:jpeg_interchange_format], self[:jpeg_interchange_format_length]
+      @thumbnail = data[start..(start + length)] if start && length
     end
   end
 end

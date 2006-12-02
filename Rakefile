@@ -20,6 +20,11 @@ Rcov::RcovTask.new do |t|
   t.test_files = FileList['tests/test*.rb']
 end
 
+require 'rake/rdoctask'
+Rake::RDocTask.new do |rd|
+  rd.main = "README"
+  rd.rdoc_files.include("README", "lib/**/*.rb")
+end
 
 require 'rake/gempackagetask'
 
