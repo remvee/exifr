@@ -1,3 +1,4 @@
+require 'exifr'
 include EXIFR
 
 def pp(fname)
