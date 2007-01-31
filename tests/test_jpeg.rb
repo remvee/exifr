@@ -19,12 +19,12 @@ class TestJPEG < Test::Unit::TestCase
   
   def test_size
     j = JPEG.new(f('image.jpg'))
-    assert_equal j.width, 2272
-    assert_equal j.height, 1704
+    assert_equal j.width, 100
+    assert_equal j.height, 75
 
     j = JPEG.new(f('exif.jpg'))
-    assert_equal j.width, 2272
-    assert_equal j.height, 1704
+    assert_equal j.width, 100
+    assert_equal j.height, 75
 
     j = JPEG.new(f('1x1.jpg'))
     assert_equal j.width, 1
