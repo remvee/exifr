@@ -1,3 +1,6 @@
+EXIF Reader 0.9.5.1
+* make tinderbox happy by hiding rcov task
+
 EXIF Reader 0.9.5
 * patch calls to jpeg through to exif, i.e. jpeg., i.e. jpeg.model == jpeg.exif.model
 * fix exifr commandline utility, needs require 'exifr' now
