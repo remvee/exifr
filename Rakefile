@@ -14,7 +14,7 @@ spec = Gem::Specification.new do |s|
   s.summary = 'EXIF Reader is a module to read EXIF from JPEG images.'
   
   s.autorequire = 'exifr'
-  s.files = FileList['{bin,lib,test}/**/*'].exclude('rdoc').to_a
+  s.files = FileList['Rakefile', '{bin,lib,tests}/**/*'].exclude('rdoc').to_a
   
   s.has_rdoc = true
   s.extra_rdoc_files = ['README', 'CHANGELOG']
