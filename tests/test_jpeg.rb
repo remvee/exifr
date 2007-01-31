@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'test_helper'
-require 'stringio'
+require File.join(File.dirname(__FILE__), 'test_helper')
 
 class TestJPEG < Test::Unit::TestCase
   def test_initialize

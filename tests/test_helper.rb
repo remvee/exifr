@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
-require 'pp'
 require 'test/unit'
+require 'stringio'
+require 'pp'
 
 $:.unshift("#{File.dirname(__FILE__)}/../lib")
 require 'exifr'
