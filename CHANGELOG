@@ -1,6 +1,9 @@
 EXIF Reader 0.9.5
-* improve test helper
 * patch calls to jpeg through to exif, i.e. jpeg., i.e. jpeg.model == jpeg.exif.model
+* fix exifr commandline utility, needs require 'exifr' now
+* improve test helper
+* reduce size of test images
+* include tests for tinderbox
 
 EXIF Reader 0.9.4
 * bug fix (thanks to Benjamin Storrier for providing me with sample date);
