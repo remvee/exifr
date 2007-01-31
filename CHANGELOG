@@ -1,3 +1,7 @@
+EXIF Reader 0.9.5
+* improve test helper
+* patch calls to jpeg through to exif, i.e. jpeg., i.e. jpeg.model == jpeg.exif.model
+
 EXIF Reader 0.9.4
 * bug fix (thanks to Benjamin Storrier for providing me with sample date);
   multiple app1 frames will potentially overwrite EXIF tag
