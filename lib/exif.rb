@@ -180,7 +180,7 @@ module EXIFR
 
     time_proc = proc do |value|
       if value =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
-        Time.mktime($1, $2, $3, $4, $5, $6)
+        Time.mktime($1, $2, $3, $4, $5, $6) rescue nil
       else
         value
       end
