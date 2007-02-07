@@ -12,7 +12,7 @@ class TestJPEG < Test::Unit::TestCase
         open(fname) { |rd| JPEG.new(rd) }
       end
       assert_nothing_raised do
-        open(fname) { |rd| JPEG.new(StringIO.new(rd.read)) }
+        JPEG.new(StringIO.new(File.read(fname)))
       end
     end
   end
