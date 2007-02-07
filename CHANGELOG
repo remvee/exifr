@@ -1,3 +1,6 @@
+EXIF Reader 0.9.6
+* bug fix; "[#8458] Conversion from string to Time fails", weird dates will now reflect nil
+
 EXIF Reader 0.9.5.1
 * make tinderbox happy by hiding rcov task
 
