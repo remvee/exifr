@@ -3,6 +3,11 @@
 require 'rational'
 
 module EXIFR
+  # = TIFF decoder
+  #
+  # == Examples
+  #   EXIFR::TIFF.new('DSC_0218.TIF').image_width   # -> 3008
+  #   EXIFR::TIFF.new('DSC_0218.TIF').model         # -> "NIKON D1X"
   class TIFF
     include Enumerable
     
@@ -288,8 +293,7 @@ module EXIFR
       @ifds.first.send(method)
     end
     
-    # :nodoc:
-    def inspect
+    def inspect # :nodoc:
       @ifds.inspect
     end
     
