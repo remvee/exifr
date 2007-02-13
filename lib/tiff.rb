@@ -210,6 +210,7 @@ module EXIFR
         0x0001 => :interoperability_index
       }
     })
+    ALL_TAGS = TAGS.keys + TAGS.values.map{|a|a.values}.flatten # :nodoc:
     IFD_TAGS = [:exif, :gps, :interoperability] # :nodoc:
     
     time_proc = proc do |value|
@@ -290,7 +291,17 @@ module EXIFR
     # Dispatch to first image.
     def method_missing(method, *args)
       super unless args.empty?
-      @ifds.first.send(method)
+      super unless ALL_TAGS.include?(method)
+      
+      if TAGS[:image].values.include?(method)
+        return @ifds.first.send(method)
+      else
+        IFD_TAGS.each do |tag|
+          return @ifds.first.send(tag).send(method) if TAGS[tag].values.include?(method)
+        end
+      end
+      
+      nil
     end
     
     def inspect # :nodoc:
@@ -318,9 +329,9 @@ module EXIFR
       def next
         IFD.new(@data, @offset_next) unless @offset_next == 0
       end
-      
-      def to_s
-        fields.inspect
+
+      def inspect
+        @fields.inspect
       end
       
       def method_missing(method, *args)

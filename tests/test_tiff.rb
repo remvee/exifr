@@ -78,4 +78,12 @@ class TestTIFF < Test::Unit::TestCase
       assert_nil TIFF.new(fname).gps
     end
   end
+  
+  def test_ifd_dispatch
+    assert_nothing_raised do
+      @t.fnumber
+    end
+    assert_not_nil @t.fnumber
+    assert_kind_of Rational, @t.fnumber
+  end
 end

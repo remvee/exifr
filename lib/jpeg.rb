@@ -1,6 +1,6 @@
 # Copyright (c) 2006 - R.W. van 't Veer
 
-require 'rational'
+require 'stringio'
 
 module EXIFR
   # = JPEG decoder
@@ -37,11 +37,9 @@ module EXIFR
 
     # patch through to exif
     def method_missing(method, *args)
-      if args.empty?
-        exif[method] if exif?
-      else
-        super
-      end
+      super unless args.empty?
+      super unless TIFF::ALL_TAGS.include?(method)
+      @exif.send method if @exif
     end
     
   private
@@ -75,7 +73,7 @@ module EXIFR
       @comment = @comment.first if @comment && @comment.size == 1
       
       if app1 = app1s.find { |d| d[0..5] == "Exif\0\0" }
-        @exif = EXIF.new(app1[6..-1]) # rescue nil
+        @exif = TIFF.new(StringIO.new(app1[6..-1]))
       end
     end
   end

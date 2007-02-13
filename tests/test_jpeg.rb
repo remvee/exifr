@@ -38,16 +38,24 @@ class TestJPEG < Test::Unit::TestCase
   def test_exif
     assert ! JPEG.new(f('image.jpg')).exif?
     assert JPEG.new(f('exif.jpg')).exif?
+    assert_not_nil JPEG.new(f('exif.jpg')).exif.date_time
+    assert_not_nil JPEG.new(f('exif.jpg')).exif.exif.fnumber
+  end
+  
+  def test_exif_dispatch
+    j = JPEG.new(f('exif.jpg'))
+    assert_not_nil j.date_time
+    assert_kind_of Time, j.date_time
+    assert_not_nil j.fnumber
+    assert_kind_of Rational, j.fnumber
+  end
+  
+  def test_no_method_error
+    assert_nothing_raised { JPEG.new(f('image.jpg')).fnumber }
+    assert_raise(NoMethodError) { JPEG.new(f('image.jpg')).foo }
   end
   
   def test_multiple_app1
     assert JPEG.new(f('multiple-app1.jpg')).exif?
-  end
-  
-  def test_patch_through
-    jpeg = JPEG.new(f('exif.jpg'))
-    jpeg.exif.each do |k,v|
-      assert_equal v, jpeg.send(k)
-    end
   end
 end
