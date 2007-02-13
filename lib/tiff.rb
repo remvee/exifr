@@ -4,6 +4,8 @@ require 'rational'
 
 module EXIFR
   class TIFF
+    include Enumerable
+    
     TAGS = {} # :nodoc:
     TAGS.merge!({
       :image => {
@@ -265,15 +267,28 @@ module EXIFR
       while ifd = @ifds.last.next; @ifds << ifd; end
     end
     
-    def [](key)
-      @ifds[key]
+    # Number of images.
+    def size
+      @ifds.size
     end
     
+    # Yield for each image.
+    def each
+      @ifds.each { |ifd| yield ifd }
+    end
+    
+    # Get +index+ image.
+    def [](index)
+      @ifds[index]
+    end
+    
+    # Dispatch to first image.
     def method_missing(method, *args)
       super unless args.empty?
       @ifds.first.send(method)
     end
     
+    # :nodoc:
     def inspect
       @ifds.inspect
     end

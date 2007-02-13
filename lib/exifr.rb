@@ -2,4 +2,5 @@
 
 require 'jpeg'
 require 'exif'
+require 'tiff'
 require 'tiff_header'

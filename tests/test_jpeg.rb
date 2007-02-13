@@ -4,7 +4,7 @@ require File.join(File.dirname(__FILE__), 'test_helper')
 
 class TestJPEG < Test::Unit::TestCase
   def test_initialize
-    all_test_images.each do |fname|
+    all_test_jpegs.each do |fname|
       assert_nothing_raised do
         JPEG.new(fname)
       end
