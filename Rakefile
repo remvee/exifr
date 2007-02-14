@@ -1,3 +1,5 @@
+# Copyright (c) 2006, 2007 - R.W. van 't Veer
+
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
 require 'rake/testtask'

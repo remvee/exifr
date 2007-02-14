@@ -1,4 +1,4 @@
-# Copyright (c) 2006 - R.W. van 't Veer
+# Copyright (c) 2006, 2007 - R.W. van 't Veer
 
 require 'stringio'
 
@@ -13,15 +13,15 @@ module EXIFR
     attr_reader :height
     # image width
     attr_reader :width
-    # number of bits per ???
-    attr_reader :bits
+    # number of bits per ??
+    attr_reader :bits # :nodoc:
     # comment; a string if one comment found, an array if more,
     # otherwise <tt>nil</tt>
     attr_reader :comment
     # EXIF data if available
     attr_reader :exif
 
-    # +file+ is a filename or an IO object
+    # +file+ is a filename or an IO object.
     def initialize(file)
       if file.kind_of? String
         File.open(file, 'rb') { |io| examine(io) }
@@ -30,15 +30,16 @@ module EXIFR
       end
     end
 
-    # returns +true+ when EXIF data is available
+    # Returns +true+ when EXIF data is available.
     def exif?
       !exif.nil?
     end
 
-    # patch through to exif
+    # Dispath to EXIF.  When no EXIF data is available but the +method+ does exist
+    # for EXIF data +nil+ will be returned.
     def method_missing(method, *args)
       super unless args.empty?
-      super unless TIFF::ALL_TAGS.include?(method)
+      super unless TIFF::ALL_TAG_NAMES.include?(method)
       @exif.send method if @exif
     end
     

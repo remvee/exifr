@@ -210,7 +210,6 @@ module EXIFR
         0x0001 => :interoperability_index
       }
     })
-    ALL_TAGS = TAGS.keys + TAGS.values.map{|a|a.values}.flatten # :nodoc:
     IFD_TAGS = [:exif, :gps, :interoperability] # :nodoc:
     
     time_proc = proc do |value|
@@ -253,7 +252,10 @@ module EXIFR
       :orientation => proc { |v| ORIENTATIONS[v] }
     })
     
-    # +file+ is a filename or an IO object
+    ALL_TAG_NAMES = [TAGS.keys, TAGS.values.map{|a|a.values}] #:nodoc:
+    ALL_TAG_NAMES.flatten!
+    
+    # +file+ is a filename or an IO object.
     def initialize(file)
       @data = file.respond_to?(:read) ? file.read : File.open(file, 'rb') { |io| io.read }
       
@@ -291,7 +293,7 @@ module EXIFR
     # Dispatch to first image.
     def method_missing(method, *args)
       super unless args.empty?
-      super unless ALL_TAGS.include?(method)
+      super unless ALL_TAG_NAMES.include?(method)
       
       if TAGS[:image].values.include?(method)
         return @ifds.first.send(method)
