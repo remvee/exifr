@@ -5,12 +5,35 @@ require 'rational'
 module EXIFR
   # = TIFF decoder
   #
+  # == Date properties
+  # The properties <tt>:date_time</tt>, <tt>:date_time_original</tt>,
+  # <tt>:date_time_digitized</tt> coerced into Time objects.
+  #
+  # == Orientation
+  # The property <tt>:orientation</tt> describes the subject rotated and/or
+  # mirrored in relation to the camera.  It is translated to one of the following
+  # modules:
+  # * TopLeftOrientation
+  # * TopRightOrientation
+  # * BottomRightOrientation
+  # * BottomLeftOrientation
+  # * LeftTopOrientation
+  # * RightTopOrientation
+  # * RightBottomOrientation
+  # * LeftBottomOrientation
+  #
+  # These modules have two methods:
+  # * <tt>to_i</tt>; return the original integer
+  # * <tt>transform_rmagick(image)</tt>; transforms the given RMagick::Image
+  #   to a viewable version
+  #
   # == Examples
   #   EXIFR::TIFF.new('DSC_0218.TIF').width           # => 3008
   #   EXIFR::TIFF.new('DSC_0218.TIF')[1].width        # => 160
   #   EXIFR::TIFF.new('DSC_0218.TIF').model           # => "NIKON D1X"
   #   EXIFR::TIFF.new('DSC_0218.TIF').date_time       # => Tue May 23 19:15:32 +0200 2006
   #   EXIFR::TIFF.new('DSC_0218.TIF').exposure_time   # => Rational(1, 100)
+  #   EXIFR::TIFF.new('DSC_0218.TIF').orientation     # => EXIFR::TIFF::TopLeftOrientation
   class TIFF
     include Enumerable
     

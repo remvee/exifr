@@ -1,9 +1,21 @@
 = EXIF Reader
-EXIF Reader is a module to read EXIF from JPEG images.
+EXIF Reader is a module to read metadata from JPEG and TIFF images.
 
 == Examples
-  EXIFR::JPEG.new('IMG_3422.JPG').width         # -> 2272
-  EXIFR::JPEG.new('IMG_3422.JPG').exif.model    # -> "Canon PowerShot G3"
+  EXIFR::JPEG.new('IMG_6841.JPG').width               # => 2272
+  EXIFR::JPEG.new('IMG_6841.JPG').height              # => 1704
+  EXIFR::JPEG.new('IMG_6841.JPG').exif?               # => true
+  EXIFR::JPEG.new('IMG_6841.JPG').model               # => "Canon PowerShot G3"
+  EXIFR::JPEG.new('IMG_6841.JPG').date_time           # => Fri Feb 09 16:48:54 +0100 2007
+  EXIFR::JPEG.new('IMG_6841.JPG').exposure_time.to_s  # => "1/15"
+  EXIFR::JPEG.new('IMG_6841.JPG').f_number.to_f       # => 2.0
+
+  EXIFR::TIFF.new('DSC_0218.TIF').width               # => 3008
+  EXIFR::TIFF.new('DSC_0218.TIF')[1].width            # => 160
+  EXIFR::TIFF.new('DSC_0218.TIF').model               # => "NIKON D1X"
+  EXIFR::TIFF.new('DSC_0218.TIF').date_time           # => Tue May 23 19:15:32 +0200 2006
+  EXIFR::TIFF.new('DSC_0218.TIF').exposure_time.to_s  # => "1/100"
+  EXIFR::TIFF.new('DSC_0218.TIF').f_number.to_f       # => 5.0
 
 == Author
 R.W. van 't Veer
