@@ -94,7 +94,10 @@ class TestTIFF < Test::Unit::TestCase
   
   def test_avoid_dispatch_to_nonexistent_ifds
     assert_nothing_raised do
-      TIFF.new(f('plain.tif')).f_number
+      all_test_tiffs.each do |fname|
+        t = TIFF.new(fname)
+        TIFF::TAGS.each { |tag| t.send(tag) }
+      end
     end
   end
 end
