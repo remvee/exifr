@@ -39,7 +39,7 @@ module EXIFR
     # for EXIF data +nil+ will be returned.
     def method_missing(method, *args)
       super unless args.empty?
-      super unless TIFF::ALL_TAG_NAMES.include?(method)
+      super unless TIFF::TAGS.include?(method)
       @exif.send method if @exif
     end
     

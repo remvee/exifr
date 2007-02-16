@@ -11,8 +11,8 @@ module EXIFR
   class TIFF
     include Enumerable
     
-    TAGS = {} # :nodoc:
-    TAGS.merge!({
+    TAG_MAPPING = {} # :nodoc:
+    TAG_MAPPING.merge!({
       :image => {
         0x00FE => :new_subfile_type,
         0x00FF => :subfile_type,
@@ -252,8 +252,8 @@ module EXIFR
       :orientation => proc { |v| ORIENTATIONS[v] }
     })
     
-    ALL_TAG_NAMES = [TAGS.keys, TAGS.values.map{|a|a.values}] #:nodoc:
-    ALL_TAG_NAMES.flatten!
+    # Names for all recognized TIFF fields.
+    TAGS = [TAG_MAPPING.keys, TAG_MAPPING.values.map{|a|a.values}].flatten
     
     # +file+ is a filename or an IO object.
     def initialize(file)
@@ -293,13 +293,13 @@ module EXIFR
     # Dispatch to first image.
     def method_missing(method, *args)
       super unless args.empty?
-      super unless ALL_TAG_NAMES.include?(method)
+      super unless TAGS.include?(method)
       
-      if TAGS[:image].values.include?(method)
+      if TAG_MAPPING[:image].values.include?(method)
         return @ifds.first.send(method)
       else
         IFD_TAGS.each do |tag|
-          return @ifds.first.send(tag).send(method) if TAGS[tag].values.include?(method)
+          return @ifds.first.send(tag).send(method) if TAG_MAPPING[tag].values.include?(method)
         end
       end
       
@@ -344,7 +344,7 @@ module EXIFR
       
       def method_missing(method, *args)
         super unless args.empty?
-        super unless TAGS[type].values.include?(method)
+        super unless TAG_MAPPING[type].values.include?(method)
         fields[method]
       end
       
@@ -352,7 +352,7 @@ module EXIFR
       def height; image_length; end
     private
       def add_field(field)
-        return unless tag = TAGS[@type][field.tag]
+        return unless tag = TAG_MAPPING[@type][field.tag]
         if IFD_TAGS.include? tag
           @fields[tag] = IFD.new(@data, field.offset, tag)
         else
