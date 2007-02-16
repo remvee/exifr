@@ -37,7 +37,7 @@ class TestTIFF < Test::Unit::TestCase
     assert_equal 120, @t[1].width
     assert_equal 160, @t[1].height
     
-    @t = TIFF.new(f('grab.tif'))
+    @t = TIFF.new(f('plain.tif'))
     assert_equal 23, @t.image_width
     assert_equal 24, @t.image_length
     assert_equal 23, @t.width
@@ -57,7 +57,7 @@ class TestTIFF < Test::Unit::TestCase
   end
   
   def test_dates
-    (all_test_tiffs - [f('weird_date.exif'), f('grab.tif')]).each do |fname|
+    (all_test_tiffs - [f('weird_date.exif'), f('plain.tif')]).each do |fname|
       assert_kind_of Time, TIFF.new(fname).date_time
     end
     assert_nil TIFF.new(f('weird_date.exif')).date_time
@@ -88,10 +88,13 @@ class TestTIFF < Test::Unit::TestCase
   end
   
   def test_ifd_dispatch
-    assert_nothing_raised do
-      @t.f_number
-    end
     assert_not_nil @t.f_number
     assert_kind_of Rational, @t.f_number
+  end
+  
+  def test_avoid_dispatch_to_nonexistent_ifds
+    assert_nothing_raised do
+      TIFF.new(f('plain.tif')).f_number
+    end
   end
 end

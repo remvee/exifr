@@ -145,7 +145,6 @@ module EXIFR
         0xa002 => :pixel_x_dimension,
         0xa003 => :pixel_y_dimension,
         0xa004 => :related_sound_file,
-        0xa005 => :interoperability,
         0xa20b => :flash_energy,
         0xa20c => :spatial_frequency_response,
         0xa20e => :focal_plane_x_resolution,
@@ -205,12 +204,8 @@ module EXIFR
         0x001d => :gps_date_stamp,
         0x001e => :gps_differential,
       },
-      
-      :interoperability => {
-        0x0001 => :interoperability_index
-      }
     })
-    IFD_TAGS = [:exif, :gps, :interoperability] # :nodoc:
+    IFD_TAGS = [:exif, :gps] # :nodoc:
     
     time_proc = proc do |value|
       if value =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
@@ -299,7 +294,8 @@ module EXIFR
         return @ifds.first.send(method)
       else
         IFD_TAGS.each do |tag|
-          return @ifds.first.send(tag).send(method) if TAG_MAPPING[tag].values.include?(method)
+          ifd = @ifds.first.send(tag)
+          return ifd.send(method) if ifd && TAG_MAPPING[tag].values.include?(method)
         end
       end
       
