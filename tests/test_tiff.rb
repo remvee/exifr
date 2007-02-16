@@ -100,4 +100,10 @@ class TestTIFF < Test::Unit::TestCase
       end
     end
   end
+  
+  def test_to_hash
+    all_test_tiffs.each do |fname|
+      assert_not_nil TIFF.new(fname).to_hash[:image_width]
+    end
+  end
 end

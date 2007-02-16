@@ -287,10 +287,9 @@ module EXIFR
     
     # Dispatch to first image.
     def method_missing(method, *args)
-      super unless args.empty?
-      super unless TAGS.include?(method)
+      super unless args.empty? && (@ifds.first.respond_to?(method) || TAGS.include?(method))
       
-      if TAG_MAPPING[:image].values.include?(method)
+      if @ifds.first.respond_to?(method) || TAG_MAPPING[:image].values.include?(method)
         return @ifds.first.send(method)
       else
         IFD_TAGS.each do |tag|
@@ -330,14 +329,6 @@ module EXIFR
         @offset_next = @data.readlong(pos)
       end
       
-      def next
-        IFD.new(@data, @offset_next) unless @offset_next == 0
-      end
-
-      def inspect
-        @fields.inspect
-      end
-      
       def method_missing(method, *args)
         super unless args.empty?
         super unless TAG_MAPPING[type].values.include?(method)
@@ -346,6 +337,26 @@ module EXIFR
       
       def width; image_width; end
       def height; image_length; end
+      
+      def to_hash
+        result = @fields.dup
+        result.delete_if { |key,value| value.nil? }
+        result.each do |key,value|
+          if IFD_TAGS.include? key
+            result.merge!(value.to_hash)
+            result.delete key
+          end
+        end
+      end
+
+      def inspect
+        to_hash.inspect
+      end
+
+      def next
+        IFD.new(@data, @offset_next) unless @offset_next == 0
+      end
+    
     private
       def add_field(field)
         return unless tag = TAG_MAPPING[@type][field.tag]

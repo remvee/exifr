@@ -21,7 +21,7 @@ def all_test_exifs
 end
 
 def all_test_tiffs
-  all_test_exifs + Dir[f('*.tif')]
+  Dir[f('*.tif')]
 end
 
 def f(fname)
