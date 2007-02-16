@@ -41,19 +41,19 @@ class TestJPEG < Test::Unit::TestCase
     assert ! JPEG.new(f('image.jpg')).exif?
     assert JPEG.new(f('exif.jpg')).exif?
     assert_not_nil JPEG.new(f('exif.jpg')).exif.date_time
-    assert_not_nil JPEG.new(f('exif.jpg')).exif.exif.fnumber
+    assert_not_nil JPEG.new(f('exif.jpg')).exif.exif.f_number
   end
   
   def test_exif_dispatch
     j = JPEG.new(f('exif.jpg'))
     assert_not_nil j.date_time
     assert_kind_of Time, j.date_time
-    assert_not_nil j.fnumber
-    assert_kind_of Rational, j.fnumber
+    assert_not_nil j.f_number
+    assert_kind_of Rational, j.f_number
   end
   
   def test_no_method_error
-    assert_nothing_raised { JPEG.new(f('image.jpg')).fnumber }
+    assert_nothing_raised { JPEG.new(f('image.jpg')).f_number }
     assert_raise(NoMethodError) { JPEG.new(f('image.jpg')).foo }
   end
   

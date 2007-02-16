@@ -114,7 +114,7 @@ module EXIFR
       
       :exif => {
         0x829a => :exposure_time,
-        0x829d => :fnumber,
+        0x829d => :f_number,
         0x8822 => :exposure_program,
         0x8824 => :spectral_sensitivity,
         0x8827 => :iso_speed_ratings,

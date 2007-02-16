@@ -49,7 +49,7 @@ class TestTIFF < Test::Unit::TestCase
   end
   
   def test_exif
-    assert_not_nil @t.exif.fnumber
+    assert_not_nil @t.exif.f_number
   end
   
   def test_misc_fields
@@ -89,9 +89,9 @@ class TestTIFF < Test::Unit::TestCase
   
   def test_ifd_dispatch
     assert_nothing_raised do
-      @t.fnumber
+      @t.f_number
     end
-    assert_not_nil @t.fnumber
-    assert_kind_of Rational, @t.fnumber
+    assert_not_nil @t.f_number
+    assert_kind_of Rational, @t.f_number
   end
 end
