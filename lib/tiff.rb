@@ -306,6 +306,12 @@ module EXIFR
       nil
     end
     
+    # Convenience method to access image width.
+    def width; @ifds.first.width; end
+
+    # Convenience method to access image height.
+    def height; @ifds.first.height; end
+    
     def inspect # :nodoc:
       @ifds.inspect
     end
@@ -342,6 +348,8 @@ module EXIFR
         fields[method]
       end
       
+      def width; image_width; end
+      def height; image_length; end
     private
       def add_field(field)
         return unless tag = TAGS[@type][field.tag]

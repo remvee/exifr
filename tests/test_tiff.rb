@@ -30,12 +30,18 @@ class TestTIFF < Test::Unit::TestCase
   def test_size
     assert_equal 269, @t.image_width
     assert_equal 269, @t.image_length
+    assert_equal 269, @t.width
+    assert_equal 269, @t.height
     assert_equal 120, @t[1].image_width
     assert_equal 160, @t[1].image_length
+    assert_equal 120, @t[1].width
+    assert_equal 160, @t[1].height
     
     @t = TIFF.new(f('grab.tif'))
     assert_equal 23, @t.image_width
     assert_equal 24, @t.image_length
+    assert_equal 23, @t.width
+    assert_equal 24, @t.height
   end
   
   def test_enumerable
