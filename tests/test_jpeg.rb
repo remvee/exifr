@@ -41,7 +41,7 @@ class TestJPEG < Test::Unit::TestCase
     assert ! JPEG.new(f('image.jpg')).exif?
     assert JPEG.new(f('exif.jpg')).exif?
     assert_not_nil JPEG.new(f('exif.jpg')).exif.date_time
-    assert_not_nil JPEG.new(f('exif.jpg')).exif.exif.f_number
+    assert_not_nil JPEG.new(f('exif.jpg')).exif.f_number
   end
   
   def test_exif_dispatch

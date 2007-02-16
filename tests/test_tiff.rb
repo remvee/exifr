@@ -45,11 +45,7 @@ class TestTIFF < Test::Unit::TestCase
   end
   
   def test_enumerable
-    assert_equal @t[1], @t.find { |i| i.exif.nil? }
-  end
-  
-  def test_exif
-    assert_not_nil @t.exif.f_number
+    assert_equal @t[1], @t.find { |i| i.f_number.nil? }
   end
   
   def test_misc_fields
@@ -74,22 +70,23 @@ class TestTIFF < Test::Unit::TestCase
   
   def test_gps
     t = TIFF.new(f('gps.exif'))
-    assert_not_nil t.gps
-    assert_equal "\2\2\0\0", t.gps.gps_version_id
-    assert_equal 'N', t.gps.gps_latitude_ref
-    assert_equal 'W', t.gps.gps_longitude_ref
-    assert_equal [5355537.quo(100000), 0.quo(1), 0.quo(1)], t.gps.gps_latitude
-    assert_equal [678886.quo(100000), 0.quo(1), 0.quo(1)], t.gps.gps_longitude
-    assert_equal 'WGS84', t.gps.gps_map_datum
+    assert_equal "\2\2\0\0", t.gps_version_id
+    assert_equal 'N', t.gps_latitude_ref
+    assert_equal 'W', t.gps_longitude_ref
+    assert_equal [5355537.quo(100000), 0.quo(1), 0.quo(1)], t.gps_latitude
+    assert_equal [678886.quo(100000), 0.quo(1), 0.quo(1)], t.gps_longitude
+    assert_equal 'WGS84', t.gps_map_datum
     
     (all_test_exifs - [f('gps.exif')]).each do |fname|
-      assert_nil TIFF.new(fname).gps
+      assert_nil TIFF.new(fname).gps_version_id
     end
   end
   
   def test_ifd_dispatch
     assert_not_nil @t.f_number
     assert_kind_of Rational, @t.f_number
+    assert_not_nil @t[0].f_number
+    assert_kind_of Rational, @t[0].f_number
   end
   
   def test_avoid_dispatch_to_nonexistent_ifds
@@ -103,7 +100,10 @@ class TestTIFF < Test::Unit::TestCase
   
   def test_to_hash
     all_test_tiffs.each do |fname|
-      assert_not_nil TIFF.new(fname).to_hash[:image_width]
+      t = TIFF.new(fname)
+      TIFF::TAGS.each do |key|
+        assert_equal t.send(key), t.to_hash[key]
+      end
     end
   end
 end

@@ -6,8 +6,11 @@ module EXIFR
   # = TIFF decoder
   #
   # == Examples
-  #   EXIFR::TIFF.new('DSC_0218.TIF').image_width   # -> 3008
-  #   EXIFR::TIFF.new('DSC_0218.TIF').model         # -> "NIKON D1X"
+  #   EXIFR::TIFF.new('DSC_0218.TIF').width           # => 3008
+  #   EXIFR::TIFF.new('DSC_0218.TIF')[1].width        # => 160
+  #   EXIFR::TIFF.new('DSC_0218.TIF').model           # => "NIKON D1X"
+  #   EXIFR::TIFF.new('DSC_0218.TIF').date_time       # => Tue May 23 19:15:32 +0200 2006
+  #   EXIFR::TIFF.new('DSC_0218.TIF').exposure_time   # => Rational(1, 100)
   class TIFF
     include Enumerable
     
@@ -205,7 +208,7 @@ module EXIFR
         0x001e => :gps_differential,
       },
     })
-    IFD_TAGS = [:exif, :gps] # :nodoc:
+    IFD_TAGS = [:image, :exif, :gps] # :nodoc:
     
     time_proc = proc do |value|
       if value =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
@@ -248,7 +251,7 @@ module EXIFR
     })
     
     # Names for all recognized TIFF fields.
-    TAGS = [TAG_MAPPING.keys, TAG_MAPPING.values.map{|a|a.values}].flatten
+    TAGS = [TAG_MAPPING.keys, TAG_MAPPING.values.map{|a|a.values}].flatten.uniq - IFD_TAGS
     
     # +file+ is a filename or an IO object.
     def initialize(file)
@@ -287,18 +290,15 @@ module EXIFR
     
     # Dispatch to first image.
     def method_missing(method, *args)
-      super unless args.empty? && (@ifds.first.respond_to?(method) || TAGS.include?(method))
+      super unless args.empty?
       
-      if @ifds.first.respond_to?(method) || TAG_MAPPING[:image].values.include?(method)
-        return @ifds.first.send(method)
+      if @ifds.first.respond_to?(method)
+        @ifds.first.send(method)
+      elsif TAGS.include?(method)
+        @ifds.first.to_hash[method]
       else
-        IFD_TAGS.each do |tag|
-          ifd = @ifds.first.send(tag)
-          return ifd.send(method) if ifd && TAG_MAPPING[tag].values.include?(method)
-        end
+        super
       end
-      
-      nil
     end
     
     # Convenience method to access image width.
@@ -306,6 +306,9 @@ module EXIFR
 
     # Convenience method to access image height.
     def height; @ifds.first.height; end
+    
+    # Get a hash presentation of the (first) image.
+    def to_hash; @ifds.first.to_hash; end
     
     def inspect # :nodoc:
       @ifds.inspect
@@ -330,21 +333,22 @@ module EXIFR
       end
       
       def method_missing(method, *args)
-        super unless args.empty?
-        super unless TAG_MAPPING[type].values.include?(method)
-        fields[method]
+        super unless args.empty? && TAGS.include?(method)
+        to_hash[method]
       end
       
       def width; image_width; end
       def height; image_length; end
       
       def to_hash
-        result = @fields.dup
-        result.delete_if { |key,value| value.nil? }
-        result.each do |key,value|
-          if IFD_TAGS.include? key
-            result.merge!(value.to_hash)
-            result.delete key
+        @hash ||= begin
+          result = @fields.dup
+          result.delete_if { |key,value| value.nil? }
+          result.each do |key,value|
+            if IFD_TAGS.include? key
+              result.merge!(value.to_hash)
+              result.delete key
+            end
           end
         end
       end
