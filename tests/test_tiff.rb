@@ -106,4 +106,10 @@ class TestTIFF < Test::Unit::TestCase
       end
     end
   end
+  
+  def test_old_style
+    assert_nothing_raised do
+      assert_not_nil @t[:f_number]
+    end
+  end
 end

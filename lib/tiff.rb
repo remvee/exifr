@@ -308,7 +308,7 @@ module EXIFR
     
     # Get +index+ image.
     def [](index)
-      @ifds[index]
+      index.is_a?(Symbol) ? to_hash[index] : @ifds[index]
     end
     
     # Dispatch to first image.
