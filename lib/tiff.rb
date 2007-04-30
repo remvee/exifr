@@ -381,7 +381,7 @@ module EXIFR
       end
 
       def next
-        IFD.new(@data, @offset_next) unless @offset_next == 0
+        IFD.new(@data, @offset_next) unless @offset_next == 0 || @offset_next >= @data.size
       end
     
     private

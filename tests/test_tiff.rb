@@ -60,12 +60,17 @@ class TestTIFF < Test::Unit::TestCase
   end
   
   def test_orientation
+    tested = 0 # count tests because not all exif samples have an orientation field
     all_test_exifs.each do |fname|
       orientation = TIFF.new(fname).orientation
-      assert_kind_of Module, orientation
-      assert orientation.respond_to?(:to_i)
-      assert orientation.respond_to?(:transform_rmagick)
+      if orientation
+        assert_kind_of Module, orientation
+        assert orientation.respond_to?(:to_i)
+        assert orientation.respond_to?(:transform_rmagick)
+        tested += 1
+      end
     end
+    assert tested > 0
   end
   
   def test_gps
