@@ -8,7 +8,7 @@ task :default => :test
 
 spec = Gem::Specification.new do |s|
   s.name = 'exifr'
-  s.version = '0.10.1'
+  s.version = '0.10.2'
   s.author = "R.W. van 't Veer"
   s.email = 'remco@remvee.net'
   s.homepage = 'http://exifr.rubyforge.org/'

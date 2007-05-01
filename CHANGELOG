@@ -1,3 +1,7 @@
+EXIF Reader 0.10.2
+* bug fix (thanks to Alexander Staubo for providing me witb sample data);
+  don't fail on out-of-range IFD offsets for Apple Aperture generated JPGs
+
 EXIF Reader 0.10.1
 * old style exif access
 
