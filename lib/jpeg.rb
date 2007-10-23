@@ -35,7 +35,7 @@ module EXIFR
       !exif.nil?
     end
 
-    # Dispath to EXIF.  When no EXIF data is available but the +method+ does exist
+    # Dispatch to EXIF.  When no EXIF data is available but the +method+ does exist
     # for EXIF data +nil+ will be returned.
     def method_missing(method, *args)
       super unless args.empty?
