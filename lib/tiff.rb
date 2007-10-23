@@ -12,7 +12,7 @@ module EXIFR
   # == Orientation
   # The property <tt>:orientation</tt> describes the subject rotated and/or
   # mirrored in relation to the camera.  It is translated to one of the following
-  # modules:
+  # instances:
   # * TopLeftOrientation
   # * TopRightOrientation
   # * BottomRightOrientation
@@ -22,7 +22,7 @@ module EXIFR
   # * RightBottomOrientation
   # * LeftBottomOrientation
   #
-  # These modules have two methods:
+  # These instances of Orientation have two methods:
   # * <tt>to_i</tt>; return the original integer
   # * <tt>transform_rmagick(image)</tt>; transforms the given RMagick::Image
   #   to a viewable version
@@ -33,7 +33,7 @@ module EXIFR
   #   EXIFR::TIFF.new('DSC_0218.TIF').model           # => "NIKON D1X"
   #   EXIFR::TIFF.new('DSC_0218.TIF').date_time       # => Tue May 23 19:15:32 +0200 2006
   #   EXIFR::TIFF.new('DSC_0218.TIF').exposure_time   # => Rational(1, 100)
-  #   EXIFR::TIFF.new('DSC_0218.TIF').orientation     # => EXIFR::TIFF::TopLeftOrientation
+  #   EXIFR::TIFF.new('DSC_0218.TIF').orientation     # => EXIFR::TIFF::Orientation
   class TIFF
     include Enumerable
     
@@ -241,28 +241,51 @@ module EXIFR
       end
     end
     
+    # The orientation of the image with respect to the rows and columns.
+    class Orientation
+      def initialize(index) # :nodoc:
+        @index = index
+      end
+      
+      # Field value.
+      def to_i
+        @index
+      end
+      
+      # Rotate and/or flip for proper viewing.
+      def transform_rmagick(img)
+        case @index
+        when 2 : img.flop
+        when 3 : img.rotate(180)
+        when 4 : img.flip
+        when 5 : img.rotate(90).flop
+        when 6 : img.rotate(90)
+        when 7 : img.rotate(270).flop
+        when 8 : img.rotate(270)
+        else
+          img
+        end
+      end
+      
+      def ==(other) # :nodoc:
+        Orientation === other && to_i == other.to_i
+      end
+    end
+    
     ORIENTATIONS = [] # :nodoc:
     [
       nil,
-      [:TopLeft, 'img'],
-      [:TopRight, 'img.flop'],
-      [:BottomRight, 'img.rotate(180)'],
-      [:BottomLeft, 'img.flip'],
-      [:LeftTop, 'img.rotate(90).flop'],
-      [:RightTop, 'img.rotate(90)'],
-      [:RightBottom, 'img.rotate(270).flop'],
-      [:LeftBottom, 'img.rotate(270)'],
-    ].each_with_index do |tuple,index|
-      next unless tuple
-      name, rmagic_code = *tuple
-      
-      eval <<-EOS
-        module #{name}Orientation
-          def self.to_i; #{index}; end
-          def self.transform_rmagick(img); #{rmagic_code}; end
-        end
-        ORIENTATIONS[#{index}] = #{name}Orientation
-      EOS
+      :TopLeft,
+      :TopRight,
+      :BottomRight,
+      :BottomLeft,
+      :LeftTop,
+      :RightTop,
+      :RightBottom,
+      :LeftBottom,
+    ].each_with_index do |name,index|
+      next unless name
+      const_set("#{name}Orientation", ORIENTATIONS[index] = Orientation.new(index))
     end
     
     ADAPTERS = Hash.new { proc { |v| v } } # :nodoc:
@@ -278,21 +301,21 @@ module EXIFR
     
     # +file+ is a filename or an IO object.
     def initialize(file)
-      @data = file.respond_to?(:read) ? file.read : File.open(file, 'rb') { |io| io.read }
+      data = file.respond_to?(:read) ? file.read : File.open(file, 'rb') { |io| io.read }
       
-      class << @data
+      class << data
         attr_accessor :short, :long
         def readshort(pos); self[pos..(pos + 1)].unpack(@short)[0]; end
         def readlong(pos); self[pos..(pos + 3)].unpack(@long)[0]; end
       end
       
-      case @data[0..1]
-      when 'II'; @data.short, @data.long = 'v', 'V'
-      when 'MM'; @data.short, @data.long = 'n', 'N'
+      case data[0..1]
+      when 'II'; data.short, data.long = 'v', 'V'
+      when 'MM'; data.short, data.long = 'n', 'N'
       else; raise 'no II or MM marker found'
       end
       
-      @ifds = [IFD.new(@data)]
+      @ifds = [IFD.new(data)]
       while ifd = @ifds.last.next; @ifds << ifd; end
     end
     
@@ -384,6 +407,9 @@ module EXIFR
         IFD.new(@data, @offset_next) unless @offset_next == 0 || @offset_next >= @data.size
       end
     
+      def to_yaml_properties
+        '@fields'
+      end
     private
       def add_field(field)
         return unless tag = TAG_MAPPING[@type][field.tag]

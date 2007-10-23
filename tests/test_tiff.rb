@@ -64,7 +64,16 @@ class TestTIFF < Test::Unit::TestCase
     all_test_exifs.each do |fname|
       orientation = TIFF.new(fname).orientation
       if orientation
-        assert_kind_of Module, orientation
+        assert [
+          TIFF::TopLeftOrientation,
+          TIFF::TopRightOrientation,
+          TIFF::BottomRightOrientation,
+          TIFF::BottomLeftOrientation,
+          TIFF::LeftTopOrientation,
+          TIFF::RightTopOrientation,
+          TIFF::RightBottomOrientation,
+          TIFF::LeftBottomOrientation
+        ].any? { |c| orientation == c }, 'not an orientation'
         assert orientation.respond_to?(:to_i)
         assert orientation.respond_to?(:transform_rmagick)
         tested += 1
@@ -115,6 +124,16 @@ class TestTIFF < Test::Unit::TestCase
   def test_old_style
     assert_nothing_raised do
       assert_not_nil @t[:f_number]
+    end
+  end
+  
+  def test_yaml_dump_and_load
+    require 'yaml'
+    
+    all_test_tiffs.each do |fname|
+      t = TIFF.new(fname)
+      y = YAML.dump(t)
+      assert_equal t.to_hash, YAML.load(y).to_hash
     end
   end
 end
