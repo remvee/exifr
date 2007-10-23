@@ -1,5 +1,8 @@
+EXIF Reader 0.10.3
+* YAML friendly; can now safely (de)serialize
+
 EXIF Reader 0.10.2
-* bug fix (thanks to Alexander Staubo for providing me witb sample data);
+* bug fix (thanks to Alexander Staubo for providing me with sample data);
   don't fail on out-of-range IFD offsets for Apple Aperture generated JPGs
 
 EXIF Reader 0.10.1
