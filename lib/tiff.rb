@@ -243,25 +243,25 @@ module EXIFR
     
     # The orientation of the image with respect to the rows and columns.
     class Orientation
-      def initialize(index) # :nodoc:
-        @index = index
+      def initialize(value, type) # :nodoc:
+        @value, @type = value, type
       end
       
       # Field value.
       def to_i
-        @index
+        @value
       end
       
       # Rotate and/or flip for proper viewing.
       def transform_rmagick(img)
-        case @index
-        when 2 : img.flop
-        when 3 : img.rotate(180)
-        when 4 : img.flip
-        when 5 : img.rotate(90).flop
-        when 6 : img.rotate(90)
-        when 7 : img.rotate(270).flop
-        when 8 : img.rotate(270)
+        case @type
+        when :TopRight    : img.flop
+        when :BottomRight : img.rotate(180)
+        when :BottomLeft  : img.flip
+        when :LeftTop     : img.rotate(90).flop
+        when :RightTop    : img.rotate(90)
+        when :RightBottom : img.rotate(270).flop
+        when :LeftBottom  : img.rotate(270)     
         else
           img
         end
@@ -283,9 +283,9 @@ module EXIFR
       :RightTop,
       :RightBottom,
       :LeftBottom,
-    ].each_with_index do |name,index|
-      next unless name
-      const_set("#{name}Orientation", ORIENTATIONS[index] = Orientation.new(index))
+    ].each_with_index do |type,index|
+      next unless type
+      const_set("#{type}Orientation", ORIENTATIONS[index] = Orientation.new(index, type))
     end
     
     ADAPTERS = Hash.new { proc { |v| v } } # :nodoc:
