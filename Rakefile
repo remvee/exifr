@@ -6,6 +6,11 @@ require 'rake/testtask'
 
 task :default => :test
 
+desc 'Generate site'
+task :site => :rdoc do
+  system 'rsync -av --delete doc/ remvee@rubyforge.org:/var/www/gforge-projects/exifr'
+end
+
 spec = Gem::Specification.new do |s|
   s.name = 'exifr'
   s.version = '0.10.3'

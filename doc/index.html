@@ -1,0 +1,59 @@
+<html lang="en">
+  <head>
+    <title>EXIF Reader</title>
+    <style type="text/css">
+      body {
+        margin: 2em;
+      }
+      #header {
+        border-bottom: solid black 2px;
+      }
+      #footer {
+        border-top: solid black 2px;
+        font-size: 50%;
+        text-align: right;
+        padding: 1em 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header">
+      <h1>EXIF Reader</h1>
+    </div>
+    
+    <div id="content">
+      <h2>What is it?</h2>
+      <p>
+        EXIF Reader is a module to read metadata from JPEG and TIFF images.
+      </p>
+      
+      <h2>How do I install it?</h2>
+      <pre>gem install exifr</pre>
+      
+      <h2>How do I use it?</h2>
+      <pre>
+$ irb -rubygems
+&gt;&gt; require 'exifr'
+true
+&gt;&gt; EXIFR::JPEG.new('IMG_1234.JPG').exposure_time.to_s
+1/500
+</pre>
+
+      <h2>Where's the documentation?</h2>
+      <p>
+        See the <a href="api/index.html">API</a> documentation for details.
+      </p>
+        
+      <h2>What if I find bugs?</h2>
+      <p>
+        Please report problems at the <a href="http://rubyforge.org/projects/exifr/">EXIFR project</a>
+        at <a href="http://rubyforge.org/">RubyForge</a>.
+      </p>
+    </div>
+    
+    <div id="footer">
+      Copyright (c) 2006, 2007 - R.W. van 't Veer
+    </div>
+  </body>
+</html>
+    
