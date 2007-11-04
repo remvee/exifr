@@ -11,9 +11,17 @@ task :site => :rdoc do
   system 'rsync -av --delete doc/ remvee@rubyforge.org:/var/www/gforge-projects/exifr'
 end
 
+desc "Tag current trunk.  Use VERSION to provide a version spec."
+task :tag do
+  version = ENV['VERSION'] or raise 'provide VERSION'
+  base = 'svn+ssh://remvee@rubyforge.org/var/svn/exifr'
+  trunk, tag = base + "/trunk", base + "/tags/#{version}"
+  system *(%w(svn copy -m) << "tagged release #{version}" << trunk << tag)
+end
+
 spec = Gem::Specification.new do |s|
   s.name = 'exifr'
-  s.version = '0.10.3'
+  s.version = '0.10.4'
   s.author = "R.W. van 't Veer"
   s.email = 'remco@remvee.net'
   s.homepage = 'http://exifr.rubyforge.org/'

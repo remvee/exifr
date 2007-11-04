@@ -1,3 +1,6 @@
+EXIF Reader 0.10.4
+* Thumbnail extraction; [#15317] Please add thumbnail extraction
+
 EXIF Reader 0.10.3
 * YAML friendly; can now safely (de)serialize
 
