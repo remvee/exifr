@@ -60,4 +60,19 @@ class TestJPEG < Test::Unit::TestCase
   def test_multiple_app1
     assert JPEG.new(f('multiple-app1.jpg')).exif?
   end
+  
+  def test_thumbnail
+    count = 0
+    all_test_jpegs.each do |fname|
+      jpeg = JPEG.new(fname)
+      unless jpeg.thumbnail.nil?
+        assert_nothing_raised 'thumbnail not a JPEG' do
+          JPEG.new(StringIO.new(jpeg.thumbnail))
+        end
+        count += 1
+      end
+    end
+    
+    assert count > 0, 'no thumbnails found'
+  end
 end

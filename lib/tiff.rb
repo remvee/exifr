@@ -37,6 +37,9 @@ module EXIFR
   class TIFF
     include Enumerable
     
+    # JPEG thumbnails
+    attr_reader :jpeg_thumbnails
+    
     TAG_MAPPING = {} # :nodoc:
     TAG_MAPPING.merge!({
       :image => {
@@ -317,6 +320,13 @@ module EXIFR
       
       @ifds = [IFD.new(data)]
       while ifd = @ifds.last.next; @ifds << ifd; end
+      
+      @jpeg_thumbnails = @ifds.map do |ifd|
+        if ifd.jpeg_interchange_format && ifd.jpeg_interchange_format_length
+          start, length = ifd.jpeg_interchange_format, ifd.jpeg_interchange_format_length
+          data[start..(start + length)]
+        end
+      end.compact
     end
     
     # Number of images.
@@ -413,6 +423,7 @@ module EXIFR
     private
       def add_field(field)
         return unless tag = TAG_MAPPING[@type][field.tag]
+        
         if IFD_TAGS.include? tag
           @fields[tag] = IFD.new(@data, field.offset, tag)
         else

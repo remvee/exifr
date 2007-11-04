@@ -116,7 +116,7 @@ class TestTIFF < Test::Unit::TestCase
     all_test_tiffs.each do |fname|
       t = TIFF.new(fname)
       TIFF::TAGS.each do |key|
-        assert_equal t.send(key), t.to_hash[key]
+        assert_literally_equal t.send(key), t.to_hash[key], "#{key} not equal"
       end
     end
   end
@@ -133,7 +133,23 @@ class TestTIFF < Test::Unit::TestCase
     all_test_tiffs.each do |fname|
       t = TIFF.new(fname)
       y = YAML.dump(t)
-      assert_equal t.to_hash, YAML.load(y).to_hash
+      assert_literally_equal t.to_hash, YAML.load(y).to_hash
     end
+  end
+  
+  def test_jpeg_thumbnails
+    count = 0
+    all_test_tiffs.each do |fname|
+      t = TIFF.new(fname)
+      unless t.jpeg_thumbnails.empty?
+        assert_nothing_raised do
+          t.jpeg_thumbnails.each do |n|
+            JPEG.new(StringIO.new(n))
+          end
+        end
+        count += 1
+      end
+    end
+    assert count > 0, 'no thumbnails found'
   end
 end

@@ -34,6 +34,11 @@ module EXIFR
     def exif?
       !exif.nil?
     end
+    
+    # Return thumbnail data when available.
+    def thumbnail
+      @exif && @exif.jpeg_thumbnails && @exif.jpeg_thumbnails.first
+    end
 
     # Dispatch to EXIF.  When no EXIF data is available but the +method+ does exist
     # for EXIF data +nil+ will be returned.
