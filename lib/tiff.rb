@@ -420,9 +420,11 @@ module EXIFR
       def to_yaml_properties
         '@fields'
       end
+      
     private
       def add_field(field)
         return unless tag = TAG_MAPPING[@type][field.tag]
+        return if @fields[tag]
         
         if IFD_TAGS.include? tag
           @fields[tag] = IFD.new(@data, field.offset, tag)
