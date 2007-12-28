@@ -50,18 +50,19 @@ module EXIFR
     
   private
     def examine(io)
-      raise 'malformed JPEG' unless io.getc == 0xFF && io.getc == 0xD8 # SOI
-
       class << io
-        def readint; (readchar << 8) + readchar; end
+        def readbyte; readchar; end unless method_defined?(:readbyte)
+        def readint; (readbyte << 8) + readbyte; end
         def readframe; read(readint - 2); end
-        def readsof; [readint, readchar, readint, readint, readchar]; end
+        def readsof; [readint, readbyte, readint, readint, readbyte]; end
         def next
-          c = readchar while c != 0xFF
-          c = readchar while c == 0xFF
+          c = readbyte while c != 0xFF
+          c = readbyte while c == 0xFF
           c
         end
       end unless io.respond_to? :readsof
+
+      raise 'malformed JPEG' unless io.readbyte == 0xFF && io.readbyte == 0xD8 # SOI
 
       app1s = []
       while marker = io.next
@@ -69,9 +70,9 @@ module EXIFR
           when 0xC0..0xC3, 0xC5..0xC7, 0xC9..0xCB, 0xCD..0xCF # SOF markers
             length, @bits, @height, @width, components = io.readsof
             raise 'malformed JPEG' unless length == 8 + components * 3
-          when 0xD9, 0xDA:  break # EOI, SOS
-          when 0xFE:        (@comment ||= []) << io.readframe # COM
-          when 0xE1:        app1s << io.readframe # APP1, may contain EXIF tag
+          when 0xD9, 0xDA;  break # EOI, SOS
+          when 0xFE;        (@comment ||= []) << io.readframe # COM
+          when 0xE1;        app1s << io.readframe # APP1, may contain EXIF tag
           else              io.readframe # ignore frame
         end
       end

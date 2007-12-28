@@ -238,7 +238,7 @@ module EXIFR
     
     time_proc = proc do |value|
       if value =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
-        Time.mktime($1, $2, $3, $4, $5, $6) rescue nil
+        Time.mktime($1.to_i, $2.to_i, $3.to_i, $4.to_i, $5.to_i, $6.to_i) rescue nil
       else
         value
       end
@@ -258,13 +258,13 @@ module EXIFR
       # Rotate and/or flip for proper viewing.
       def transform_rmagick(img)
         case @type
-        when :TopRight    : img.flop
-        when :BottomRight : img.rotate(180)
-        when :BottomLeft  : img.flip
-        when :LeftTop     : img.rotate(90).flop
-        when :RightTop    : img.rotate(90)
-        when :RightBottom : img.rotate(270).flop
-        when :LeftBottom  : img.rotate(270)     
+        when :TopRight    ; img.flop
+        when :BottomRight ; img.rotate(180)
+        when :BottomLeft  ; img.flip
+        when :LeftTop     ; img.rotate(90).flop
+        when :RightTop    ; img.rotate(90)
+        when :RightBottom ; img.rotate(270).flop
+        when :LeftBottom  ; img.rotate(270)
         else
           img
         end
@@ -418,7 +418,7 @@ module EXIFR
       end
     
       def to_yaml_properties
-        '@fields'
+        ['@fields']
       end
       
     private
@@ -471,7 +471,7 @@ module EXIFR
 
         if len && pack
           start = len > 4 ? @offset : (pos + 8)
-          @value = pack[data[start..(start + len - 1)]]
+          @value = [pack[data[start..(start + len - 1)]]].flatten
         end
       end
     end

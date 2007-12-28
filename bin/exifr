@@ -41,8 +41,8 @@ if ARGV.size == 0
 else
   ARGV.each do |fname|
     case fname
-    when /\.(jpg|jpeg)$/i: pp_jpeg fname
-    when /\.(tif|tiff)$/i: pp_tiff fname
+    when /\.(jpg|jpeg)$/i; pp_jpeg fname
+    when /\.(tif|tiff)$/i; pp_tiff fname
     end
     puts
   end
