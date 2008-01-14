@@ -374,7 +374,7 @@ module EXIFR
       attr_reader :type, :fields
 
       def initialize(data, offset = nil, type = :image)
-        @data, @type, @fields = data, type, {}
+        @data, @offset, @type, @fields = data, offset, type, {}
         
         pos = offset || @data.readlong(4)
         num = @data.readshort(pos)
@@ -413,8 +413,12 @@ module EXIFR
         to_hash.inspect
       end
 
+      def next?
+        @offset_next != 0 && @offset_next < @data.size && (@offset || 0) < @offset_next
+      end
+      
       def next
-        IFD.new(@data, @offset_next) unless @offset_next == 0 || @offset_next >= @data.size
+        IFD.new(@data, @offset_next) if next?
       end
     
       def to_yaml_properties

@@ -53,7 +53,7 @@ class TestTIFF < Test::Unit::TestCase
   end
   
   def test_dates
-    (all_test_tiffs - [f('weird_date.exif'), f('plain.tif')]).each do |fname|
+    (all_test_tiffs - [f('weird_date.exif'), f('plain.tif'), f('endless-loop.exif')]).each do |fname|
       assert_kind_of Time, TIFF.new(fname).date_time
     end
     assert_nil TIFF.new(f('weird_date.exif')).date_time
@@ -151,5 +151,10 @@ class TestTIFF < Test::Unit::TestCase
       end
     end
     assert count > 0, 'no thumbnails found'
+  end
+  
+  def test_should_not_loop_endlessly
+    TIFF.new(f('endless-loop.exif'))
+    assert true
   end
 end
