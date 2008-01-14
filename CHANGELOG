@@ -1,3 +1,6 @@
+EXIF Reader 0.10.6
+* bug fix (thanks to Forian Munz for reporting it); endless loop when reading a malformed EXIF/TIFF
+
 EXIF Reader 0.10.5
 * bug fix; "[#15421] duplicate orientation field behavior", first field (of any type) is leading now
 * Ruby 1.9 compatible
