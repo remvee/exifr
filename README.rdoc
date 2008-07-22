@@ -21,4 +21,4 @@ EXIF Reader is a module to read metadata from JPEG and TIFF images.
 R.W. van 't Veer
 
 == Copyright
-Copyright (c) 2006, 2007 - R.W. van 't Veer
+Copyright (c) 2006, 2007, 2008 - R.W. van 't Veer

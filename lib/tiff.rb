@@ -1,4 +1,4 @@
-# Copyright (c) 2007 - R.W. van 't Veer
+# Copyright (c) 2007, 2008 - R.W. van 't Veer
 
 require 'rational'
 
