@@ -47,8 +47,8 @@ class TestJPEG < Test::Unit::TestCase
   def test_exif_dispatch
     j = JPEG.new(f('exif.jpg'))
 
-    assert JPEG.instance_methods.map{|m|m.to_s}.include?('date_time')
-    assert j.methods.map{|m|m.to_s}.include?('date_time')
+    assert JPEG.instance_methods.include?('date_time')
+    assert j.methods.include?('date_time')
     assert j.respond_to?(:date_time)
     assert j.respond_to?('date_time')
     assert_not_nil j.date_time

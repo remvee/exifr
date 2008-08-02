@@ -36,10 +36,10 @@ module EXIFR
   #   EXIFR::TIFF.new('DSC_0218.TIF').orientation     # => EXIFR::TIFF::Orientation
   class TIFF
     include Enumerable
-    
+
     # JPEG thumbnails
     attr_reader :jpeg_thumbnails
-    
+
     TAG_MAPPING = {} # :nodoc:
     TAG_MAPPING.merge!({
       :image => {
@@ -140,7 +140,7 @@ module EXIFR
         0x8769 => :exif,
         0x8825 => :gps,
       },
-      
+
       :exif => {
         0x829a => :exposure_time,
         0x829d => :f_number,
@@ -199,7 +199,7 @@ module EXIFR
         0xa40c => :subject_distance_range,
         0xa420 => :image_unique_id
       },
-      
+
       :gps => {
         0x0000 => :gps_version_id,
         0x0001 => :gps_latitude_ref,
@@ -235,7 +235,7 @@ module EXIFR
       },
     })
     IFD_TAGS = [:image, :exif, :gps] # :nodoc:
-    
+
     time_proc = proc do |value|
       if value =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
         Time.mktime($1.to_i, $2.to_i, $3.to_i, $4.to_i, $5.to_i, $6.to_i) rescue nil
@@ -243,18 +243,18 @@ module EXIFR
         value
       end
     end
-    
+
     # The orientation of the image with respect to the rows and columns.
     class Orientation
       def initialize(value, type) # :nodoc:
         @value, @type = value, type
       end
-      
+
       # Field value.
       def to_i
         @value
       end
-      
+
       # Rotate and/or flip for proper viewing.
       def transform_rmagick(img)
         case @type
@@ -269,12 +269,12 @@ module EXIFR
           img
         end
       end
-      
+
       def ==(other) # :nodoc:
         Orientation === other && to_i == other.to_i
       end
     end
-    
+
     ORIENTATIONS = [] # :nodoc:
     [
       nil,
@@ -290,7 +290,7 @@ module EXIFR
       next unless type
       const_set("#{type}Orientation", ORIENTATIONS[index] = Orientation.new(index, type))
     end
-    
+
     ADAPTERS = Hash.new { proc { |v| v } } # :nodoc:
     ADAPTERS.merge!({
       :date_time_original => time_proc,
@@ -298,29 +298,29 @@ module EXIFR
       :date_time => time_proc,
       :orientation => proc { |v| ORIENTATIONS[v] }
     })
-    
+
     # Names for all recognized TIFF fields.
-    TAGS = [TAG_MAPPING.keys, TAG_MAPPING.values.map{|a|a.values}].flatten.uniq - IFD_TAGS
-    
+    TAGS = ([TAG_MAPPING.keys, TAG_MAPPING.values.map{|v|v.values}].flatten.uniq - IFD_TAGS).map{|v|v.to_s}
+
     # +file+ is a filename or an IO object.
     def initialize(file)
       data = file.respond_to?(:read) ? file.read : File.open(file, 'rb') { |io| io.read }
-      
+
       class << data
         attr_accessor :short, :long
         def readshort(pos); self[pos..(pos + 1)].unpack(@short)[0]; end
         def readlong(pos); self[pos..(pos + 3)].unpack(@long)[0]; end
       end
-      
+
       case data[0..1]
       when 'II'; data.short, data.long = 'v', 'V'
       when 'MM'; data.short, data.long = 'n', 'N'
       else; raise 'no II or MM marker found'
       end
-      
+
       @ifds = [IFD.new(data)]
       while ifd = @ifds.last.next; @ifds << ifd; end
-      
+
       @jpeg_thumbnails = @ifds.map do |ifd|
         if ifd.jpeg_interchange_format && ifd.jpeg_interchange_format_length
           start, length = ifd.jpeg_interchange_format, ifd.jpeg_interchange_format_length
@@ -328,54 +328,54 @@ module EXIFR
         end
       end.compact
     end
-    
+
     # Number of images.
     def size
       @ifds.size
     end
-    
+
     # Yield for each image.
     def each
       @ifds.each { |ifd| yield ifd }
     end
-    
+
     # Get +index+ image.
     def [](index)
       index.is_a?(Symbol) ? to_hash[index] : @ifds[index]
     end
-    
+
     # Dispatch to first image.
     def method_missing(method, *args)
       super unless args.empty?
-      
+
       if @ifds.first.respond_to?(method)
         @ifds.first.send(method)
-      elsif TAGS.include?(method)
+      elsif TAGS.include?(method.to_s)
         @ifds.first.to_hash[method]
       else
         super
       end
     end
-    
+
     # Convenience method to access image width.
     def width; @ifds.first.width; end
 
     # Convenience method to access image height.
     def height; @ifds.first.height; end
-    
+
     # Get a hash presentation of the (first) image.
     def to_hash; @ifds.first.to_hash; end
-    
+
     def inspect # :nodoc:
       @ifds.inspect
     end
-    
+
     class IFD # :nodoc:
       attr_reader :type, :fields
 
       def initialize(data, offset = nil, type = :image)
         @data, @offset, @type, @fields = data, offset, type, {}
-        
+
         pos = offset || @data.readlong(4)
         num = @data.readshort(pos)
         pos += 2
@@ -387,15 +387,15 @@ module EXIFR
 
         @offset_next = @data.readlong(pos)
       end
-      
+
       def method_missing(method, *args)
-        super unless args.empty? && TAGS.include?(method)
+        super unless args.empty? && TAGS.include?(method.to_s)
         to_hash[method]
       end
-      
+
       def width; image_width; end
       def height; image_length; end
-      
+
       def to_hash
         @hash ||= begin
           result = @fields.dup
@@ -416,20 +416,20 @@ module EXIFR
       def next?
         @offset_next != 0 && @offset_next < @data.size && (@offset || 0) < @offset_next
       end
-      
+
       def next
         IFD.new(@data, @offset_next) if next?
       end
-    
+
       def to_yaml_properties
         ['@fields']
       end
-      
+
     private
       def add_field(field)
         return unless tag = TAG_MAPPING[@type][field.tag]
         return if @fields[tag]
-        
+
         if IFD_TAGS.include? tag
           @fields[tag] = IFD.new(@data, field.offset, tag)
         else
@@ -444,7 +444,7 @@ module EXIFR
 
       def initialize(data, pos)
         @tag, count, @offset = data.readshort(pos), data.readlong(pos + 4), data.readlong(pos + 8)
-        
+
         case data.readshort(pos + 2)
         when 1, 6 # byte, signed byte
           # TODO handle signed bytes
