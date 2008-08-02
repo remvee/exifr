@@ -34,20 +34,35 @@ module EXIFR
     def exif?
       !exif.nil?
     end
-    
+
     # Return thumbnail data when available.
     def thumbnail
       @exif && @exif.jpeg_thumbnails && @exif.jpeg_thumbnails.first
     end
 
-    # Dispatch to EXIF.  When no EXIF data is available but the +method+ does exist
-    # for EXIF data +nil+ will be returned.
+    # Dispatch to EXIF.  When no EXIF data is available but the
+    # +method+ does exist for EXIF data +nil+ will be returned.
     def method_missing(method, *args)
       super unless args.empty?
       super unless TIFF::TAGS.include?(method)
       @exif.send method if @exif
     end
-    
+
+    def respond_to?(method) # :nodoc:
+      super || TIFF::TAGS.map{|m|m.to_s}.include?(method.to_s)
+    end
+
+    def methods # :nodoc:
+      super + TIFF::TAGS
+    end
+
+    class << self
+      alias instance_methods_without_jpeg_extras instance_methods
+      def instance_methods(include_super = true) # :nodoc:
+        instance_methods_without_jpeg_extras(include_super) + TIFF::TAGS
+      end
+    end
+
   private
     def examine(io)
       class << io
@@ -78,7 +93,7 @@ module EXIFR
       end
 
       @comment = @comment.first if @comment && @comment.size == 1
-      
+
       if app1 = app1s.find { |d| d[0..5] == "Exif\0\0" }
         @exif = TIFF.new(StringIO.new(app1[6..-1]))
       end
