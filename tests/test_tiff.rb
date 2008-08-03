@@ -97,10 +97,10 @@ class TestTIFF < Test::Unit::TestCase
   end
 
   def test_ifd_dispatch
-#     assert TIFF.instance_methods.include?('f_number')
-#     assert @t.methods.include?('f_number')
-#     assert @t.respond_to?(:f_number)
-#     assert @t.respond_to?('f_number')
+    assert @t.respond_to?(:f_number)
+    assert @t.respond_to?('f_number')
+    assert @t.methods.include?('f_number')
+    assert TIFF.instance_methods.include?('f_number')
 
     assert_not_nil @t.f_number
     assert_kind_of Rational, @t.f_number

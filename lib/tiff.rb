@@ -357,6 +357,23 @@ module EXIFR
       end
     end
 
+    def respond_to?(method) # :nodoc:
+      super ||
+        (@ifds && @ifds.first && @ifds.first.respond_to?(method)) ||
+        TAGS.include?(method.to_s)
+    end
+
+    def methods # :nodoc:
+      (super + TAGS + IFD.instance_methods(false)).uniq
+    end
+
+    class << self
+      alias instance_methods_without_tiff_extras instance_methods
+      def instance_methods(include_super = true) # :nodoc:
+        (instance_methods_without_tiff_extras(include_super) + TAGS + IFD.instance_methods(false)).uniq
+      end
+    end
+
     # Convenience method to access image width.
     def width; @ifds.first.width; end
 
