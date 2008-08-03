@@ -484,7 +484,7 @@ module EXIFR
               if f[1] == 0 # allow NaN and Infinity
                 f[0].to_f.quo(f[1])
               else
-                Rational.reduce(*f)
+                Rational.respond_to?(:reduce) ? Rational.reduce(*f) : f[0].quo(f[1])
               end
             end
           end
