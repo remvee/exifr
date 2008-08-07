@@ -1,7 +1,6 @@
 # Copyright (c) 2006, 2007, 2008 - R.W. van 't Veer
 
 require 'rake/rdoctask'
-require 'rake/gempackagetask'
 require 'rake/testtask'
 
 task :default => :test
@@ -29,12 +28,12 @@ begin
 
   Rcov::RcovTask.new do |t|
     t.libs << 'lib' << 'tests'
-    t.test_files = FileList['tests/test*.rb'].exclude('test_helper.rb')
+    t.test_files = FileList['tests/*_test.rb']
   end
 
   desc 'Remove all artifacts left by testing and packaging'
-  task :clean => [:clobber_package, :clobber_rdoc, :clobber_rcov]
+  task :clean => [:clobber_rdoc, :clobber_rcov]
 rescue LoadError
   desc 'Remove all artifacts left by testing and packaging'
-  task :clean => [:clobber_package, :clobber_rdoc]
+  task :clean => [:clobber_rdoc]
 end

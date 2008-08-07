@@ -4,7 +4,7 @@
 
 require File.join(File.dirname(__FILE__), 'test_helper')
 
-class TestTIFF < Test::Unit::TestCase
+class TIFFTest < Test::Unit::TestCase
   def setup
     @t = TIFF.new(f('nikon_d1x.tif'))
   end
