@@ -1,18 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
   <head>
     <title>EXIF Reader</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
     <style type="text/css">
       body {
-        margin: 2em;
+        margin: auto;
+        max-width: 40em;
+        font-family: Helvetica, sans-serif;
+        line-height: 1.4;
       }
       #header {
+        padding: 1em;
         border-bottom: solid black 2px;
       }
+      #header h1 {
+        margin: 0;
+        line-height: 1;
+      }
+      #content {
+        padding: 0.5em 1em;
+        background-color: #eee;
+      }
       #footer {
+        padding: 1em;
         border-top: solid black 2px;
         font-size: 50%;
         text-align: right;
-        padding: 1em 0;
       }
     </style>
   </head>
@@ -29,6 +43,8 @@
       
       <h2>How do I install it?</h2>
       <pre>gem install exifr</pre>
+      or
+      <pre>gem install remvee-exifr -s http://gems.github.com</pre>
       
       <h2>How do I use it?</h2>
       <pre>
@@ -43,16 +59,38 @@ true
       <p>
         See the <a href="api/index.html">API</a> documentation for details.
       </p>
+
+      <h2>Where's the code?</h2>
+      <p>
+        The code for this module is hosted
+        at <a href="http://github.com/">github</a>.  You can find the
+        original repository
+        at <a href="http://github.com/remvee/exifr/">remvee/exifr</a>.
+      </p>
         
       <h2>What if I find bugs?</h2>
       <p>
-        Please report problems at the <a href="http://rubyforge.org/projects/exifr/">EXIFR project</a>
-        at <a href="http://rubyforge.org/">RubyForge</a>.  Don't forget to attach image files to help me reproduce the bugs you report!
+        Please report problems at
+        the <a href="http://rubyforge.org/projects/exifr/">EXIFR
+        project</a> at <a href="http://rubyforge.org/">RubyForge</a>.
+        Don't forget to attach image files to help me reproduce the
+        bugs you report!
+      </p>
+      <p>
+        If you can fix it yourself,
+        fork <a href="http://github.com/remvee/exifr/">my repository
+        at github</a> and issue
+        a <a href="http://github.com/guides/pull-requests">pull
+        request</a> (including the issue number) when you're done.
+        Please provide test cases for you findings.  If you provide
+        images, keep them as small as possible, make sure their
+        license permit both commercial reuse and derivative works
+        (include copyright information if needed).
       </p>
     </div>
     
     <div id="footer">
-      Copyright (c) 2006, 2008 - R.W. van 't Veer
+      Copyright &copy; 2006, 2007, 2008 - R.W. van 't Veer
     </div>
   </body>
 </html>
