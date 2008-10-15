@@ -319,7 +319,10 @@ module EXIFR
       end
 
       @ifds = [IFD.new(data)]
-      while ifd = @ifds.last.next; @ifds << ifd; end
+      while ifd = @ifds.last.next
+        break if @ifds.find{|i| i.offset == ifd.offset}
+        @ifds << ifd
+      end
 
       @jpeg_thumbnails = @ifds.map do |ifd|
         if ifd.jpeg_interchange_format && ifd.jpeg_interchange_format_length
@@ -388,7 +391,7 @@ module EXIFR
     end
 
     class IFD # :nodoc:
-      attr_reader :type, :fields
+      attr_reader :type, :fields, :offset
 
       def initialize(data, offset = nil, type = :image)
         @data, @offset, @type, @fields = data, offset, type, {}
@@ -431,7 +434,7 @@ module EXIFR
       end
 
       def next?
-        @offset_next != 0 && @offset_next < @data.size && (@offset || 0) < @offset_next
+        @offset_next != 0 && @offset_next < @data.size
       end
 
       def next
