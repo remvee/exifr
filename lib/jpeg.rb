@@ -40,6 +40,13 @@ module EXIFR
       @exif && @exif.jpeg_thumbnails && @exif.jpeg_thumbnails.first
     end
 
+    # Get a hash presentation of the (first) image.
+    def to_hash
+      h = {:width => width, :height => height, :bits => bits, :comment => comment}
+      h.merge!(exif) if exif?
+      h
+    end
+
     # Dispatch to EXIF.  When no EXIF data is available but the
     # +method+ does exist for EXIF data +nil+ will be returned.
     def method_missing(method, *args)

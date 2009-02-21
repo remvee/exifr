@@ -44,6 +44,18 @@ class JPEGTest < Test::Unit::TestCase
     assert_not_nil JPEG.new(f('exif.jpg')).exif.f_number
   end
 
+  def test_to_hash
+    h = JPEG.new(f('image.jpg')).to_hash
+    assert_equal 100, h[:width]
+    assert_equal 75, h[:height]
+    assert_equal "Here's a comment!", h[:comment]
+
+    h = JPEG.new(f('exif.jpg')).to_hash
+    assert_equal 100, h[:width]
+    assert_equal 75, h[:height]
+    assert_kind_of Time, h[:date_time]
+  end
+
   def test_exif_dispatch
     j = JPEG.new(f('exif.jpg'))
 
