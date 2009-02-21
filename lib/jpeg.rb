@@ -40,7 +40,7 @@ module EXIFR
       @exif && @exif.jpeg_thumbnails && @exif.jpeg_thumbnails.first
     end
 
-    # Get a hash presentation of the (first) image.
+    # Get a hash presentation of the image.
     def to_hash
       h = {:width => width, :height => height, :bits => bits, :comment => comment}
       h.merge!(exif) if exif?
