@@ -1,3 +1,6 @@
+EXIF Reader 0.10.8
+* feature request; "[#23694] The object interface of JPEG is different from the TIFF one."
+
 EXIF Reader 0.10.7
 * bug fix; "[#22403] Wrong file size reported"
 
