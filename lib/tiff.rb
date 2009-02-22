@@ -304,17 +304,11 @@ module EXIFR
 
     # +file+ is a filename or an IO object.
     def initialize(file)
-      data = file.respond_to?(:read) ? file.read : File.open(file, 'rb') { |io| io.read }
-
-      class << data
-        attr_accessor :short, :long
-        def readshort(pos); self[pos..(pos + 1)].unpack(@short)[0]; end
-        def readlong(pos); self[pos..(pos + 3)].unpack(@long)[0]; end
-      end
+      data = Data.new(file)
 
       case data[0..1]
-      when 'II'; data.short, data.long = 'v', 'V'
-      when 'MM'; data.short, data.long = 'n', 'N'
+      when 'II'; data.endianess = 'v'
+      when 'MM'; data.endianess = 'n'
       else; raise 'no II or MM marker found'
       end
 
@@ -497,6 +491,62 @@ module EXIFR
           start = len > 4 ? @offset : (pos + 8)
           @value = [pack[data[start..(start + len - 1)]]].flatten
         end
+      end
+    end
+
+    class Data
+      attr_reader :short, :long
+
+      def initialize(file)
+        @file = file.respond_to?(:read) ? file : File.open(file, "rb")
+        @buff = []
+        @pos = 0
+        @size = 0
+      end
+
+      def endianess=(endianess)
+        @short = endianess.downcase
+        @long = endianess.upcase
+      end
+
+      def [](pos)
+        # handle Ranges
+        if (pos.respond_to?(:min) and pos.respond_to?(:max))
+          min = pos.min
+          max = pos.max
+        else
+          min = pos
+          max = pos
+        end
+
+        if (min < @pos or max >= @pos + @size)
+          buff_read(min, max - min)
+        end
+
+        return @buffer[(min - @pos)..(max - @pos)]
+      end
+
+      def readshort(pos)
+        self[pos..(pos + 1)].unpack(@short)[0]
+      end
+
+      def readlong(pos)
+        self[pos..(pos + 3)].unpack(@long)[0]
+      end
+
+      def size
+        @file.seek(0, IO::SEEK_END)
+        return @file.pos
+      end
+
+      private
+      def buff_read(pos, size)
+        @pos = pos
+        @size = size < 4096? 4096 : size;
+        @file.seek(pos)
+        @buffer = @file.read(@size)
+        # read can read less then the requested size
+        @size = @buffer.size
       end
     end
   end
