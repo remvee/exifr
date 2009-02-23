@@ -492,10 +492,9 @@ module EXIFR
       attr_reader :short, :long
 
       def initialize(file)
-        @file = file.respond_to?(:read) ? file : File.open(file, "rb")
-        @buff = []
+        @file = file.respond_to?(:read) ? file : File.open(file, 'rb')
+        @buffer = ''
         @pos = 0
-        @size = 0
 
         case self[0..1]
         when 'II'; @short, @long = 'v', 'V'
@@ -505,20 +504,15 @@ module EXIFR
       end
 
       def [](pos)
-        # handle Ranges
-        if (pos.respond_to?(:min) and pos.respond_to?(:max))
-          min = pos.min
-          max = pos.max
-        else
-          min = pos
-          max = pos
+        unless pos.respond_to?(:begin) && pos.respond_to?(:end)
+          pos = pos..pos
         end
 
-        if (min < @pos or max >= @pos + @size)
-          buff_read(min, max - min)
+        if pos.begin < @pos || pos.end >= @pos + @buffer.size
+          read_for(pos)
         end
 
-        return @buffer[(min - @pos)..(max - @pos)]
+        @buffer[(pos.begin - @pos)..(pos.end - @pos)]
       end
 
       def readshort(pos)
@@ -531,17 +525,13 @@ module EXIFR
 
       def size
         @file.seek(0, IO::SEEK_END)
-        return @file.pos
+        @file.pos
       end
 
-      private
-      def buff_read(pos, size)
-        @pos = pos
-        @size = size < 4096? 4096 : size;
-        @file.seek(pos)
-        @buffer = @file.read(@size)
-        # read can read less then the requested size
-        @size = @buffer.size
+    private
+      def read_for(pos)
+        @file.seek(@pos = pos.begin)
+        @buffer = @file.read([pos.end - pos.begin, 4096].max)
       end
     end
   end
