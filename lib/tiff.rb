@@ -302,7 +302,7 @@ module EXIFR
     # Names for all recognized TIFF fields.
     TAGS = ([TAG_MAPPING.keys, TAG_MAPPING.values.map{|v|v.values}].flatten.uniq - IFD_TAGS).map{|v|v.to_s}
 
-    # +file+ is a filename or an IO object.
+    # +file+ is a filename or an IO object.  Hint: use StringIO when working with slurped data like blobs.
     def initialize(file)
       data = Data.new(file)
 

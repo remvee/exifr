@@ -21,7 +21,7 @@ module EXIFR
     # EXIF data if available
     attr_reader :exif
 
-    # +file+ is a filename or an IO object.
+    # +file+ is a filename or an IO object.  Hint: use StringIO when working with slurped data like blobs.
     def initialize(file)
       if file.kind_of? String
         File.open(file, 'rb') { |io| examine(io) }
