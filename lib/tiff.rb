@@ -306,12 +306,6 @@ module EXIFR
     def initialize(file)
       data = Data.new(file)
 
-      case data[0..1]
-      when 'II'; data.endianess = 'v'
-      when 'MM'; data.endianess = 'n'
-      else; raise 'no II or MM marker found'
-      end
-
       @ifds = [IFD.new(data)]
       while ifd = @ifds.last.next
         break if @ifds.find{|i| i.offset == ifd.offset}
@@ -494,7 +488,7 @@ module EXIFR
       end
     end
 
-    class Data
+    class Data #:nodoc:
       attr_reader :short, :long
 
       def initialize(file)
@@ -502,11 +496,12 @@ module EXIFR
         @buff = []
         @pos = 0
         @size = 0
-      end
 
-      def endianess=(endianess)
-        @short = endianess.downcase
-        @long = endianess.upcase
+        case self[0..1]
+        when 'II'; @short, @long = 'v', 'V'
+        when 'MM'; @short, @long = 'n', 'N'
+        else; raise 'no II or MM marker found'
+        end
       end
 
       def [](pos)
