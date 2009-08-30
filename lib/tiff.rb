@@ -452,8 +452,9 @@ module EXIFR
 
       def initialize(data, pos)
         @tag, count, @offset = data.readshort(pos), data.readlong(pos + 4), data.readlong(pos + 8)
+        @type = data.readshort(pos + 2)
 
-        case data.readshort(pos + 2)
+        case @type
         when 1, 6 # byte, signed byte
           # TODO handle signed bytes
           len, pack = count, proc { |d| d }
@@ -465,6 +466,14 @@ module EXIFR
         when 4, 9 # long, signed long
           # TODO handle signed
           len, pack = count * 4, proc { |d| d.unpack(data.long + '*') }
+        when 7 # undefined
+          # UserComment 
+          if @tag == 0x9286
+            len, pack = count, proc { |d| d.strip }
+            len -= 8 # reduce to account for first 8 bytes
+            start = len > 4 ? @offset + 8 : (pos + 8) # UserComment first 8-bytes is char code
+            @value = [pack[data[start..(start + len - 1)]]].flatten
+          end
         when 5, 10
           len, pack = count * 8, proc do |d|
             r = []
@@ -481,7 +490,7 @@ module EXIFR
           end
         end
 
-        if len && pack
+        if len && pack && @type != 7
           start = len > 4 ? @offset : (pos + 8)
           @value = [pack[data[start..(start + len - 1)]]].flatten
         end
