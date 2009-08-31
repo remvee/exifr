@@ -91,7 +91,7 @@ class TIFFTest < Test::Unit::TestCase
     assert_equal [678886.quo(100000), 0.quo(1), 0.quo(1)], t.gps_longitude
     assert_equal 'WGS84', t.gps_map_datum
 
-    (all_test_exifs - [f('gps.exif')]).each do |fname|
+    (all_test_exifs - [f('gps.exif'), f('user-comment.exif')]).each do |fname|
       assert_nil TIFF.new(fname).gps_version_id
     end
   end
@@ -161,5 +161,9 @@ class TIFFTest < Test::Unit::TestCase
   def test_should_not_loop_endlessly
     TIFF.new(f('endless-loop.exif'))
     assert true
+  end
+    
+  def test_user_comment
+    assert_equal "Manassas Battlefield", TIFF.new(f('user-comment.exif')).user_comment
   end
 end
