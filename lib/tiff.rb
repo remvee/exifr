@@ -492,7 +492,8 @@ module EXIFR
 
         if len && pack && @type != 7
           start = len > 4 ? @offset : (pos + 8)
-          @value = [pack[data[start..(start + len - 1)]]].flatten
+          d = data[start..(start + len - 1)]
+          @value = d && [pack[d]].flatten
         end
       end
     end
@@ -521,7 +522,7 @@ module EXIFR
           read_for(pos)
         end
 
-        @buffer[(pos.begin - @pos)..(pos.end - @pos)]
+        @buffer && @buffer[(pos.begin - @pos)..(pos.end - @pos)]
       end
 
       def readshort(pos)
