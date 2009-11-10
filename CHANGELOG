@@ -1,3 +1,8 @@
+EXIF Reader 0.10.9
+* bug fix; "[GH#1] user_comment returns nil for jpeg with UserComment"; thanks to Mark Lundquist
+* bug fix; "[GH#2] Nil pointer in tiff.rb"
+* enhancement; "don't read entire files into memory"; thanks to Victor Bogado
+
 EXIF Reader 0.10.8
 * feature request; "[#23694] The object interface of JPEG is different from the TIFF one."
 
