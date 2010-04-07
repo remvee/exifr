@@ -162,11 +162,11 @@ class TIFFTest < Test::Unit::TestCase
     TIFF.new(f('endless-loop.exif'))
     assert true
   end
-    
+
   def test_user_comment
     assert_equal "Manassas Battlefield", TIFF.new(f('user-comment.exif')).user_comment
   end
-  
+
   def test_handle_out_of_range_offset
     assert_nothing_raised do
       assert 'NIKON', TIFF.new(f('out-of-range.exif')).make

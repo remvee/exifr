@@ -254,7 +254,7 @@ module EXIFR
       def to_i
         @value
       end
-      
+
       # Debugging output.
       def inspect
         "\#<EXIFR::TIFF::Orientation:#{@type}(#{@value})>"
@@ -471,7 +471,7 @@ module EXIFR
           # TODO handle signed
           len, pack = count * 4, proc { |d| d.unpack(data.long + '*') }
         when 7 # undefined
-          # UserComment 
+          # UserComment
           if @tag == 0x9286
             len, pack = count, proc { |d| d.strip }
             len -= 8 # reduce to account for first 8 bytes
