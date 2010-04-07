@@ -254,6 +254,11 @@ module EXIFR
       def to_i
         @value
       end
+      
+      # Debugging output.
+      def inspect
+        "\#<EXIFR::TIFF::Orientation:#{@type}(#{@value})>"
+      end
 
       # Rotate and/or flip for proper viewing.
       def transform_rmagick(img)
