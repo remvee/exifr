@@ -2,7 +2,7 @@
 #
 # Copyright (c) 2006, 2007, 2008, 2009 - R.W. van 't Veer
 
-require File.join(File.dirname(__FILE__), 'test_helper')
+require 'test_helper'
 
 class TIFFTest < Test::Unit::TestCase
   def setup
