@@ -405,23 +405,15 @@ module EXIFR
       def height; image_length; end
 
       def to_hash
-        @hash ||= begin
-          result = @fields.dup
-          result.delete_if { |key,value| value.nil? }
-          tmp = {}
-          delkeys = []
-          result.each do |key,value|
-            if IFD_TAGS.include? key
-              tmp.merge!(value.to_hash)
-              delkeys << key
-            end
+        @hash ||= @fields.map do |key,value|
+          if value.nil?
+            {}
+          elsif IFD_TAGS.include?(key)
+            value.to_hash
+          else
+            {key => value}
           end
-          delkeys.each {|key|
-            result.delete(key)
-          }
-          result.merge!(tmp)
-          result
-        end
+        end.inject { |m,v| m.merge(v) } || {}
       end
 
       def inspect
