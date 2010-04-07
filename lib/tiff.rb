@@ -408,12 +408,19 @@ module EXIFR
         @hash ||= begin
           result = @fields.dup
           result.delete_if { |key,value| value.nil? }
+          tmp = {}
+          delkeys = []
           result.each do |key,value|
             if IFD_TAGS.include? key
-              result.merge!(value.to_hash)
-              result.delete key
+              tmp.merge!(value.to_hash)
+              delkeys << key
             end
           end
+          delkeys.each {|key|
+            result.delete(key)
+          }
+          result.merge!(tmp)
+          result
         end
       end
 
