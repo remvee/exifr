@@ -459,17 +459,20 @@ module EXIFR
         @type = data.readshort(pos + 2)
 
         case @type
-        when 1, 6 # byte, signed byte
-          # TODO handle signed bytes
+        when 1 # byte
           len, pack = count, proc { |d| d }
+        when 6 # signed byte
+          len, pack = count, proc { |d| sign_byte(d) }
         when 2 # ascii
           len, pack = count, proc { |d| d.unpack("A*") }
-        when 3, 8 # short, signed short
-          # TODO handle signed
+        when 3 # short
           len, pack = count * 2, proc { |d| d.unpack(data.short + '*') }
-        when 4, 9 # long, signed long
-          # TODO handle signed
+        when 8 # signed short
+          len, pack = count * 2, proc { |d| d.unpack(data.short + '*').map{|n| sign_short(n)} }
+        when 4 # long
           len, pack = count * 4, proc { |d| d.unpack(data.long + '*') }
+        when 9 # signed long
+          len, pack = count * 4, proc { |d| d.unpack(data.long + '*').map{|n| sign_long(n)} }
         when 7 # undefined
           # UserComment
           if @tag == 0x9286
@@ -478,18 +481,16 @@ module EXIFR
             start = len > 4 ? @offset + 8 : (pos + 8) # UserComment first 8-bytes is char code
             @value = [pack[data[start..(start + len - 1)]]].flatten
           end
-        when 5, 10
+        when 5 # unsigned rational
           len, pack = count * 8, proc do |d|
-            r = []
-            d.unpack(data.long + '*').each_with_index do |v,i|
-              i % 2 == 0 ? r << [v] : r.last << v
+            d.unpack(data.long + '*').each_slice(2).map do |f|
+              rational(*f)
             end
-            r.map do |f|
-              if f[1] == 0 # allow NaN and Infinity
-                f[0].to_f.quo(f[1])
-              else
-                Rational.respond_to?(:reduce) ? Rational.reduce(*f) : f[0].quo(f[1])
-              end
+          end
+        when 10 # signed rational
+          len, pack = count * 8, proc do |d|
+            d.unpack(data.long + '*').map{|n| sign_long(n)}.each_slice(2).map do |f|
+              rational(*f)
             end
           end
         end
@@ -498,6 +499,27 @@ module EXIFR
           start = len > 4 ? @offset : (pos + 8)
           d = data[start..(start + len - 1)]
           @value = d && [pack[d]].flatten
+        end
+      end
+
+    private
+      def sign_byte(n)
+        (n & 0x80) != 0 ? n - 0x100 : n
+      end
+      
+      def sign_short(n)
+        (n & 0x8000) != 0 ? n - 0x10000 : n
+      end
+
+      def sign_long(n)
+        (n & 0x80000000) != 0 ? n - 0x100000000 : n
+      end
+
+      def rational(n, d)
+        if d == 0 # allow NaN and Infinity
+          n.to_f.quo(d)
+        else
+          Rational.respond_to?(:reduce) ? Rational.reduce(n, d) : n.quo(d)
         end
       end
     end
