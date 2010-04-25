@@ -42,6 +42,10 @@ elsif ARGV[0] == "--dump-exif"
   ARGV[1..-1].each do |fname|
     STDOUT.write JPEG.new(fname).exif_data
   end
+elsif ARGV[0] == "--dump-thumbnail"
+  ARGV[1..-1].each do |fname|
+    STDOUT.write JPEG.new(fname).thumbnail
+  end
 else
   ARGV.each do |fname|
     case fname
