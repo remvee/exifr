@@ -20,6 +20,8 @@ module EXIFR
     attr_reader :comment
     # EXIF data if available
     attr_reader :exif
+    # raw EXIF data
+    attr_reader :exif_data # :nodoc:
 
     # +file+ is a filename or an IO object.  Hint: use StringIO when working with slurped data like blobs.
     def initialize(file)
@@ -102,7 +104,8 @@ module EXIFR
       @comment = @comment.first if @comment && @comment.size == 1
 
       if app1 = app1s.find { |d| d[0..5] == "Exif\0\0" }
-        @exif = TIFF.new(StringIO.new(app1[6..-1]))
+        @exif_data = app1[6..-1]
+        @exif = TIFF.new(StringIO.new(@exif_data))
       end
     end
   end
