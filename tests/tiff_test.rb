@@ -91,7 +91,7 @@ class TIFFTest < Test::Unit::TestCase
     assert_equal [678886.quo(100000), 0.quo(1), 0.quo(1)], t.gps_longitude
     assert_equal 'WGS84', t.gps_map_datum
 
-    (all_test_exifs - %w(gps user-comment out-of-range).map{|v| f("#{v}.exif")}).each do |fname|
+    (all_test_exifs - %w(gps user-comment out-of-range negative-exposure-bias-value).map{|v| f("#{v}.exif")}).each do |fname|
       assert_nil TIFF.new(fname).gps_version_id
     end
   end
@@ -171,5 +171,9 @@ class TIFFTest < Test::Unit::TestCase
     assert_nothing_raised do
       assert 'NIKON', TIFF.new(f('out-of-range.exif')).make
     end
+  end
+  
+  def test_negative_exposure_bias_value
+    assert_equal -1.quo(3), TIFF.new(f('negative-exposure-bias-value.exif')).exposure_bias_value
   end
 end
