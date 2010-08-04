@@ -1,6 +1,7 @@
 # Copyright (c) 2007, 2008, 2009, 2010 - R.W. van 't Veer
 
 require 'rational'
+require 'enumerator' if RUBY_VERSION = '1.8.6'
 
 module EXIFR
   # = TIFF decoder
@@ -483,15 +484,19 @@ module EXIFR
           end
         when 5 # unsigned rational
           len, pack = count * 8, proc do |d|
-            d.unpack(data.long + '*').each_slice(2).map do |f|
-              rational(*f)
+            rationals = []
+            d.unpack(data.long + '*').each_slice(2) do |f|
+              rationals << rational(*f)
             end
+            rationals
           end
         when 10 # signed rational
           len, pack = count * 8, proc do |d|
-            d.unpack(data.long + '*').map{|n| sign_long(n)}.each_slice(2).map do |f|
-              rational(*f)
+            rationals = []
+            d.unpack(data.long + '*').map{|n| sign_long(n)}.each_slice(2) do |f|
+              rationals << rational(*f)
             end
+            rationals
           end
         end
 
