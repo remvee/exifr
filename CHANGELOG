@@ -1,3 +1,6 @@
+EXIF Reader 1.0.2
+* bug fix; "[GH#9/12] no block given"; thanks to Ian Leitch
+
 EXIF Reader 1.0.1
 * bug fix; "[GH#7] Unable to properly display exposure_bias_value"; thanks to John Krueger
 
