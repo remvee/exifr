@@ -1,7 +1,7 @@
 # Copyright (c) 2007, 2008, 2009, 2010 - R.W. van 't Veer
 
 require 'rational'
-require 'enumerator' if RUBY_VERSION = '1.8.6'
+require 'enumerator'
 
 module EXIFR
   # = TIFF decoder
