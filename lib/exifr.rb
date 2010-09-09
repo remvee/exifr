@@ -2,3 +2,4 @@
 
 require 'jpeg'
 require 'tiff'
+require 'exceptions'
