@@ -86,14 +86,14 @@ module EXIFR
         end
       end unless io.respond_to? :readsof
 
-      raise 'malformed JPEG' unless io.readbyte == 0xFF && io.readbyte == 0xD8 # SOI
+      raise MalformedJPEG unless io.readbyte == 0xFF && io.readbyte == 0xD8 # SOI
 
       app1s = []
       while marker = io.next
         case marker
           when 0xC0..0xC3, 0xC5..0xC7, 0xC9..0xCB, 0xCD..0xCF # SOF markers
             length, @bits, @height, @width, components = io.readsof
-            raise 'malformed JPEG' unless length == 8 + components * 3
+            raise MalformedJPEG unless length == 8 + components * 3
           when 0xD9, 0xDA;  break # EOI, SOS
           when 0xFE;        (@comment ||= []) << io.readframe # COM
           when 0xE1;        app1s << io.readframe # APP1, may contain EXIF tag

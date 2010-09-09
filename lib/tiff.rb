@@ -511,7 +511,7 @@ module EXIFR
       def sign_byte(n)
         (n & 0x80) != 0 ? n - 0x100 : n
       end
-      
+
       def sign_short(n)
         (n & 0x8000) != 0 ? n - 0x10000 : n
       end
@@ -540,7 +540,7 @@ module EXIFR
         case self[0..1]
         when 'II'; @short, @long = 'v', 'V'
         when 'MM'; @short, @long = 'n', 'N'
-        else; raise 'no II or MM marker found'
+        else; raise NoMarkersFound
         end
       end
 
