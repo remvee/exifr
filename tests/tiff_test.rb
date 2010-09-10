@@ -22,6 +22,12 @@ class TIFFTest < Test::Unit::TestCase
       end
     end
   end
+  
+  def test_raises_malformed_tiff
+    assert_raise MalformedTIFF do
+      TIFF.new(StringIO.new("djibberish"))
+    end
+  end
 
   def test_multiple_images
     assert_equal 2, @t.size

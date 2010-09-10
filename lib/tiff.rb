@@ -540,7 +540,8 @@ module EXIFR
         case self[0..1]
         when 'II'; @short, @long = 'v', 'V'
         when 'MM'; @short, @long = 'n', 'N'
-        else; raise NoMarkersFound
+        else
+          raise MalformedTIFF, "no byte order information found"
         end
       end
 

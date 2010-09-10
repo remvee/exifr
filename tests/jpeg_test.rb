@@ -18,6 +18,12 @@ class JPEGTest < Test::Unit::TestCase
       end
     end
   end
+  
+  def test_raises_malformed_jpeg
+    assert_raise MalformedJPEG do
+      JPEG.new(StringIO.new("djibberish"))
+    end
+  end
 
   def test_size
     j = JPEG.new(f('image.jpg'))
