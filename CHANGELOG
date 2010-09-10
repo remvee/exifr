@@ -1,3 +1,6 @@
+EXIF Reader 1.0.3
+* enhancement; "raise specific exception to allow better error handling"; thanks to James Miller
+
 EXIF Reader 1.0.2
 * bug fix; "[GH#9/12] no block given"; thanks to Ian Leitch
 
