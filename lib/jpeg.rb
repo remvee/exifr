@@ -22,9 +22,14 @@ module EXIFR
     attr_reader :exif
     # raw EXIF data
     attr_reader :exif_data # :nodoc:
+    # XMP data if available
+    attr_reader :xmp
+    # raw XMP data
+    attr_reader :xmp_data # :nodoc:
 
     # +file+ is a filename or an IO object.  Hint: use StringIO when working with slurped data like blobs.
     def initialize(file)
+      @file = file
       if file.kind_of? String
         File.open(file, 'rb') { |io| examine(io) }
       else
@@ -110,6 +115,11 @@ module EXIFR
       if app1 = app1s.find { |d| d[0..5] == "Exif\0\0" }
         @exif_data = app1[6..-1]
         @exif = TIFF.new(StringIO.new(@exif_data))
+      end
+
+      if xmp = app1s.find { |a| a =~ %r|\Ahttp://ns.adobe.com/xap/1.0/| }
+        @xmp_data = xmp.split("\000")[1]
+        @xmp = XMP.new(@xmp_data)
       end
     end
   end

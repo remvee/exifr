@@ -3,3 +3,4 @@
 require 'jpeg'
 require 'tiff'
 require 'exceptions'
+require 'exifr/xmp'
