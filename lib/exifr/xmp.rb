@@ -1,12 +1,17 @@
 require 'nokogiri'
 
 module EXIFR
+  # = XMP XML parser
+  #
+  # == Examples
+  #   img = EXIFR::JPEG.new('IMG_3422.JPG')
+  #   img.xmp.dc.title           # => "Amazing Photo"
+  #   img.xmp.photoshop.Category # => "summer"
+  #   img.xmp.photoshop.SupplementalCategories # => ["morning", "sea"]
+  #
+  #   Note: works only for JPEG images
   class XMP
-    NAMESPACES = {
-      'dc' => "http://purl.org/dc/elements/1.1/",
-    }
-
-    class Namespace
+    class Namespace # :nodoc:
       def initialize(xmp, namespace)
         @xmp = xmp
         @namespace = namespace
@@ -47,8 +52,10 @@ module EXIFR
       end
     end
 
+    # underlying XML content
     attr_reader :xml
 
+    # valid XMP XML
     def initialize(xml)
       doc = Nokogiri::XML(xml)
       @xml = doc.root
@@ -60,6 +67,8 @@ module EXIFR
       end
     end
 
+    # if it's a valid namespace return a namespace proxy object, else call
+    # other method
     def method_missing(namespace, *args)
       if has_namespace?(namespace)
         Namespace.new(self, namespace)
