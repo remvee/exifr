@@ -23,6 +23,8 @@ module EXIFR
     attr_reader :exif
     # raw EXIF data
     attr_reader :exif_data # :nodoc:
+    # raw APP1 frames
+    attr_reader :app1s
 
     # +file+ is a filename or an IO object.  Hint: use StringIO when working with slurped data like blobs.
     def initialize(file)
@@ -91,7 +93,7 @@ module EXIFR
         raise MalformedJPEG, "no start of image marker found"
       end
 
-      app1s = []
+      @app1s = []
       while marker = io.next
         case marker
           when 0xC0..0xC3, 0xC5..0xC7, 0xC9..0xCB, 0xCD..0xCF # SOF markers
@@ -101,14 +103,14 @@ module EXIFR
             end
           when 0xD9, 0xDA;  break # EOI, SOS
           when 0xFE;        (@comment ||= []) << io.readframe # COM
-          when 0xE1;        app1s << io.readframe # APP1, may contain EXIF tag
+          when 0xE1;        @app1s << io.readframe # APP1, may contain EXIF tag
           else              io.readframe # ignore frame
         end
       end
 
       @comment = @comment.first if @comment && @comment.size == 1
 
-      if app1 = app1s.find { |d| d[0..5] == "Exif\0\0" }
+      if app1 = @app1s.find { |d| d[0..5] == "Exif\0\0" }
         @exif_data = app1[6..-1]
         @exif = TIFF.new(StringIO.new(@exif_data))
       end
