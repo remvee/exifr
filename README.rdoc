@@ -17,6 +17,10 @@ EXIF Reader is a module to read metadata from JPEG and TIFF images.
   EXIFR::TIFF.new('DSC_0218.TIF').exposure_time.to_s  # => "1/100"
   EXIFR::TIFF.new('DSC_0218.TIF').f_number.to_f       # => 5.0
 
+== XMP data access
+If you need to access XMP data you can use the xmp gem.  More info and
+examples at https://github.com/amberbit/xmp
+
 == Author
 R.W. van 't Veer
 
