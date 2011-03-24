@@ -311,20 +311,20 @@ module EXIFR
 
     # +file+ is a filename or an IO object.  Hint: use StringIO when working with slurped data like blobs.
     def initialize(file)
-      data = Data.new(file)
-
-      @ifds = [IFD.new(data)]
-      while ifd = @ifds.last.next
-        break if @ifds.find{|i| i.offset == ifd.offset}
-        @ifds << ifd
-      end
-
-      @jpeg_thumbnails = @ifds.map do |ifd|
-        if ifd.jpeg_interchange_format && ifd.jpeg_interchange_format_length
-          start, length = ifd.jpeg_interchange_format, ifd.jpeg_interchange_format_length
-          data[start..(start + length)]
+      Data.open(file) do |data|
+        @ifds = [IFD.new(data)]
+        while ifd = @ifds.last.next
+          break if @ifds.find{|i| i.offset == ifd.offset}
+          @ifds << ifd
         end
-      end.compact
+
+        @jpeg_thumbnails = @ifds.map do |ifd|
+          if ifd.jpeg_interchange_format && ifd.jpeg_interchange_format_length
+            start, length = ifd.jpeg_interchange_format, ifd.jpeg_interchange_format_length
+            data[start..(start + length)]
+          end
+        end.compact
+      end
     end
 
     # Number of images.
@@ -531,10 +531,10 @@ module EXIFR
     end
 
     class Data #:nodoc:
-      attr_reader :short, :long
+      attr_reader :short, :long, :file
 
       def initialize(file)
-        @file = file.respond_to?(:read) ? file : File.open(file, 'rb')
+        @io = file.respond_to?(:read) ? file : (@file = File.open(file, 'rb'))
         @buffer = ''
         @pos = 0
 
@@ -544,6 +544,13 @@ module EXIFR
         else
           raise MalformedTIFF, "no byte order information found"
         end
+      end
+
+      def self.open(file, &block)
+        data = new(file)
+        yield data
+      ensure
+        data && data.file && data.file.close
       end
 
       def [](pos)
@@ -567,14 +574,14 @@ module EXIFR
       end
 
       def size
-        @file.seek(0, IO::SEEK_END)
-        @file.pos
+        @io.seek(0, IO::SEEK_END)
+        @io.pos
       end
 
     private
       def read_for(pos)
-        @file.seek(@pos = pos.begin)
-        @buffer = @file.read([pos.end - pos.begin, 4096].max)
+        @io.seek(@pos = pos.begin)
+        @buffer = @io.read([pos.end - pos.begin, 4096].max)
       end
     end
   end
