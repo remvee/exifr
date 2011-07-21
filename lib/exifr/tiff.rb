@@ -401,6 +401,8 @@ module EXIFR
         end
 
         @offset_next = @data.readlong(pos)
+      rescue
+        @offset_next = 0
       end
 
       def method_missing(method, *args)
