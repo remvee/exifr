@@ -1,3 +1,6 @@
+EXIF Reader 1.0.6
+* bug fix: "[GH#20] `readlong': undefined method `unpack' for nil:NilClass (NoMethodError)"
+
 EXIF Reader 1.0.5
 * bug fix: "[GH#19] files opened by TIFF initialize were not being closed"; thanks to Joe Van Overberghe
 

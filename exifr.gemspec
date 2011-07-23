@@ -1,6 +1,6 @@
 spec = Gem::Specification.new do |s|
   s.name = 'exifr'
-  s.version = '1.0.5'
+  s.version = '1.0.6'
   s.author = "R.W. van 't Veer"
   s.email = 'remco@remvee.net'
   s.homepage = 'http://github.com/remvee/exifr/'
