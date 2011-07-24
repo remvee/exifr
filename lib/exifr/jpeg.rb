@@ -56,22 +56,22 @@ module EXIFR
     # +method+ does exist for EXIF data +nil+ will be returned.
     def method_missing(method, *args)
       super unless args.empty?
-      super unless TIFF::TAGS.include?(method.to_s)
+      super unless methods.include?(method.to_s)
       @exif.send method if @exif
     end
 
     def respond_to?(method) # :nodoc:
-      super || TIFF::TAGS.include?(method.to_s)
+      super || methods.include?(method.to_s)
     end
 
     def methods # :nodoc:
-      super + TIFF::TAGS
+      super + TIFF::TAGS << "gps"
     end
 
     class << self
       alias instance_methods_without_jpeg_extras instance_methods
       def instance_methods(include_super = true) # :nodoc:
-        instance_methods_without_jpeg_extras(include_super) + TIFF::TAGS
+        instance_methods_without_jpeg_extras(include_super) + TIFF::TAGS << "gps"
       end
     end
 

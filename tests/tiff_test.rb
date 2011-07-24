@@ -96,6 +96,8 @@ class TIFFTest < Test::Unit::TestCase
     assert_equal [5355537.quo(100000), 0.quo(1), 0.quo(1)], t.gps_latitude
     assert_equal [678886.quo(100000), 0.quo(1), 0.quo(1)], t.gps_longitude
     assert_equal 'WGS84', t.gps_map_datum
+    assert_equal 54, t.gps.latitude.round
+    assert_equal -7, t.gps.longitude.round
 
     (all_test_exifs - %w(gps user-comment out-of-range negative-exposure-bias-value).map{|v| f("#{v}.exif")}).each do |fname|
       assert_nil TIFF.new(fname).gps_version_id

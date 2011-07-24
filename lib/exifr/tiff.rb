@@ -239,10 +239,12 @@ module EXIFR
     IFD_TAGS = [:image, :exif, :gps] # :nodoc:
 
     time_proc = proc do |value|
-      if value =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
-        Time.mktime($1.to_i, $2.to_i, $3.to_i, $4.to_i, $5.to_i, $6.to_i) rescue nil
-      else
-        value
+      value.map do |value|
+        if value =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
+          Time.mktime($1.to_i, $2.to_i, $3.to_i, $4.to_i, $5.to_i, $6.to_i) rescue nil
+        else
+          value
+        end
       end
     end
 
@@ -298,12 +300,27 @@ module EXIFR
       const_set("#{type}Orientation", ORIENTATIONS[index] = Orientation.new(index, type))
     end
 
+    class Degrees < Array
+      def initialize(arr)
+        raise MalformedTIFF, "expected [degrees, minutes, seconds]" unless arr.length == 3
+        super
+      end
+      
+      def to_f
+        reduce { |m,v| m * 60 + v}.to_f / 3600
+      end
+    end
+
     ADAPTERS = Hash.new { proc { |v| v } } # :nodoc:
     ADAPTERS.merge!({
       :date_time_original => time_proc,
       :date_time_digitized => time_proc,
       :date_time => time_proc,
-      :orientation => proc { |v| ORIENTATIONS[v] }
+      :orientation => proc { |v| v.map{|v| ORIENTATIONS[v]} },
+      :gps_latitude => proc { |v| Degrees.new(v) },
+      :gps_longitude => proc { |v| Degrees.new(v) },
+      :gps_dest_latitude => proc { |v| Degrees.new(v) },
+      :gps_dest_longitude => proc { |v| Degrees.new(v) }                      
     })
 
     # Names for all recognized TIFF fields.
@@ -381,6 +398,17 @@ module EXIFR
     # Get a hash presentation of the (first) image.
     def to_hash; @ifds.first.to_hash; end
 
+    GPS = Struct.new(:latitude, :longitude, :altitude, :image_direction)
+
+    # Get GPS location, altitude and image direction return nil when not available.
+    def gps
+      return nil unless gps_latitude && gps_longitude
+      GPS.new(gps_latitude.to_f * (gps_latitude_ref == 'S' ? -1 : 1),
+              gps_longitude.to_f * (gps_longitude_ref == 'W' ? -1 : 1),
+              gps_altitude && (gps_altitude.to_f * (gps_altitude_ref == "\1" ? -1 : 1)),
+              gps_img_direction && gps_img_direction.to_f)
+    end
+
     def inspect # :nodoc:
       @ifds.inspect
     end
@@ -449,7 +477,7 @@ module EXIFR
         if IFD_TAGS.include? tag
           @fields[tag] = IFD.new(@data, field.offset, tag)
         else
-          value = field.value.map { |v| ADAPTERS[tag][v] } if field.value
+          value = ADAPTERS[tag][field.value]
           @fields[tag] = value.kind_of?(Array) && value.size == 1 ? value.first : value
         end
       end
