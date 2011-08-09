@@ -48,6 +48,7 @@ module EXIFR
     # Get a hash presentation of the image.
     def to_hash
       h = {:width => width, :height => height, :bits => bits, :comment => comment}
+      h.merge!(@values) if @values
       h.merge!(exif) if exif?
       h
     end
