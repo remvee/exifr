@@ -24,7 +24,7 @@ module EXIFR
     # raw EXIF data
     attr_reader :exif_data # :nodoc:
     # raw APP1 frames
-    attr_reader :app1s
+    attr_reader :app1s, :app13s, :values
 
     # +file+ is a filename or an IO object.  Hint: use StringIO when working with slurped data like blobs.
     def initialize(file)
@@ -57,7 +57,8 @@ module EXIFR
     def method_missing(method, *args)
       super unless args.empty?
       super unless methods.include?(method.to_s)
-      @exif.send method if @exif
+      return @exif.send method if @exif.respond_to? method
+      return @values[method] if @values.keys.include? method
     end
 
     def respond_to?(method) # :nodoc:
@@ -65,7 +66,7 @@ module EXIFR
     end
 
     def methods # :nodoc:
-      super + TIFF::TAGS << "gps"
+      @values.keys.map {|x| x.to_s} + super + TIFF::TAGS << "gps"
     end
 
     class << self
@@ -93,7 +94,7 @@ module EXIFR
         raise MalformedJPEG, "no start of image marker found"
       end
 
-      @app1s = []
+      @app1s, @app13s = [], []
       while marker = io.next
         case marker
           when 0xC0..0xC3, 0xC5..0xC7, 0xC9..0xCB, 0xCD..0xCF # SOF markers
@@ -104,6 +105,7 @@ module EXIFR
           when 0xD9, 0xDA;  break # EOI, SOS
           when 0xFE;        (@comment ||= []) << io.readframe # COM
           when 0xE1;        @app1s << io.readframe # APP1, may contain EXIF tag
+          when 0xED;        @app13s << io.readframe # APP13, may contain IPTC
           else              io.readframe # ignore frame
         end
       end
@@ -114,6 +116,35 @@ module EXIFR
         @exif_data = app1[6..-1]
         @exif = TIFF.new(StringIO.new(@exif_data))
       end
+
+      if str = @app13s[0] 
+        @tagmap ||= {5=>:object_name, 27=>:location_name, 38=>:expiration_time, 60=>:time_created, 115=>:source, 0=>:record_version, 22=>:fixture_id, 55=>:date_created, 110=>:credit, 154=>:audio_outcue, 50=>:reference_number, 105=>:headline, 116=>:copyright, 12=>:subject, 45=>:reference_service, 100=>:country_code, 122=>:writer, 7=>:edit_status, 40=>:special_instructions, 62=>:digitization_date, 95=>:province_state, 150=>:audio_type, 35=>:release_time, 90=>:city, 101=>:country_name, 200=>:preview_format, 8=>:editorial_update, 30=>:release_date, 63=>:digitization_time, 85=>:byline_title, 118=>:contact, 151=>:audio_rate, 3=>:object_type, 25=>:keywords, 47=>:reference_date, 80=>:byline, 135=>:language, 201=>:preview_version, 20=>:supp_category, 42=>:action_advised, 75=>:object_cycle, 130=>:image_type, 152=>:audio_resolution, 4=>:object_attribute, 15=>:category, 26=>:location_code, 37=>:expiration_date, 70=>:program_version, 92=>:sub_location, 103=>:transmission_reference, 125=>:rasterized_caption, 202=>:preview, 10=>:urgency, 65=>:program, 120=>:caption, 131=>:image_orientation, 153=>:audio_duration}
+        @values = {}
+        stream = str.kind_of?(String) ? StringIO.new(str) : str
+        until stream.eof?
+          if stream.readchar == 28
+             if stream.readchar == 2
+               tag_type = @tagmap[stream.readchar.to_i]
+               stream.readchar # throwaway value
+               length = stream.readchar
+               puts "tag type = " + tag_type.to_s
+               if @values[tag_type]
+                 if @values[tag_type].kind_of?(String)
+                   @values[tag_type] = [@values[tag_type], stream.read(length)]
+                 else
+                   @values[tag_type] << stream.read(length)
+                 end
+               else
+                 @values[tag_type] = stream.read(length)
+               end
+             else
+               stream.seek(-1, IO::SEEK_CUR)
+             end
+          end
+        end
+
+      end
+
     end
   end
 end
