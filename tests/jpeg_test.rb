@@ -99,4 +99,49 @@ class JPEGTest < Test::Unit::TestCase
 
     assert count > 0, 'no thumbnails found'
   end
+
+  def test_iptc_methods
+    j = JPEG.new(f('test0.jpg'))
+    assert_equal(j.copyright, "Copyleft 0 - 3 rjspotter")
+    assert_equal(j.source , "gimp")
+    assert_equal(j.credit , "rjspotter")
+    assert_equal(j.country_name , "USA")
+    assert_equal(j.country_code , "US")
+    assert_equal(j.province_state , "CA")
+    assert_equal(j.sub_location , "SOMA")
+    assert_equal(j.city , "San Francisco")
+    assert_equal(j.byline_title , "mediocre coder")
+    assert_equal(j.byline , "rjspotter")
+    assert_equal(j.date_created , "20110809")
+    assert_equal(j.release_date , "20110809")
+    assert_equal(j.keywords.sort , ['keyword0', 'keyword1', 'keyword2'])
+    assert_equal(j.supp_category , "test")
+    assert_equal(j.category , "tst")
+  end
+
+  def test_iptc_to_hash
+    j = JPEG.new(f('test0.jpg')).to_hash
+    w = %w[copyright source credit country_name country_code province_state sub_location city byline_title byline date_created release_date keywords supp_category category]
+    w.map {|x| x.to_sym}.each do |x|
+      assert(j.keys.include?(x))
+    end
+
+    assert_equal(j[:copyright], "Copyleft 0 - 3 rjspotter")
+    assert_equal(j[:source], "gimp")
+    assert_equal(j[:credit], "rjspotter")
+    assert_equal(j[:country_name], "USA")
+    assert_equal(j[:country_code], "US")
+    assert_equal(j[:province_state], "CA")
+    assert_equal(j[:sub_location], "SOMA")
+    assert_equal(j[:city], "San Francisco")
+    assert_equal(j[:byline_title], "mediocre coder")
+    assert_equal(j[:byline], "rjspotter")
+    assert_equal(j[:date_created], "20110809")
+    assert_equal(j[:release_date], "20110809")
+    assert_equal(j[:keywords].sort, ['keyword0', 'keyword1', 'keyword2'])
+    assert_equal(j[:supp_category], "test")
+    assert_equal(j[:category], "tst")
+
+  end
+
 end

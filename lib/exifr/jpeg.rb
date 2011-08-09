@@ -59,7 +59,7 @@ module EXIFR
       super unless args.empty?
       super unless methods.include?(method.to_s)
       return @exif.send method if @exif.respond_to? method
-      return @values[method] if @values.keys.include? method
+      return @values[method] if @values && @values.keys.include?(method)
     end
 
     def respond_to?(method) # :nodoc:
@@ -67,7 +67,8 @@ module EXIFR
     end
 
     def methods # :nodoc:
-      @values.keys.map {|x| x.to_s} + super + TIFF::TAGS << "gps"
+      iptc = @values.nil? ? [] : @values.keys.map {|x| x.to_s}
+      iptc + super + TIFF::TAGS << "gps"
     end
 
     class << self
@@ -128,7 +129,6 @@ module EXIFR
                tag_type = @tagmap[stream.readchar.to_i]
                stream.readchar # throwaway value
                length = stream.readchar
-               puts "tag type = " + tag_type.to_s
                if @values[tag_type]
                  if @values[tag_type].kind_of?(String)
                    @values[tag_type] = [@values[tag_type], stream.read(length)]
