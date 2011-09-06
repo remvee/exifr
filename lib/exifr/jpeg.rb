@@ -108,7 +108,7 @@ module EXIFR
         end
       end
 
-      @comment = @comment.first if @comment && @comment.size == 1
+      @comment = @comment.first if defined?(@comment) && @comment.size == 1
 
       if app1 = @app1s.find { |d| d[0..5] == "Exif\0\0" }
         @exif_data = app1[6..-1]
