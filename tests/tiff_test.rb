@@ -30,32 +30,32 @@ class TIFFTest < Test::Unit::TestCase
   end
 
   def test_multiple_images
-    assert_equal 2, @t.size
+    assert_equal(2, @t.size)
   end
 
   def test_size
-    assert_equal 269, @t.image_width
-    assert_equal 269, @t.image_length
-    assert_equal 269, @t.width
-    assert_equal 269, @t.height
-    assert_equal 120, @t[1].image_width
-    assert_equal 160, @t[1].image_length
-    assert_equal 120, @t[1].width
-    assert_equal 160, @t[1].height
+    assert_equal(269, @t.image_width)
+    assert_equal(269, @t.image_length)
+    assert_equal(269, @t.width)
+    assert_equal(269, @t.height)
+    assert_equal(120, @t[1].image_width)
+    assert_equal(160, @t[1].image_length)
+    assert_equal(120, @t[1].width)
+    assert_equal(160, @t[1].height)
 
     @t = TIFF.new(f('plain.tif'))
-    assert_equal 23, @t.image_width
-    assert_equal 24, @t.image_length
-    assert_equal 23, @t.width
-    assert_equal 24, @t.height
+    assert_equal(23, @t.image_width)
+    assert_equal(24, @t.image_length)
+    assert_equal(23, @t.width)
+    assert_equal(24, @t.height)
   end
 
   def test_enumerable
-    assert_equal @t[1], @t.find { |i| i.f_number.nil? }
+    assert_equal(@t[1], @t.find { |i| i.f_number.nil? })
   end
 
   def test_misc_fields
-    assert_equal 'Canon PowerShot G3', TIFF.new(f('canon-g3.exif')).model
+    assert_equal('Canon PowerShot G3', TIFF.new(f('canon-g3.exif')).model)
   end
 
   def test_dates
@@ -90,14 +90,14 @@ class TIFFTest < Test::Unit::TestCase
 
   def test_gps
     t = TIFF.new(f('gps.exif'))
-    assert_equal "\2\2\0\0", t.gps_version_id
-    assert_equal 'N', t.gps_latitude_ref
-    assert_equal 'W', t.gps_longitude_ref
-    assert_equal [5355537.quo(100000), 0.quo(1), 0.quo(1)], t.gps_latitude
-    assert_equal [678886.quo(100000), 0.quo(1), 0.quo(1)], t.gps_longitude
-    assert_equal 'WGS84', t.gps_map_datum
-    assert_equal 54, t.gps.latitude.round
-    assert_equal -7, t.gps.longitude.round
+    assert_equal("\2\2\0\0", t.gps_version_id)
+    assert_equal('N', t.gps_latitude_ref)
+    assert_equal('W', t.gps_longitude_ref)
+    assert_equal([5355537.quo(100000), 0.quo(1), 0.quo(1)], t.gps_latitude)
+    assert_equal([678886.quo(100000), 0.quo(1), 0.quo(1)], t.gps_longitude)
+    assert_equal('WGS84', t.gps_map_datum)
+    assert_equal(54, t.gps.latitude.round)
+    assert_equal(-7, t.gps.longitude.round)
 
     (all_test_exifs - %w(gps user-comment out-of-range negative-exposure-bias-value).map{|v| f("#{v}.exif")}).each do |fname|
       assert_nil TIFF.new(fname).gps_version_id
@@ -172,7 +172,7 @@ class TIFFTest < Test::Unit::TestCase
   end
 
   def test_user_comment
-    assert_equal "Manassas Battlefield", TIFF.new(f('user-comment.exif')).user_comment
+    assert_equal("Manassas Battlefield", TIFF.new(f('user-comment.exif')).user_comment)
   end
 
   def test_handle_out_of_range_offset
@@ -182,6 +182,6 @@ class TIFFTest < Test::Unit::TestCase
   end
   
   def test_negative_exposure_bias_value
-    assert_equal -1.quo(3), TIFF.new(f('negative-exposure-bias-value.exif')).exposure_bias_value
+    assert_equal(-1.quo(3), TIFF.new(f('negative-exposure-bias-value.exif')).exposure_bias_value)
   end
 end

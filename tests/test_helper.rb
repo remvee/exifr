@@ -29,11 +29,17 @@ def f(fname)
 end
 
 def assert_literally_equal(expected, actual, *args)
-  assert_equal expected.to_s, actual.to_s, *args
+  assert_equal expected.to_s_literally, actual.to_s_literally, *args
 end
 
 class Hash
-  def to_s
+  def to_s_literally
     keys.map{|k| k.to_s}.sort.map{|k| "#{k.inspect} => #{self[k].inspect}" }.join(', ')
+  end
+end
+
+class Object
+  def to_s_literally
+    to_s
   end
 end

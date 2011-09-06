@@ -374,7 +374,7 @@ module EXIFR
 
     def respond_to?(method) # :nodoc:
       super ||
-        (@ifds && @ifds.first && @ifds.first.respond_to?(method)) ||
+        (defined?(@ifds) && @ifds && @ifds.first && @ifds.first.respond_to?(method)) ||
         TAGS.include?(method.to_s)
     end
 
