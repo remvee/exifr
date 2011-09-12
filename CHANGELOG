@@ -1,3 +1,7 @@
+EXIF Reader 1.1.1
+* feature; "added gps convenience method to make accessing location data easier (degrees to float conversion)"
+* bug fix; "[GH#22] Fix warnings about uninitialized @comment"; thanks to Ryan Greenberg"
+
 EXIF Reader 1.0.6
 * bug fix: "[GH#20] `readlong': undefined method `unpack' for nil:NilClass (NoMethodError)"
 
