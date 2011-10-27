@@ -305,7 +305,7 @@ module EXIFR
         raise MalformedTIFF, "expected [degrees, minutes, seconds]" unless arr.length == 3
         super
       end
-      
+
       def to_f
         reduce { |m,v| m * 60 + v}.to_f / 3600
       end
@@ -320,7 +320,7 @@ module EXIFR
       :gps_latitude => proc { |v| Degrees.new(v) },
       :gps_longitude => proc { |v| Degrees.new(v) },
       :gps_dest_latitude => proc { |v| Degrees.new(v) },
-      :gps_dest_longitude => proc { |v| Degrees.new(v) }                      
+      :gps_dest_longitude => proc { |v| Degrees.new(v) }
     })
 
     # Names for all recognized TIFF fields.
