@@ -43,6 +43,18 @@ class JPEGTest < Test::Unit::TestCase
     assert_equal JPEG.new(f('image.jpg')).comment, "Here's a comment!"
   end
 
+  def test_shutter_speed
+    { # Values extracted by exiftool:
+      'apple-aperture-1.5.exif' => Rational(1, 1000),
+      'canon-g3.exif' => Rational(1, 1250),
+      'Canon_PowerShot_A85.exif' => Rational(1, 800),
+      'nikon_d1x.tif' => Rational(1, 1250)
+    }.each do |file, expected|
+      j = TIFF.new(f(file))
+      assert_equal(j.shutter_speed_value, expected)
+    end
+  end
+
   def test_exif
     assert ! JPEG.new(f('image.jpg')).exif?
     assert JPEG.new(f('exif.jpg')).exif?
@@ -99,4 +111,5 @@ class JPEGTest < Test::Unit::TestCase
 
     assert count > 0, 'no thumbnails found'
   end
+
 end
