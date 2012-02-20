@@ -18,7 +18,7 @@ class JPEGTest < Test::Unit::TestCase
       end
     end
   end
-  
+
   def test_raises_malformed_jpeg
     assert_raise MalformedJPEG do
       JPEG.new(StringIO.new("djibberish"))
@@ -43,15 +43,21 @@ class JPEGTest < Test::Unit::TestCase
     assert_equal JPEG.new(f('image.jpg')).comment, "Here's a comment!"
   end
 
-  def test_shutter_speed
-    { # Values extracted by exiftool:
-      'apple-aperture-1.5.exif' => Rational(1, 1000),
-      'canon-g3.exif' => Rational(1, 1250),
-      'Canon_PowerShot_A85.exif' => Rational(1, 800),
-      'nikon_d1x.tif' => Rational(1, 1250)
+  def test_shutter_speed_value
+    {
+      'canon-g3.exif' => Rational(1, 1244),
+      'Canon_PowerShot_A85.exif' => Rational(1, 806)
     }.each do |file, expected|
-      j = TIFF.new(f(file))
-      assert_equal(j.shutter_speed_value, expected)
+      assert_equal expected, TIFF.new(f(file)).shutter_speed_value
+    end
+  end
+
+  def test_aperture_value
+    {
+      'canon-g3.exif' => 4.5,
+      'Canon_PowerShot_A85.exif' => 2.8
+    }.each do |file, expected|
+      assert_equal expected, TIFF.new(f(file)).aperture_value
     end
   end
 

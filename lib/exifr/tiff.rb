@@ -305,23 +305,34 @@ module EXIFR
         raise MalformedTIFF, "expected [degrees, minutes, seconds]" unless arr.length == 3
         super
       end
-      
+
       def to_f
         reduce { |m,v| m * 60 + v}.to_f / 3600
       end
     end
 
+    def self.rational(n, d)
+      Rational.respond_to?(:reduce) ? Rational.reduce(n, d) : 1.quo(d)
+    end
+
+    def self.round(f, n)
+      q = (10 ** n)
+      (f * q).round.to_f / q
+    end
+
     ADAPTERS = Hash.new { proc { |v| v } } # :nodoc:
     ADAPTERS.merge!({
-      :date_time_original => time_proc,
-      :date_time_digitized => time_proc,
-      :date_time => time_proc,
-      :orientation => proc { |v| v.map{|v| ORIENTATIONS[v]} },
-      :gps_latitude => proc { |v| Degrees.new(v) },
-      :gps_longitude => proc { |v| Degrees.new(v) },
-      :gps_dest_latitude => proc { |v| Degrees.new(v) },
-      :gps_dest_longitude => proc { |v| Degrees.new(v) }                      
-    })
+                      :date_time_original => time_proc,
+                      :date_time_digitized => time_proc,
+                      :date_time => time_proc,
+                      :orientation => proc { |v| v.map{|v| ORIENTATIONS[v]} },
+                      :gps_latitude => proc { |v| Degrees.new(v) },
+                      :gps_longitude => proc { |v| Degrees.new(v) },
+                      :gps_dest_latitude => proc { |v| Degrees.new(v) },
+                      :gps_dest_longitude => proc { |v| Degrees.new(v) },
+                      :shutter_speed_value => proc { |v| v.map { |v| rational(1, (2 ** v).to_i) } },
+                      :aperture_value => proc { |v| v.map { |v| round(1.4142 ** v, 1) } }
+                    })
 
     # Names for all recognized TIFF fields.
     TAGS = ([TAG_MAPPING.keys, TAG_MAPPING.values.map{|v|v.values}].flatten.uniq - IFD_TAGS).map{|v|v.to_s}
