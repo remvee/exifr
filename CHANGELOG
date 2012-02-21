@@ -1,3 +1,6 @@
+EXIF Reader 1.1.2
+* bug fix; "[GH#25] Incorrect values being extracted for a number of fields"; thanks to Matthew McEachen
+
 EXIF Reader 1.1.1
 * feature; "added gps convenience method to make accessing location data easier (degrees to float conversion)"
 * bug fix; "[GH#22] Fix warnings about uninitialized @comment"; thanks to Ryan Greenberg"
