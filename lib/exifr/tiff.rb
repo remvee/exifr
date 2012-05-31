@@ -330,7 +330,7 @@ module EXIFR
                       :gps_longitude => proc { |v| Degrees.new(v) },
                       :gps_dest_latitude => proc { |v| Degrees.new(v) },
                       :gps_dest_longitude => proc { |v| Degrees.new(v) },
-                      :shutter_speed_value => proc { |v| v.map { |v| rational(1, (2 ** v).to_i) } },
+                      :shutter_speed_value => proc { |v| v.map { |v| v.abs < 100 ? rational(1, (2 ** v).to_i) : nil } },
                       :aperture_value => proc { |v| v.map { |v| round(1.4142 ** v, 1) } }
                     })
 
