@@ -94,6 +94,13 @@ class JPEGTest < Test::Unit::TestCase
     assert_kind_of Rational, j.f_number
   end
 
+  def test_exif_date_time_in_utc
+    j = JPEG.new(f('exif.jpg'))
+    assert_kind_of Time, j.date_time
+    assert j.date_time.utc?, "date_time should returns time in UTC"
+  end
+
+
   def test_no_method_error
     assert_nothing_raised { JPEG.new(f('image.jpg')).f_number }
     assert_raise(NoMethodError) { JPEG.new(f('image.jpg')).foo }
