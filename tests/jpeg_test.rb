@@ -17,8 +17,17 @@ class JPEGTest < Test::Unit::TestCase
         JPEG.new(StringIO.new(File.read(fname)))
       end
     end
+    assert_nothing_raised do
+      JPEG.new('http://www.jpeg.org/images/blue_05.jpg')
+    end
   end
-
+  
+  def test_raises_bad_url
+    assert_raise BadURL do
+      JPEG.new('http://google.com/nothingherexxxxxxxxxx')
+    end
+  end
+  
   def test_raises_malformed_jpeg
     assert_raise MalformedJPEG do
       JPEG.new(StringIO.new("djibberish"))
@@ -37,6 +46,10 @@ class JPEGTest < Test::Unit::TestCase
     j = JPEG.new(f('1x1.jpg'))
     assert_equal j.width, 1
     assert_equal j.height, 1
+    
+    j = JPEG.new('http://www.jpeg.org/images/blue_05.jpg')
+    assert_equal j.width, 130
+    assert_equal j.height, 100
   end
 
   def test_comment
@@ -66,6 +79,8 @@ class JPEGTest < Test::Unit::TestCase
     assert JPEG.new(f('exif.jpg')).exif?
     assert_not_nil JPEG.new(f('exif.jpg')).exif.date_time
     assert_not_nil JPEG.new(f('exif.jpg')).exif.f_number
+    assert_nil JPEG.new('http://www.jpeg.org/images/blue_05.jpg').exif
+    assert_not_nil JPEG.new('http://www.exif.org/samples/canon-ixus.jpg').exif.date_time
   end
 
   def test_to_hash
