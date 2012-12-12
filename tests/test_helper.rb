@@ -15,7 +15,6 @@ def all_test_jpegs
   Dir[f('*.jpg')]
 end
 
-
 def all_test_exifs
   Dir[f('*.exif')]
 end

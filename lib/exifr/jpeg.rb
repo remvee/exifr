@@ -2,6 +2,7 @@
 
 require 'exifr'
 require 'stringio'
+require 'open-uri'
 
 module EXIFR
   # = JPEG decoder
@@ -29,7 +30,15 @@ module EXIFR
     # +file+ is a filename or an IO object.  Hint: use StringIO when working with slurped data like blobs.
     def initialize(file)
       if file.kind_of? String
-        File.open(file, 'rb') { |io| examine(io) }
+        if file =~ URI::regexp
+          begin
+            open(file) { |io| examine(io)}
+          rescue
+            raise BadURL
+          end
+        else
+          File.open(file, 'rb') { |io| examine(io) }
+        end
       else
         examine(file.dup)
       end
