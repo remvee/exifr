@@ -1,6 +1,11 @@
-# Copyright (c) 2006, 2007, 2008, 2009, 2010, 2011 - R.W. van 't Veer
+# Copyright (c) 2006-2013 - R.W. van 't Veer
 
-require 'rake/rdoctask'
+begin
+  require 'rdoc/task'
+rescue LoadError
+  require 'rake/rdoctask'
+end
+
 require 'rake/testtask'
 
 task :default => :test
