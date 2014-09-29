@@ -14,5 +14,7 @@ spec = Gem::Specification.new do |s|
   s.rdoc_options = ['--title', 'EXIF Reader for Ruby API Documentation', '--main', 'README.rdoc']
   s.extra_rdoc_files = %w(README.rdoc CHANGELOG)
 
+  s.add_runtime_dependency 'activesupport'
+
   s.executables = %w(exifr)
 end
