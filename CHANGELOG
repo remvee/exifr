@@ -1,3 +1,8 @@
+EXIF Reader 1.2.0
+* enhancement; "log warnings when EXIF data is malformed"
+* enhancement; "allow alternative Time adapter"
+* enhancement; "[GH#33] add reader for orientation type"; thanks Damir Svrtan
+
 EXIF Reader 1.1.3
 * bug fix; "[GH#27] some error when :shutter_speed_value is too big"; thanks to zamia
 

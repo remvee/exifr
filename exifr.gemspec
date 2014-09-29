@@ -1,10 +1,12 @@
 spec = Gem::Specification.new do |s|
   s.name = 'exifr'
-  s.version = '1.1.3'
+  s.version = '1.2.0'
   s.author = "R.W. van 't Veer"
   s.email = 'remco@remvee.net'
   s.homepage = 'http://github.com/remvee/exifr/'
-  s.summary = 'EXIF Reader is a module to read EXIF from JPEG images.'
+  s.summary = 'Read EXIF from JPEG and TIFF images'
+  s.description = 'EXIF Reader is a module to read EXIF from JPEG and TIFF images.'
+  s.licenses = ['MIT']
 
   s.files = %w(Rakefile bin/exifr)
   s.files += %w(lib/exifr.rb lib/exifr/jpeg.rb lib/exifr/tiff.rb)
