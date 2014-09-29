@@ -20,6 +20,13 @@ EXIF Reader is a module to read metadata from JPEG and TIFF images.
   EXIFR::JPEG.new('enkhuizen.jpg').gps.latitude       # => 52.7197888888889
   EXIFR::JPEG.new('enkhuizen.jpg').gps.longitude      # => 5.28397777777778
 
+== Logging warnings
+When EXIF information is malformed, a warning is logged to STDERR with
+the standard Ruby logger.  Log to some other location by supplying an
+alternative implementation:
+
+  EXIFR.logger = SyslogLogger.new
+
 == XMP data access
 If you need to access XMP data you can use the xmp gem.  More info and
 examples at https://github.com/amberbit/xmp

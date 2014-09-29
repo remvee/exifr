@@ -241,7 +241,12 @@ module EXIFR
     time_proc = proc do |value|
       value.map do |value|
         if value =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
-          Time.mktime($1.to_i, $2.to_i, $3.to_i, $4.to_i, $5.to_i, $6.to_i) rescue nil
+          begin
+            Time.mktime($1.to_i, $2.to_i, $3.to_i, $4.to_i, $5.to_i, $6.to_i)
+          rescue => ex
+            EXIFR.logger.warn("Bad date/time value #{value.inspect}: #{ex}")
+            nil
+          end
         else
           value
         end
@@ -300,9 +305,18 @@ module EXIFR
       const_set("#{type}Orientation", ORIENTATIONS[index] = Orientation.new(index, type))
     end
 
+    degrees_proc = proc do |v|
+      begin
+        Degrees.new(v)
+      rescue => ex
+        EXIFR.logger.warn("malformed GPS degrees: #{ex}")
+        nil
+      end
+    end
+
     class Degrees < Array
       def initialize(arr)
-        raise MalformedTIFF, "expected [degrees, minutes, seconds]" unless arr.length == 3
+        raise "expected [degrees, minutes, seconds]" unless arr.length == 3
         super
       end
 
@@ -326,10 +340,10 @@ module EXIFR
                       :date_time_digitized => time_proc,
                       :date_time => time_proc,
                       :orientation => proc { |v| v.map{|v| ORIENTATIONS[v]} },
-                      :gps_latitude => proc { |v| Degrees.new(v) },
-                      :gps_longitude => proc { |v| Degrees.new(v) },
-                      :gps_dest_latitude => proc { |v| Degrees.new(v) },
-                      :gps_dest_longitude => proc { |v| Degrees.new(v) },
+                      :gps_latitude => degrees_proc,
+                      :gps_longitude => degrees_proc,
+                      :gps_dest_latitude => degrees_proc,
+                      :gps_dest_longitude => degrees_proc,
                       :shutter_speed_value => proc { |v| v.map { |v| v.abs < 100 ? rational(1, (2 ** v).to_i) : nil } },
                       :aperture_value => proc { |v| v.map { |v| round(1.4142 ** v, 1) } }
                     })
@@ -440,7 +454,8 @@ module EXIFR
         end
 
         @offset_next = @data.readlong(pos)
-      rescue
+      rescue => ex
+        EXIFR.logger.warn("Badly formed IFD: #{ex}")
         @offset_next = 0
       end
 

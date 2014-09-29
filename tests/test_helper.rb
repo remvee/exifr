@@ -27,6 +27,8 @@ $:.unshift("#{File.dirname(__FILE__)}/../lib")
 require 'exifr'
 include EXIFR
 
+EXIFR.logger = Logger.new(StringIO.new)
+
 def all_test_jpegs
   Dir[f('*.jpg')]
 end
