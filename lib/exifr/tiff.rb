@@ -3,6 +3,7 @@
 require 'exifr'
 require 'rational'
 require 'enumerator'
+require 'active_support/time_with_zone'
 
 module EXIFR
   # = TIFF decoder
@@ -241,7 +242,7 @@ module EXIFR
     time_proc = proc do |value|
       value.map do |value|
         if value =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
-          Time.mktime($1.to_i, $2.to_i, $3.to_i, $4.to_i, $5.to_i, $6.to_i) rescue nil
+          Time.new($1.to_i, $2.to_i, $3.to_i, $4.to_i, $5.to_i, $6.to_i, Time.zone.formatted_offset) rescue nil
         else
           value
         end
