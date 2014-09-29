@@ -27,6 +27,21 @@ alternative implementation:
 
   EXIFR.logger = SyslogLogger.new
 
+== Time zone support
+EXIF does not support time zones so this code does not support time
+zones.  All time stamps are created in the local time zone with:
+
+  Time.local(..)
+
+It is possible to change this behavior by supplying an alternative
+implementation.  For those who prefer UTC:
+
+  EXIFR::TIFF.mktime_proc = proc{|*args| Time.utc(*args)}
+
+Or when the application depends on ActiveSupport for time zone handling:
+
+  EXIFR::TIFF.mktime_proc = proc{|*args| Time.zone.local(*args)}
+
 == XMP data access
 If you need to access XMP data you can use the xmp gem.  More info and
 examples at https://github.com/amberbit/xmp

@@ -238,11 +238,17 @@ module EXIFR
     })
     IFD_TAGS = [:image, :exif, :gps] # :nodoc:
 
+    class << self
+      # Callable to create a +Time+ object.  Defaults to <tt>proc{|*a|Time.local(*a)}</tt>.
+      attr_accessor :mktime_proc
+    end
+    self.mktime_proc = proc { |*args| Time.local(*args) }
+
     time_proc = proc do |value|
       value.map do |value|
         if value =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
           begin
-            Time.mktime($1.to_i, $2.to_i, $3.to_i, $4.to_i, $5.to_i, $6.to_i)
+            mktime_proc.call($1.to_i, $2.to_i, $3.to_i, $4.to_i, $5.to_i, $6.to_i)
           rescue => ex
             EXIFR.logger.warn("Bad date/time value #{value.inspect}: #{ex}")
             nil
@@ -351,7 +357,7 @@ module EXIFR
     # Names for all recognized TIFF fields.
     TAGS = ([TAG_MAPPING.keys, TAG_MAPPING.values.map{|v|v.values}].flatten.uniq - IFD_TAGS).map{|v|v.to_s}
 
-    # +file+ is a filename or an IO object.  Hint: use StringIO when working with slurped data like blobs.
+    # +file+ is a filename or an +IO+ object.  Hint: use +StringIO+ when working with slurped data like blobs.
     def initialize(file)
       Data.open(file) do |data|
         @ifds = [IFD.new(data)]

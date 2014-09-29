@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Copyright (c) 2006, 2007, 2008, 2009, 2010, 2011 - R.W. van 't Veer
+# Copyright (c) 2006, 2007, 2008, 2009, 2010, 20111 - R.W. van 't Veer
 
 require 'test_helper'
 
@@ -59,6 +59,14 @@ class TIFFTest < TestCase
       assert_kind_of Time, TIFF.new(fname).date_time
     end
     assert_nil TIFF.new(f('weird_date.exif')).date_time
+  end
+
+  def test_time_with_zone
+    old_proc = TIFF.mktime_proc
+    TIFF.mktime_proc = proc { |*args| "TIME-WITH-ZONE" }
+    assert_equal "TIME-WITH-ZONE", TIFF.new(f('nikon_d1x.tif')).date_time
+  ensure
+    TIFF.mktime_proc = old_proc
   end
 
   def test_orientation
