@@ -2,19 +2,34 @@
 #
 # Copyright (c) 2006, 2007, 2008, 2009, 2010, 2011 - R.W. van 't Veer
 
-require 'test/unit'
 require 'stringio'
 require 'pp'
+
+TestCase = begin
+             tc = begin
+                    gem 'minitest' rescue nil
+                    require 'minitest/autorun'
+                    case
+                    when defined?(Minitest::Test) ; Minitest::Test
+                    when defined?(Minitest::Unit::TestCase) ; Minitest::Unit::TestCase
+                    end
+                  rescue LoadError
+                    # nop
+                  end
+             unless tc
+               require "test/unit"
+               tc = Test::Unit::TestCase
+             end
+             tc
+           end
 
 $:.unshift("#{File.dirname(__FILE__)}/../lib")
 require 'exifr'
 include EXIFR
 
-
 def all_test_jpegs
   Dir[f('*.jpg')]
 end
-
 
 def all_test_exifs
   Dir[f('*.exif')]

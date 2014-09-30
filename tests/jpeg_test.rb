@@ -4,24 +4,20 @@
 
 require 'test_helper'
 
-class JPEGTest < Test::Unit::TestCase
+class JPEGTest < TestCase
   def test_initialize
     all_test_jpegs.each do |fname|
-      assert_nothing_raised do
-        JPEG.new(fname)
-      end
-      assert_nothing_raised do
-        open(fname) { |rd| JPEG.new(rd) }
-      end
-      assert_nothing_raised do
-        JPEG.new(StringIO.new(File.read(fname)))
-      end
+      assert JPEG.new(fname)
+      open(fname) { |rd| assert JPEG.new(rd) }
+      assert JPEG.new(StringIO.new(File.read(fname)))
     end
   end
 
   def test_raises_malformed_jpeg
-    assert_raise MalformedJPEG do
+    begin
       JPEG.new(StringIO.new("djibberish"))
+    rescue MalformedJPEG => ex
+      assert ex
     end
   end
 
@@ -64,8 +60,8 @@ class JPEGTest < Test::Unit::TestCase
   def test_exif
     assert ! JPEG.new(f('image.jpg')).exif?
     assert JPEG.new(f('exif.jpg')).exif?
-    assert_not_nil JPEG.new(f('exif.jpg')).exif.date_time
-    assert_not_nil JPEG.new(f('exif.jpg')).exif.f_number
+    assert JPEG.new(f('exif.jpg')).exif.date_time
+    assert JPEG.new(f('exif.jpg')).exif.f_number
   end
 
   def test_to_hash
@@ -87,16 +83,21 @@ class JPEGTest < Test::Unit::TestCase
     assert j.methods.include?('date_time')
     assert j.respond_to?(:date_time)
     assert j.respond_to?('date_time')
-    assert_not_nil j.date_time
+    assert j.date_time
     assert_kind_of Time, j.date_time
 
-    assert_not_nil j.f_number
+    assert j.f_number
     assert_kind_of Rational, j.f_number
   end
 
   def test_no_method_error
-    assert_nothing_raised { JPEG.new(f('image.jpg')).f_number }
-    assert_raise(NoMethodError) { JPEG.new(f('image.jpg')).foo }
+    JPEG.new(f('image.jpg')).f_number
+
+    begin
+      JPEG.new(f('image.jpg')).foo
+    rescue NoMethodError => ex
+      assert ex
+    end
   end
 
   def test_multiple_app1
@@ -108,14 +109,11 @@ class JPEGTest < Test::Unit::TestCase
     all_test_jpegs.each do |fname|
       jpeg = JPEG.new(fname)
       unless jpeg.thumbnail.nil?
-        assert_nothing_raised 'thumbnail not a JPEG' do
-          JPEG.new(StringIO.new(jpeg.thumbnail))
-        end
+        assert JPEG.new(StringIO.new(jpeg.thumbnail))
         count += 1
       end
     end
 
     assert count > 0, 'no thumbnails found'
   end
-
 end

@@ -4,28 +4,24 @@
 
 require 'test_helper'
 
-class TIFFTest < Test::Unit::TestCase
+class TIFFTest < TestCase
   def setup
     @t = TIFF.new(f('nikon_d1x.tif'))
   end
 
   def test_initialize
     all_test_tiffs.each do |fname|
-      assert_nothing_raised do
-        TIFF.new(fname)
-      end
-      assert_nothing_raised do
-        open(fname) { |rd| TIFF.new(rd) }
-      end
-      assert_nothing_raised do
-        TIFF.new(StringIO.new(File.read(fname)))
-      end
+      assert TIFF.new(fname)
+      open(fname) { |rd| assert TIFF.new(rd) }
+      assert TIFF.new(StringIO.new(File.read(fname)))
     end
   end
   
   def test_raises_malformed_tiff
-    assert_raise MalformedTIFF do
+    begin
       TIFF.new(StringIO.new("djibberish"))
+    rescue MalformedTIFF => ex
+      assert ex
     end
   end
 
@@ -110,18 +106,16 @@ class TIFFTest < Test::Unit::TestCase
     assert @t.methods.include?('f_number')
     assert TIFF.instance_methods.include?('f_number')
 
-    assert_not_nil @t.f_number
+    assert @t.f_number
     assert_kind_of Rational, @t.f_number
-    assert_not_nil @t[0].f_number
+    assert @t[0].f_number
     assert_kind_of Rational, @t[0].f_number
   end
 
   def test_avoid_dispatch_to_nonexistent_ifds
-    assert_nothing_raised do
-      all_test_tiffs.each do |fname|
-        t = TIFF.new(fname)
-        TIFF::TAGS.each { |tag| t.send(tag) }
-      end
+    all_test_tiffs.each do |fname|
+      assert t = TIFF.new(fname)
+      assert TIFF::TAGS.map { |tag| t.send(tag) }
     end
   end
 
@@ -135,9 +129,7 @@ class TIFFTest < Test::Unit::TestCase
   end
 
   def test_old_style
-    assert_nothing_raised do
-      assert_not_nil @t[:f_number]
-    end
+    assert @t[:f_number]
   end
 
   def test_yaml_dump_and_load
@@ -155,10 +147,8 @@ class TIFFTest < Test::Unit::TestCase
     all_test_tiffs.each do |fname|
       t = TIFF.new(fname)
       unless t.jpeg_thumbnails.empty?
-        assert_nothing_raised do
-          t.jpeg_thumbnails.each do |n|
-            JPEG.new(StringIO.new(n))
-          end
+        t.jpeg_thumbnails.each do |n|
+          assert JPEG.new(StringIO.new(n))
         end
         count += 1
       end
@@ -176,9 +166,7 @@ class TIFFTest < Test::Unit::TestCase
   end
 
   def test_handle_out_of_range_offset
-    assert_nothing_raised do
-      assert 'NIKON', TIFF.new(f('out-of-range.exif')).make
-    end
+    assert_equal 'NIKON', TIFF.new(f('out-of-range.exif')).make
   end
   
   def test_negative_exposure_bias_value
