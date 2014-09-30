@@ -84,6 +84,16 @@ class TIFFTest < TestCase
           TIFF::RightBottomOrientation,
           TIFF::LeftBottomOrientation
         ].any? { |c| orientation == c }, 'not an orientation'
+        assert [
+          :TopLeft,
+          :TopRight,
+          :BottomRight,
+          :BottomLeft,
+          :LeftTop,
+          :RightTop,
+          :RightBottom,
+          :LeftBottom
+        ].any? { |c| orientation.to_sym == c }, 'not an orientation symbol'
         assert orientation.respond_to?(:to_i)
         assert orientation.respond_to?(:transform_rmagick)
         tested += 1

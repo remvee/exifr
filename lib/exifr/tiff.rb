@@ -270,6 +270,11 @@ module EXIFR
         @value
       end
 
+      # Symbolic value.
+      def to_sym
+        @type
+      end
+
       # Debugging output.
       def inspect
         "\#<EXIFR::TIFF::Orientation:#{@type}(#{@value})>"
