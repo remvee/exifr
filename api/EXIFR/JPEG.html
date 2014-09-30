@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>class EXIFR::JPEG - EXIF Reader for Ruby API Documentation</title>
+
+<link href="../fonts.css" rel="stylesheet">
+<link href="../rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../";
+</script>
+
+<script src="../js/jquery.js"></script>
+<script src="../js/navigation.js"></script>
+<script src="../js/search_index.js"></script>
+<script src="../js/search.js"></script>
+<script src="../js/searcher.js"></script>
+<script src="../js/darkfish.js"></script>
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../table_of_contents.html#pages">Pages</a>
+    <a href="../table_of_contents.html#classes">Classes</a>
+    <a href="../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+<div class="nav-section">
+  <h3>Table of Contents</h3>
+
+  <ul class="link-list" role="directory">
+    <li><a href="#class-EXIFR::JPEG-label-JPEG+decoder">JPEG decoder</a>
+    <li><a href="#class-EXIFR::JPEG-label-Examples">Examples</a>
+  </ul>
+</div>
+
+
+  <div id="class-metadata">
+    
+    <div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  
+  <p class="link">Object
+  
+</div>
+
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-c-new">::new</a>
+    
+    <li ><a href="#method-i-exif-3F">#exif?</a>
+    
+    <li class="calls-super" ><a href="#method-i-method_missing">#method_missing</a>
+    
+    <li ><a href="#method-i-thumbnail">#thumbnail</a>
+    
+    <li ><a href="#method-i-to_hash">#to_hash</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-EXIFR::JPEG">
+  <h1 id="class-EXIFR::JPEG" class="class">
+    class EXIFR::JPEG
+  </h1>
+
+  <section class="description">
+    
+<h1 id="class-EXIFR::JPEG-label-JPEG+decoder"><a href="JPEG.html">JPEG</a> decoder<span><a href="#class-EXIFR::JPEG-label-JPEG+decoder">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<h2 id="class-EXIFR::JPEG-label-Examples">Examples<span><a href="#class-EXIFR::JPEG-label-Examples">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+
+<pre>EXIFR::JPEG.new(&#39;IMG_3422.JPG&#39;).width         # -&gt; 2272
+EXIFR::JPEG.new(&#39;IMG_3422.JPG&#39;).exif.model    # -&gt; &quot;Canon PowerShot G3&quot;</pre>
+
+  </section>
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+    <section class="attribute-method-details" class="method-section">
+      <header>
+        <h3>Attributes</h3>
+      </header>
+
+      
+      <div id="attribute-i-app1s" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">app1s</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        <p>raw APP1 frames</p>
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-comment" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">comment</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        <p>comment; a string if one comment found, an array if more, otherwise
+<code>nil</code></p>
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-exif" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">exif</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        <p>EXIF data if available</p>
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-height" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">height</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        <p>image height</p>
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-width" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">width</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        <p>image width</p>
+        
+        </div>
+      </div>
+      
+    </section>
+    
+
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-new" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">new</span><span
+            class="method-args">(file)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p><code>file</code> is a filename or an IO object.  Hint: use StringIO when
+working with slurped data like blobs.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="new-source">
+            <pre><span class="ruby-comment"># File lib/exifr/jpeg.rb, line 30</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">file</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">String</span>
+    <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">file</span>, <span class="ruby-string">&#39;rb&#39;</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span> <span class="ruby-identifier">examine</span>(<span class="ruby-identifier">io</span>) }
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">examine</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">dup</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-exif-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">exif?</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Returns <code>true</code> when EXIF data is available.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="exif-3F-source">
+            <pre><span class="ruby-comment"># File lib/exifr/jpeg.rb, line 39</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">exif?</span>
+  <span class="ruby-operator">!</span><span class="ruby-identifier">exif</span>.<span class="ruby-identifier">nil?</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-method_missing" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">method_missing</span><span
+            class="method-args">(method, *args)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Dispatch to EXIF.  When no EXIF data is available but the
+<code>method</code> does exist for EXIF data <code>nil</code> will be
+returned.</p>
+          
+          
+            <div class="method-calls-super">
+              Calls superclass method
+              
+            </div>
+          
+
+          
+          <div class="method-source-code" id="method_missing-source">
+            <pre><span class="ruby-comment"># File lib/exifr/jpeg.rb, line 57</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">method_missing</span>(<span class="ruby-identifier">method</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
+  <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">empty?</span>
+  <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">methods</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">method</span>.<span class="ruby-identifier">to_s</span>)
+  <span class="ruby-ivar">@exif</span>.<span class="ruby-identifier">send</span> <span class="ruby-identifier">method</span> <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-ivar">@exif</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@exif</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-thumbnail" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">thumbnail</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Return thumbnail data when available.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="thumbnail-source">
+            <pre><span class="ruby-comment"># File lib/exifr/jpeg.rb, line 44</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">thumbnail</span>
+  <span class="ruby-keyword">defined?</span>(<span class="ruby-ivar">@exif</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@exif</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@exif</span>.<span class="ruby-identifier">jpeg_thumbnails</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@exif</span>.<span class="ruby-identifier">jpeg_thumbnails</span>.<span class="ruby-identifier">first</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-to_hash" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">to_hash</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Get a hash presentation of the image.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="to_hash-source">
+            <pre><span class="ruby-comment"># File lib/exifr/jpeg.rb, line 49</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">to_hash</span>
+  <span class="ruby-identifier">h</span> = {<span class="ruby-value">:width</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">width</span>, <span class="ruby-value">:height</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">height</span>, <span class="ruby-value">:bits</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">bits</span>, <span class="ruby-value">:comment</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">comment</span>}
+  <span class="ruby-identifier">h</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">exif</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">exif?</span>
+  <span class="ruby-identifier">h</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+
