@@ -424,6 +424,14 @@ module EXIFR
       (super + TAGS + IFD.instance_methods(false)).uniq
     end
 
+    def encode_with(coder)
+      coder["ifds"] = @ifds
+    end
+
+    def to_yaml_properties
+      ['@ifds']
+    end
+
     class << self
       alias instance_methods_without_tiff_extras instance_methods
       def instance_methods(include_super = true) # :nodoc:
@@ -506,6 +514,10 @@ module EXIFR
 
       def next
         IFD.new(@data, @offset_next) if next?
+      end
+
+      def encode_with(coder)
+        coder["fields"] = @fields
       end
 
       def to_yaml_properties
