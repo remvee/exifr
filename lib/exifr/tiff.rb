@@ -337,7 +337,13 @@ module EXIFR
     end
 
     def self.rational(n, d)
-      Rational.respond_to?(:reduce) ? Rational.reduce(n, d) : 1.quo(d)
+      if d == 0
+        n.to_f / d.to_f
+      elsif Rational.respond_to?(:reduce)
+        Rational.reduce(n, d)
+      else
+        n.quo(d)
+      end
     end
 
     def self.round(f, n)
