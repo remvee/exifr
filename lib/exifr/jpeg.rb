@@ -1,6 +1,7 @@
 # Copyright (c) 2006-2015 - R.W. van 't Veer
 
 require 'exifr'
+require 'exifr/tiff'
 require 'stringio'
 require 'delegate'
 
