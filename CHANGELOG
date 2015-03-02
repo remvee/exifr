@@ -1,3 +1,6 @@
+EXIF Reader 1.2.1
+* bug fix: Value of infinity yields division by zero error
+
 EXIF Reader 1.2.0
 * enhancement; "log warnings when EXIF data is malformed"
 * enhancement; "allow alternative Time adapter"
