@@ -1,3 +1,6 @@
+EXIF Reader 1.2.2
+* bug fix; "use Reader delegator instead of adding method to File instance"; thanks Ivan Kuchin
+
 EXIF Reader 1.2.1
 * bug fix: Value of infinity yields division by zero error
 
