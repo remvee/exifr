@@ -1,3 +1,6 @@
+EXIF Reader 1.2.3
+* bug fix; "[GH#40] Handle NUL-terminated ASCII strings"; thanks Malte Rohde
+
 EXIF Reader 1.2.2
 * bug fix; "use Reader delegator instead of adding method to File instance"; thanks Ivan Kuchin
 
