@@ -539,7 +539,7 @@ module EXIFR
         when 6 # signed byte
           len, pack = count, proc { |d| sign_byte(d) }
         when 2 # ascii
-          len, pack = count, proc { |d| d.unpack("A*") }
+          len, pack = count, proc { |d| d.unpack('Z*') }
         when 3 # short
           len, pack = count * 2, proc { |d| d.unpack(data.short + '*') }
         when 8 # signed short

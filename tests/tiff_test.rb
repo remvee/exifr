@@ -190,4 +190,8 @@ class TIFFTest < TestCase
   def test_negative_exposure_bias_value
     assert_equal(-1.quo(3), TIFF.new(f('negative-exposure-bias-value.exif')).exposure_bias_value)
   end
+
+  def test_nul_terminated_strings
+    assert_equal 'GoPro', TIFF.new(f('gopro_hd2.exif')).make
+  end
 end
