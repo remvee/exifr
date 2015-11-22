@@ -1,0 +1,15 @@
+dependencies:
+  post:
+    - rvm 2.2 do gem install test-unit
+
+test:
+  override:
+    - rvm 1.8.7 do rake test
+    - rvm 1.9.2 do rake test
+    - rvm 1.9.3 do rake test
+    - rvm 2.0 do rake test
+    - rvm 2.1 do rake test
+    - rvm 2.2 do rake test
+    - rvm jruby-1.7 do rake test
+    - rvm jruby-9.0 do rake test
+    
