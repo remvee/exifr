@@ -470,7 +470,12 @@ module EXIFR
           pos += 12
         end
 
-        @offset_next = @data.readlong(pos)
+        # Don't read a long if we can't
+        if @data.size < pos + 4
+          @offset_next = 0
+        else
+          @offset_next = @data.readlong(pos)
+        end
       rescue => ex
         EXIFR.logger.warn("Badly formed IFD: #{ex}")
         @offset_next = 0
