@@ -1,123 +1,251 @@
 # Copyright (c) 2006-2015 - R.W. van 't Veer
 
-require 'exifr'
-require 'stringio'
-require 'delegate'
+require "exifr"
+require "stringio"
+require "delegate"
 
 module EXIFR
-  # = JPEG decoder
+  # = JPEG parser
+  #
+  # Reads a JPEG file and extracts useful metadata.
   #
   # == Examples
-  #   EXIFR::JPEG.new('IMG_3422.JPG').width         # -> 2272
-  #   EXIFR::JPEG.new('IMG_3422.JPG').exif.model    # -> "Canon PowerShot G3"
+  #   EXIFR::JPEG.open("IMG_3422.JPG").width         # -> 2272
+  #   EXIFR::JPEG.new(env["rack.input"]).exif.model  # -> "Canon PowerShot G3"
+  #
+  # == References
+  #  * http://www.w3.org/Graphics/JPEG/itu-t81.pdf
+  #  * http://www.ozhiker.com/electronics/pjmt/jpeg_info/
   class JPEG
-    # image height
-    attr_reader :height
-    # image width
-    attr_reader :width
-    # number of bits per ??
-    attr_reader :bits # :nodoc:
-    # comment; a string if one comment found, an array if more,
-    # otherwise <tt>nil</tt>
-    attr_reader :comment
-    # EXIF data if available
-    attr_reader :exif
-    # raw EXIF data
-    attr_reader :exif_data # :nodoc:
-    # raw APP1 frames
-    attr_reader :app1s
+    # JPEG headers are made up of segments. Each segment starts with a marker.
+    # Markers are two bytes: 0xff, then one of the following:
+    SOFs = [0xc0..0xc3, 0xc5..0xc7, 0xc9..0xcc, 0xce..0xcf] # Start Of Frame
+    SOI = 0xd8 # Start Of Image
+    EOI = 0xd9 # End Of Image
+    SOS = 0xda # Start Of Scan
+    APPs = [0xe0..0xef] # Application-use
+    APP1 = 0xe1 # Probably EXIF (TIFF)
+    COM = 0xfe # Comment
 
-    # +file+ is a filename or an IO object.  Hint: use StringIO when working with slurped data like blobs.
-    def initialize(file)
-      if file.kind_of? String
-        File.open(file, 'rb') { |io| examine(io) }
-      else
-        examine(file.dup)
-      end
+    # Open a file and return parsed metadata.
+    def self.open(file)
+      File.open(file, "rb") { |io| new(io) }
     end
 
-    # Returns +true+ when EXIF data is available.
+    # Read an IO object (must be open in binary read mode and seekable) and return parsed metadata.
+    def initialize(io)
+      @segments = []
+      read(io)
+    end
+
+    attr_reader :segments
+
+    def sof?
+      !!@sof_index
+    end
+
+    def bits
+      @segments[@sof_index].bits if sof?
+    end
+
+    def width
+      @segments[@sof_index].width if sof?
+    end
+
+    def height
+      @segments[@sof_index].height if sof?
+    end
+
+    def components
+      @segments[@sof_index].components if sof?
+    end
+
     def exif?
-      !exif.nil?
+      !!@exif_index
     end
 
-    # Return thumbnail data when available.
+    def exif
+      @segments[@exif_index].exif if exif?
+    end
+
     def thumbnail
-      defined?(@exif) && @exif && @exif.jpeg_thumbnails && @exif.jpeg_thumbnails.first
-    end
-
-    # Get a hash presentation of the image.
-    def to_hash
-      h = {:width => width, :height => height, :bits => bits, :comment => comment}
-      h.merge!(exif) if exif?
-      h
-    end
-
-    # Dispatch to EXIF.  When no EXIF data is available but the
-    # +method+ does exist for EXIF data +nil+ will be returned.
-    def method_missing(method, *args)
-      super unless args.empty?
-      super unless methods.include?(method.to_s)
-      @exif.send method if defined?(@exif) && @exif
-    end
-
-    def respond_to?(method) # :nodoc:
-      super || methods.include?(method.to_s)
-    end
-
-    def methods # :nodoc:
-      super + TIFF::TAGS << "gps"
-    end
-
-    class << self
-      alias instance_methods_without_jpeg_extras instance_methods
-      def instance_methods(include_super = true) # :nodoc:
-        instance_methods_without_jpeg_extras(include_super) + TIFF::TAGS << "gps"
+      if exif? && !exif.jpeg_thumbnails.empty?
+        exif.jpeg_thumbnails.first
       end
+    end
+
+    def comment?
+      !!@comment_index
+    end
+
+    def comment
+      @segments[@comment_index].comment if comment?
     end
 
   private
 
-    class Reader < SimpleDelegator
-      def readbyte; readchar; end unless File.method_defined?(:readbyte)
-      def readint; (readbyte << 8) + readbyte; end
-      def readframe; read(readint - 2); end
-      def readsof; [readint, readbyte, readint, readint, readbyte]; end
-      def next
-        c = readbyte while c != 0xFF
-        c = readbyte while c == 0xFF
-        c
+    def logger
+      EXIFR.logger
+    end
+
+    def read(io)
+      logger.debug { "Reading #{io.inspect}" }
+
+      # Every JPEG should start with an SOI segment, which has no length.
+      unless read_marker(io) == SOI
+        raise MalformedJPEG, "no start of image marker found"
+      end
+      logger.debug { "SOI @ #{io.tell}" }
+
+      # Read segments
+      until io.eof?
+        # Every segment starts with a marker
+        marker = read_marker(io)
+
+        # EOI has no length and signifies file end
+        if marker == EOI
+          logger.debug { "EOI @ #{io.tell}, done parsing." }
+          break
+        end
+
+        # SOS is the beginning of picture data, metadata is over
+        if marker == SOS
+          logger.debug { "SOS @ #{io.tell}, aborting parsing." }
+          break
+        end
+
+        # Every other marker has a length
+        # Length includes the bytes of the length itself, compensate
+        length = io.read(2).unpack("S>").first - 2
+        start = io.tell
+        finish = start + length
+
+        # Do we want to parse this segment?
+        case marker
+          when *SOFs
+            logger.debug { "SOF @ #{start}, #{length} bytes." }
+            read_segment_sof(io, length: length)
+          when APP1
+            logger.debug { "APP1 @ #{start}, #{length} bytes." }
+            read_segment_app1(io, length: length)
+          when COM
+            logger.debug { "Comment @ #{start}, #{length} bytes." }
+            read_segment_comment(io, length: length)
+          else
+            logger.debug { "Unknown segment 0x#{marker.to_s(16)} @ #{start}, #{length} bytes." }
+        end
+
+        # Make sure we're at the end of that segment
+        unless io.tell == finish
+          io.seek(finish)
+        end
       end
     end
 
-    def examine(io)
-      io = Reader.new(io)
+    def read_length(io)
+      (io.readbyte << 8) + io.readbyte
+    end
 
-      unless io.readbyte == 0xFF && io.readbyte == 0xD8 # SOI
-        raise MalformedJPEG, "no start of image marker found"
+    def read_marker(io)
+      # Skip null bytes
+      while (byte = io.readbyte) == 0x00; end
+
+      # Markers start with full byte
+      unless byte == 0xff
+        raise MalformedJPEG, "Expected marker at byte #{io.tell - 1}, got 0x#{byte.to_s(16)}"
       end
 
-      @app1s = []
-      while marker = io.next
-        case marker
-          when 0xC0..0xC3, 0xC5..0xC7, 0xC9..0xCB, 0xCD..0xCF # SOF markers
-            length, @bits, @height, @width, components = io.readsof
-            unless length == 8 + components * 3
-              raise MalformedJPEG, "frame length does not match number of components"
-            end
-          when 0xD9, 0xDA;  break # EOI, SOS
-          when 0xFE;        (@comment ||= []) << io.readframe # COM
-          when 0xE1;        @app1s << io.readframe # APP1, may contain EXIF tag
-          else              io.readframe # ignore frame
-        end
+      # Then a second byte idenfitying the segment
+      io.readbyte
+    end
+
+    def read_segment_sof(io, length:)
+      segment = SOFSegment.new(io, length: length)
+      logger.debug { "SOF segment: #{segment.inspect}" }
+      @sof_index ||= @segments.length
+      @segments << segment
+    end
+
+    def read_segment_app1(io, length:)
+      # APP1 segments could be a few different things
+      case header = peek(io, 32)
+        when EXIFSegment::HEADER_MAGIC
+          read_segment_exif(io, length: length)
+        else
+          logger.debug { "Unknown APP1 @ #{io.tell}: #{header.inspect}" }
+      end
+    end
+
+    def read_segment_exif(io, length:)
+      segment = EXIFSegment.new(io, length: length)
+      logger.debug { "EXIF segment: #{segment.inspect}" }
+      @exif_index ||= @segments.length
+      @segments << segment
+    end
+
+    def read_segment_comment(io, length:)
+      segment = CommentSegment.new(io, length: length)
+      logger.debug { "Comment segment: #{segment.inspect}" }
+      @comment_index = @segments.length
+      @segments << segment
+    end
+
+    def peek(io, length)
+      # Ruby doesn't have multi-byte peek, so fake it.
+      io.read(length).tap { io.seek(-length, IO::SEEK_CUR) }
+    end
+  end
+
+  class JPEG::SOFSegment
+    attr_reader :bits
+    attr_reader :height
+    attr_reader :width
+    attr_reader :components
+
+    def initialize(io, length:)
+      @bits = io.readbyte
+      @height = read_int(io)
+      @width = read_int(io)
+      @components = io.readbyte
+
+      unless length == (6 + @components * 3)
+        raise MalformedJPEG, "Frame length does not match number of components"
+      end
+    end
+
+    private
+
+    def read_int(io)
+      io.read(2).unpack("S>").first
+    end
+  end
+
+  class JPEG::EXIFSegment
+    attr_reader :exif
+
+    HEADER = "Exif\0\0".force_encoding("BINARY").freeze
+    HEADER_MAGIC = /\A#{Regexp.escape(HEADER)}/.freeze
+
+    def initialize(io, length:)
+      start = io.tell
+      header = io.read(6)
+      unless header == HEADER
+        raise MalformedJPEG, "Expected EXIF header at byte #{start} but got: #{header.inspect}"
       end
 
-      @comment = @comment.first if defined?(@comment) && @comment && @comment.size == 1
+      @exif = EXIFR::TIFF.new(StringIO.new(io.read(length)))
+    end
+  end
 
-      if app1 = @app1s.find { |d| d[0..5] == "Exif\0\0" }
-        @exif_data = app1[6..-1]
-        @exif = TIFF.new(StringIO.new(@exif_data))
-      end
+  class JPEG::CommentSegment
+    attr_reader :comment
+
+    def initialize(io, length:)
+      @comment = io.read(length)
+    end
+
+    def to_s
+      comment
     end
   end
 end
