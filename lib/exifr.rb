@@ -9,7 +9,7 @@ module EXIFR
 
   class << self; attr_accessor :logger; end
   self.logger = Logger.new(STDERR)
-end
 
-require 'exifr/jpeg'
-require 'exifr/tiff'
+  autoload :JPEG, "exifr/jpeg"
+  autoload :TIFF, "exifr/tiff"
+end
