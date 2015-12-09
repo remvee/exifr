@@ -8,7 +8,9 @@ module EXIFR
   class MalformedTIFF < MalformedImage; end
 
   class << self; attr_accessor :logger; end
-  self.logger = Logger.new(STDERR)
+  self.logger = Logger.new(STDERR).tap do |logger|
+    logger.level = Logger::WARN
+  end
 
   autoload :JPEG, "exifr/jpeg"
   autoload :TIFF, "exifr/tiff"
