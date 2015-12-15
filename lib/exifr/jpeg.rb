@@ -24,7 +24,7 @@ module EXIFR
     EOI = 0xd9 # End Of Image
     SOS = 0xda # Start Of Scan
     APPs = [0xe0..0xef] # Application-use
-    APP1 = 0xe1 # Probably EXIF (TIFF)
+    APP1 = 0xe1 # Probably EXIF (TIFF), or XMP
     APP13 = 0xed # Probably Photoshop (probably containing IPTC)
     COM = 0xfe # Comment
 
@@ -73,6 +73,14 @@ module EXIFR
       if exif? && !exif.jpeg_thumbnails.empty?
         exif.jpeg_thumbnails.first
       end
+    end
+
+    def xmp?
+      !!@xmp_index
+    end
+
+    def xmp
+      @segments[@xmp_index].xmp if xmp?
     end
 
     def iptc?
@@ -183,6 +191,8 @@ module EXIFR
       case header = peek(io, 32)
         when EXIFSegment::HEADER_MAGIC
           read_segment_exif(io, length: length)
+        when XMPSegment::HEADER_MAGIC
+          read_segment_xmp(io, length: length)
         else
           logger.debug { "Unknown APP1 @ #{io.tell}: #{header.inspect}" }
       end
@@ -195,10 +205,17 @@ module EXIFR
       @segments << segment
     end
 
+    def read_segment_xmp(io, length:)
+      segment = XMPSegment.new(io, length: length)
+      logger.debug { "XMP segment: #{segment.inspect}" }
+      @xmp_index ||= @segments.length
+      @segments << segment
+    end
+
     def read_segment_comment(io, length:)
       segment = CommentSegment.new(io, length: length)
       logger.debug { "Comment segment: #{segment.inspect}" }
-      @comment_index = @segments.length
+      @comment_index ||= @segments.length
       @segments << segment
     end
 
@@ -272,6 +289,34 @@ module EXIFR
       end
 
       @exif = EXIFR::TIFF.new(StringIO.new(io.read(length)))
+    end
+  end
+
+  class JPEG::XMPSegment
+    HEADER = "http://ns.adobe.com/xap/1.0/\0"
+    HEADER_MAGIC = /\A#{Regexp.escape(HEADER)}/.freeze
+    HEADER_SIZE = HEADER.bytesize
+
+    def initialize(io, length:)
+      start = io.tell
+      header = io.read(HEADER_SIZE)
+      unless header == HEADER
+        raise MalformedJPEG, "Expected XMP header at byte #{start} but got: #{header.inspect}"
+      end
+
+      begin
+        require "xmp_fixed"
+      rescue LoadError
+        EXIFR.logger.warn "EXIFR::JPEG: Install xmp_fixed gem for XMP metadata"
+      end
+
+      if defined? XmpFixed
+        @xmp = XmpFixed.new(io.read(length))
+      end
+    end
+
+    def xmp
+      @xmp || raise("Install xmp_fixed gem for XMP metadata")
     end
   end
 

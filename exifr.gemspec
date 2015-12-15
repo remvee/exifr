@@ -17,4 +17,6 @@ spec = Gem::Specification.new do |s|
   s.extra_rdoc_files = %w(README.rdoc CHANGELOG)
 
   s.executables = %w(exifr)
+
+  s.add_development_dependency "xmp_fixed"
 end

@@ -69,4 +69,12 @@ class JPEGTest < TestCase
     assert jpeg.iptc?
     assert_equal "Kingston", jpeg.iptc["City"]
   end
+
+  def test_xmp
+    jpeg = JPEG.open(f('xmp.jpg'))
+
+    assert jpeg.xmp?
+    assert_equal ["Copyright 2004 Phil Harvey"], jpeg.xmp.dc.rights
+    assert_equal ["Test IPTC picture"], jpeg.xmp.dc.title
+  end
 end
