@@ -39,24 +39,6 @@ class JPEGTest < TestCase
     assert_equal JPEG.open(f('image.jpg')).comment, "Here's a comment!"
   end
 
-  def test_shutter_speed_value
-    {
-      'canon-g3.exif' => Rational(1, 1244),
-      'Canon_PowerShot_A85.exif' => Rational(1, 806)
-    }.each do |file, expected|
-      assert_equal expected, TIFF.new(f(file)).shutter_speed_value
-    end
-  end
-
-  def test_aperture_value
-    {
-      'canon-g3.exif' => 4.5,
-      'Canon_PowerShot_A85.exif' => 2.8
-    }.each do |file, expected|
-      assert_equal expected, TIFF.new(f(file)).aperture_value
-    end
-  end
-
   def test_exif
     assert ! JPEG.open(f('image.jpg')).exif?
     assert JPEG.open(f('exif.jpg')).exif?

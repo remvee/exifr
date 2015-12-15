@@ -16,7 +16,7 @@ class TIFFTest < TestCase
       assert TIFF.new(StringIO.new(File.read(fname)))
     end
   end
-  
+
   def test_raises_malformed_tiff
     begin
       TIFF.new(StringIO.new("djibberish"))
@@ -52,6 +52,24 @@ class TIFFTest < TestCase
 
   def test_misc_fields
     assert_equal('Canon PowerShot G3', TIFF.new(f('canon-g3.exif')).model)
+  end
+
+  def test_floats
+    {
+      'canon-g3.exif' => 4.5,
+      'Canon_PowerShot_A85.exif' => 2.8
+    }.each do |file, expected|
+      assert_equal expected, TIFF.new(f(file)).aperture_value
+    end
+  end
+
+  def test_rationals
+    {
+      'canon-g3.exif' => Rational(1, 1244),
+      'Canon_PowerShot_A85.exif' => Rational(1, 806)
+    }.each do |file, expected|
+      assert_equal expected, TIFF.new(f(file)).shutter_speed_value
+    end
   end
 
   def test_dates
@@ -186,7 +204,7 @@ class TIFFTest < TestCase
   def test_handle_out_of_range_offset
     assert_equal 'NIKON', TIFF.new(f('out-of-range.exif')).make
   end
-  
+
   def test_negative_exposure_bias_value
     assert_equal(-1.quo(3), TIFF.new(f('negative-exposure-bias-value.exif')).exposure_bias_value)
   end
