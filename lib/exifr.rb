@@ -4,12 +4,16 @@ require 'logger'
 
 module EXIFR
   class MalformedImage < StandardError; end
+  class MalformedIPTC < MalformedImage; end
   class MalformedJPEG < MalformedImage; end
   class MalformedTIFF < MalformedImage; end
 
   class << self; attr_accessor :logger; end
-  self.logger = Logger.new(STDERR)
-end
+  self.logger = Logger.new(STDERR).tap do |logger|
+    logger.level = Logger::WARN
+  end
 
-require 'exifr/jpeg'
-require 'exifr/tiff'
+  autoload :IPTC, "exifr/iptc"
+  autoload :JPEG, "exifr/jpeg"
+  autoload :TIFF, "exifr/tiff"
+end
