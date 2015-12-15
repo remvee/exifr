@@ -62,4 +62,11 @@ class JPEGTest < TestCase
 
     assert count > 0, 'no thumbnails found'
   end
+
+  def test_iptc
+    jpeg = JPEG.open(f('iptc.jpg'))
+
+    assert jpeg.iptc?
+    assert_equal "Kingston", jpeg.iptc["City"]
+  end
 end

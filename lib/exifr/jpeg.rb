@@ -25,6 +25,7 @@ module EXIFR
     SOS = 0xda # Start Of Scan
     APPs = [0xe0..0xef] # Application-use
     APP1 = 0xe1 # Probably EXIF (TIFF)
+    APP13 = 0xed # Probably Photoshop (probably containing IPTC)
     COM = 0xfe # Comment
 
     # Open a file and return parsed metadata.
@@ -72,6 +73,14 @@ module EXIFR
       if exif? && !exif.jpeg_thumbnails.empty?
         exif.jpeg_thumbnails.first
       end
+    end
+
+    def iptc?
+      !!@iptc_index
+    end
+
+    def iptc
+      @segments[@iptc_index].iptc
     end
 
     def comment?
@@ -128,6 +137,9 @@ module EXIFR
           when APP1
             logger.debug { "APP1 @ #{start}, #{length} bytes." }
             read_segment_app1(io, length: length)
+          when APP13
+            logger.debug { "APP13 @ #{start}, #{length} bytes." }
+            read_segment_app13(io, length: length)
           when COM
             logger.debug { "Comment @ #{start}, #{length} bytes." }
             read_segment_comment(io, length: length)
@@ -190,6 +202,32 @@ module EXIFR
       @segments << segment
     end
 
+    def read_segment_app13(io, length:)
+      # APP13 segments could be a few different things
+      case header = peek(io, 32)
+        when PhotoshopSegment::HEADER_MAGIC
+          read_segment_photoshop(io, length: length)
+        when OldPhotoshopSegment::HEADER_MAGIC
+          read_segment_old_photoshop(io, length: length)
+        else
+          logger.debug { "Unknown APP1 @ #{io.tell}: #{header.inspect}" }
+      end
+    end
+
+    def read_segment_photoshop(io, length:)
+      segment = PhotoshopSegment.new(io, length: length)
+      logger.debug { "Photoshop segment: #{segment.inspect}" }
+      @iptc_index ||= @segments.length
+      @segments << segment
+    end
+
+    def read_segment_old_photoshop(io, length:)
+      segment = OldPhotoshopSegment.new(io, length: length)
+      logger.debug { "Old Photoshop segment: #{segment.inspect}" }
+      @iptc_index ||= @segments.length
+      @segments << segment
+    end
+
     def peek(io, length)
       # Ruby doesn't have multi-byte peek, so fake it.
       io.read(length).tap { io.seek(-length, IO::SEEK_CUR) }
@@ -235,6 +273,85 @@ module EXIFR
 
       @exif = EXIFR::TIFF.new(StringIO.new(io.read(length)))
     end
+  end
+
+  class JPEG::PhotoshopSegment
+    HEADER = "Photoshop 3.0\0".force_encoding("BINARY").freeze
+    HEADER_SIZE = HEADER.bytesize
+    HEADER_MAGIC = /\A#{Regexp.escape(HEADER)}/.freeze
+
+    IPTC_TYPE = "8BIM".force_encoding("BINARY").freeze
+    IPTC_TAG = 0x0404
+
+    attr_reader :iptc
+
+    # Starts with a known header, differs by version
+    # Photoshop is always big-endian
+
+    def initialize(io, length:)
+      start = io.tell
+      finish = start + length
+
+      # Skip header
+      io.seek(self.class::HEADER_SIZE, IO::SEEK_CUR)
+
+      until io.eof? || io.tell >= finish
+        type = io.read(4)
+        tag = io.read(2).unpack("n").first
+        name = read_string(io)
+
+        resource_length = io.read(4).unpack("N").first
+        resource_start = io.tell
+        resource_finish = resource_start + resource_length
+        # Photoshop pads things to even bytes.
+        if resource_length.odd?
+          resource_finish += 1
+        end
+
+        EXIFR.logger.debug { "Photoshop Resource Type=#{type.inspect}, Tag=0x#{tag.to_s(16)}, Name=#{name.inspect}, Length=#{resource_length.inspect}" }
+
+        # We only care about IPTC data
+        if type == IPTC_TYPE && tag == IPTC_TAG
+          @iptc = IPTC.new(io, length: resource_length)
+        end
+
+        # Get ready to read the next resource.
+        unless io.tell == resource_finish
+          io.seek(resource_finish)
+        end
+      end
+    end
+
+    private
+
+    STRING_ENCODING = "ISO-8859-1".freeze # latin, photoshop default
+    STRING_NULL = "\x00".force_encoding("BINARY").freeze
+
+    # Photoshop strings are pascal strings:
+    #  * 8-bit unsigned length
+    #  * a null byte if length is zero
+    #  * string blob padded to 2-byte offset
+    def read_string(io)
+      length = io.readbyte
+      io.read(length).force_encoding(STRING_ENCODING).tap do
+        if length.zero?
+          # Skip expected null byte
+          null = io.read(1)
+          unless null == STRING_NULL
+            raise MalformedJPEG, "Expected null byte for zero-length string, found: #{null.inspect}"
+          end
+        elsif length.odd?
+          # Skip padding byte
+          io.seek(1, IO::SEEK_CUR)
+        end
+      end
+    end
+  end
+
+  class JPEG::OldPhotoshopSegment
+    HEADER = "Adobe_Photoshop2.5:".force_encoding("BINARY").freeze
+    HEADER_SIZE = 27
+    HEADER_MAGIC = /\A#{Regexp.escape(HEADER)}/.freeze
   end
 
   class JPEG::CommentSegment

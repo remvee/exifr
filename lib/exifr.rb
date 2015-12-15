@@ -4,6 +4,7 @@ require 'logger'
 
 module EXIFR
   class MalformedImage < StandardError; end
+  class MalformedIPTC < MalformedImage; end
   class MalformedJPEG < MalformedImage; end
   class MalformedTIFF < MalformedImage; end
 
@@ -12,6 +13,7 @@ module EXIFR
     logger.level = Logger::WARN
   end
 
+  autoload :IPTC, "exifr/iptc"
   autoload :JPEG, "exifr/jpeg"
   autoload :TIFF, "exifr/tiff"
 end
