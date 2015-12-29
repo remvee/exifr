@@ -61,8 +61,8 @@ module EXIFR
       @exif.send method if defined?(@exif) && @exif
     end
 
-    def respond_to?(method) # :nodoc:
-      super || methods.include?(method.to_s)
+    def respond_to?(method, include_all = false) # :nodoc:
+      super || methods.include?(method.to_s) || (include_all && private_methods.include?(method))
     end
 
     def methods # :nodoc:
