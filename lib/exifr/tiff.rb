@@ -366,7 +366,7 @@ module EXIFR
                     })
 
     # Names for all recognized TIFF fields.
-    TAGS = ([TAG_MAPPING.keys, TAG_MAPPING.values.map{|v|v.values}].flatten.uniq - IFD_TAGS).map{|v|v.to_s}
+    TAGS = [TAG_MAPPING.keys, TAG_MAPPING.values.map{|v|v.values}].flatten.uniq - IFD_TAGS
 
     # +file+ is a filename or an +IO+ object.  Hint: use +StringIO+ when working with slurped data like blobs.
     def initialize(file)
@@ -407,7 +407,7 @@ module EXIFR
 
       if @ifds.first.respond_to?(method)
         @ifds.first.send(method)
-      elsif TAGS.include?(method.to_s)
+      elsif TAGS.include?(method)
         @ifds.first.to_hash[method]
       else
         super
@@ -417,7 +417,7 @@ module EXIFR
     def respond_to?(method, include_all = false) # :nodoc:
       super ||
         (defined?(@ifds) && @ifds && @ifds.first && @ifds.first.respond_to?(method, include_all)) ||
-        TAGS.include?(method.to_s)
+        TAGS.include?(method)
     end
 
     def methods # :nodoc:
@@ -477,7 +477,7 @@ module EXIFR
       end
 
       def method_missing(method, *args)
-        super unless args.empty? && TAGS.include?(method.to_s)
+        super unless args.empty? && TAGS.include?(method)
         to_hash[method]
       end
 
