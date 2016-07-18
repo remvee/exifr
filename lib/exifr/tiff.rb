@@ -169,7 +169,7 @@ module EXIFR
         0x927c => :maker_note,
         0x9286 => :user_comment,
         0x9290 => :subsec_time,
-        0x9291 => :subsec_time_orginal,
+        0x9291 => :subsec_time_original,
         0x9292 => :subsec_time_digitized,
         0xa000 => :flashpix_version,
         0xa001 => :color_space,
