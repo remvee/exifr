@@ -78,7 +78,7 @@ class JPEGTest < TestCase
 
   def test_exif_dispatch
     j = JPEG.new(f('exif.jpg'))
-    JPEG.instance_methods.include?(:date_time)
+    assert JPEG.instance_methods.include?(:date_time)
     assert j.methods.include?(:date_time)
     assert j.respond_to?(:date_time)
     assert j.date_time
