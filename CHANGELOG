@@ -1,3 +1,7 @@
+EXIF Reader 1.2.5
+* bug fix; "[GH#46] Having stringified methods is not a good idea"; thanks Filipe Costa
+* bug fix; "Fix typo in subsec_time_original key"; thanks Filipe Costa
+
 EXIF Reader 1.2.4
 * bug fix; "[GH#43] Fix `respond_to?` signature"; thanks Pete Johns
 
