@@ -16,7 +16,7 @@ class TIFFTest < TestCase
       assert TIFF.new(StringIO.new(File.read(fname)))
     end
   end
-  
+
   def test_raises_malformed_tiff
     begin
       TIFF.new(StringIO.new("djibberish"))
@@ -120,9 +120,8 @@ class TIFFTest < TestCase
 
   def test_ifd_dispatch
     assert @t.respond_to?(:f_number)
-    assert @t.respond_to?('f_number')
-    assert @t.methods.include?('f_number')
-    assert TIFF.instance_methods.include?('f_number')
+    assert @t.methods.include?(:f_number)
+    assert TIFF.instance_methods.include?(:f_number)
 
     assert @t.f_number
     assert_kind_of Rational, @t.f_number
@@ -186,7 +185,7 @@ class TIFFTest < TestCase
   def test_handle_out_of_range_offset
     assert_equal 'NIKON', TIFF.new(f('out-of-range.exif')).make
   end
-  
+
   def test_negative_exposure_bias_value
     assert_equal(-1.quo(3), TIFF.new(f('negative-exposure-bias-value.exif')).exposure_bias_value)
   end
