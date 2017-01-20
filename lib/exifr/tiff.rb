@@ -261,6 +261,9 @@ module EXIFR
 
     # The orientation of the image with respect to the rows and columns.
     class Orientation
+      
+      attr_reader :type
+      
       def initialize(value, type) # :nodoc:
         @value, @type = value, type
       end
