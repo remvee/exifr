@@ -1,3 +1,6 @@
+EXIF Reader 1.2.6
+* bug fix; "[GH#48] handle empty file as malformed jpeg"; thanks Hoàng Xuân Phú
+
 EXIF Reader 1.2.5
 * bug fix; "[GH#46] Having stringified methods is not a good idea"; thanks Filipe Costa
 * bug fix; "Fix typo in subsec_time_original key"; thanks Filipe Costa
