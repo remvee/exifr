@@ -15,6 +15,11 @@ class JPEGTest < TestCase
 
   def test_raises_malformed_jpeg
     begin
+      JPEG.new(StringIO.new(""))
+    rescue MalformedJPEG => ex
+      assert ex
+    end
+    begin
       JPEG.new(StringIO.new("djibberish"))
     rescue MalformedJPEG => ex
       assert ex

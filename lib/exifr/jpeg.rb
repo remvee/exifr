@@ -93,7 +93,7 @@ module EXIFR
     def examine(io)
       io = Reader.new(io)
 
-      unless io.readbyte == 0xFF && io.readbyte == 0xD8 # SOI
+      unless io.getbyte == 0xFF && io.getbyte == 0xD8 # SOI
         raise MalformedJPEG, "no start of image marker found"
       end
 
