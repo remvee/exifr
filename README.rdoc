@@ -1,4 +1,7 @@
 = EXIF Reader
+{<img src="https://badge.fury.io/rb/exifr.svg" alt="Gem Version" />}[https://badge.fury.io/rb/exifr]
+{<img src="https://circleci.com/gh/remvee/exifr/tree/master.svg?style=shield&circle-token=7d957be2d7195f5d07a7c1962926ee626b050c2e" alt="Circle CI" />}[https://circleci.com/gh/remvee/exifr]
+
 EXIF Reader is a module to read metadata from JPEG and TIFF images.
 
 == Examples
