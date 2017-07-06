@@ -1,3 +1,6 @@
+EXIF Reader HEAD
+* workaround warnings when using the ruby "-w" option
+
 EXIF Reader 1.2.6
 * bug fix; "[GH#48] handle empty file as malformed jpeg"; thanks Hoàng Xuân Phú
 

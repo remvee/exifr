@@ -24,7 +24,8 @@ TestCase = begin
            end
 
 $:.unshift("#{File.dirname(__FILE__)}/../lib")
-require 'exifr'
+require 'exifr/jpeg'
+require 'exifr/tiff'
 include EXIFR
 
 EXIFR.logger = Logger.new(StringIO.new)

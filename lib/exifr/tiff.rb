@@ -245,16 +245,16 @@ module EXIFR
     self.mktime_proc = proc { |*args| Time.local(*args) }
 
     time_proc = proc do |value|
-      value.map do |value|
-        if value =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
+      value.map do |v|
+        if v =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
           begin
             mktime_proc.call($1.to_i, $2.to_i, $3.to_i, $4.to_i, $5.to_i, $6.to_i)
           rescue => ex
-            EXIFR.logger.warn("Bad date/time value #{value.inspect}: #{ex}")
+            EXIFR.logger.warn("Bad date/time value #{v.inspect}: #{ex}")
             nil
           end
         else
-          value
+          v
         end
       end
     end
@@ -356,13 +356,13 @@ module EXIFR
                       :date_time_original => time_proc,
                       :date_time_digitized => time_proc,
                       :date_time => time_proc,
-                      :orientation => proc { |v| v.map{|v| ORIENTATIONS[v]} },
+                      :orientation => proc { |x| x.map{|y| ORIENTATIONS[y]} },
                       :gps_latitude => degrees_proc,
                       :gps_longitude => degrees_proc,
                       :gps_dest_latitude => degrees_proc,
                       :gps_dest_longitude => degrees_proc,
-                      :shutter_speed_value => proc { |v| v.map { |v| v.abs < 100 ? rational(1, (2 ** v).to_i) : nil } },
-                      :aperture_value => proc { |v| v.map { |v| round(1.4142 ** v, 1) } }
+                      :shutter_speed_value => proc { |x| x.map { |y| y.abs < 100 ? rational(1, (2 ** y).to_i) : nil } },
+                      :aperture_value => proc { |x| x.map { |y| round(1.4142 ** y, 1) } }
                     })
 
     # Names for all recognized TIFF fields.
@@ -377,9 +377,9 @@ module EXIFR
           @ifds << ifd
         end
 
-        @jpeg_thumbnails = @ifds.map do |ifd|
-          if ifd.jpeg_interchange_format && ifd.jpeg_interchange_format_length
-            start, length = ifd.jpeg_interchange_format, ifd.jpeg_interchange_format_length
+        @jpeg_thumbnails = @ifds.map do |v|
+          if v.jpeg_interchange_format && v.jpeg_interchange_format_length
+            start, length = v.jpeg_interchange_format, v.jpeg_interchange_format_length
             data[start..(start + length)]
           end
         end.compact
@@ -422,6 +422,14 @@ module EXIFR
 
     def methods # :nodoc:
       (super + TAGS + IFD.instance_methods(false)).uniq
+    end
+
+    def encode_with(coder)
+      coder["ifds"] = @ifds
+    end
+
+    def to_yaml_properties
+      ['@ifds']
     end
 
     class << self
@@ -506,6 +514,10 @@ module EXIFR
 
       def next
         IFD.new(@data, @offset_next) if next?
+      end
+
+      def encode_with(coder)
+        coder["fields"] = @fields
       end
 
       def to_yaml_properties
