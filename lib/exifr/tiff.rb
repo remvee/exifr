@@ -1,4 +1,4 @@
-# Copyright (c) 2007-2015 - R.W. van 't Veer
+# Copyright (c) 2007-2017 - R.W. van 't Veer
 
 require 'exifr'
 require 'rational'

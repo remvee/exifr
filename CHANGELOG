@@ -1,5 +1,6 @@
-EXIF Reader HEAD
+EXIF Reader 1.3.0
 * workaround warnings when using the ruby "-w" option
+* NOTE: requiring only 'exifr' will nolonger provide EXIFR::JPEG or EXIFR::TIFF, require 'exifr/jpeg' or 'exifr/tiff' instead
 
 EXIF Reader 1.2.6
 * bug fix; "[GH#48] handle empty file as malformed jpeg"; thanks Hoàng Xuân Phú

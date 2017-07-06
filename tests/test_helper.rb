@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Copyright (c) 2006-2015 - R.W. van 't Veer
+# Copyright (c) 2006-2017 - R.W. van 't Veer
 
 require 'stringio'
 require 'pp'
