@@ -6,19 +6,17 @@
 
 <title>class EXIFR::TIFF - EXIF Reader for Ruby API Documentation</title>
 
-<link href="../fonts.css" rel="stylesheet">
-<link href="../rdoc.css" rel="stylesheet">
-
 <script type="text/javascript">
   var rdoc_rel_prefix = "../";
+  var index_rel_prefix = "../";
 </script>
 
 <script src="../js/jquery.js"></script>
-<script src="../js/navigation.js"></script>
-<script src="../js/search_index.js"></script>
-<script src="../js/search.js"></script>
-<script src="../js/searcher.js"></script>
 <script src="../js/darkfish.js"></script>
+
+<link href="../css/fonts.css" rel="stylesheet">
+<link href="../css/rdoc.css" rel="stylesheet">
+
 
 
 <body id="top" role="document" class="class">
@@ -105,6 +103,8 @@
     
     <li ><a href="#method-i-each">#each</a>
     
+    <li ><a href="#method-i-encode_with">#encode_with</a>
+    
     <li ><a href="#method-i-gps">#gps</a>
     
     <li ><a href="#method-i-height">#height</a>
@@ -114,6 +114,8 @@
     <li ><a href="#method-i-size">#size</a>
     
     <li ><a href="#method-i-to_hash">#to_hash</a>
+    
+    <li ><a href="#method-i-to_yaml_properties">#to_yaml_properties</a>
     
     <li ><a href="#method-i-width">#width</a>
     
@@ -130,14 +132,14 @@
 
   <section class="description">
     
-<h1 id="class-EXIFR::TIFF-label-TIFF+decoder"><a href="TIFF.html">TIFF</a> decoder<span><a href="#class-EXIFR::TIFF-label-TIFF+decoder">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+<h1 id="class-EXIFR::TIFF-label-TIFF+decoder"><a href="TIFF.html">TIFF</a> decoder<span><a href="#class-EXIFR::TIFF-label-TIFF+decoder">&para;</a> <a href="#top">&uarr;</a></span></h1>
 
-<h2 id="class-EXIFR::TIFF-label-Date+properties">Date properties<span><a href="#class-EXIFR::TIFF-label-Date+properties">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="class-EXIFR::TIFF-label-Date+properties">Date properties<span><a href="#class-EXIFR::TIFF-label-Date+properties">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>The properties <code>:date_time</code>, <code>:date_time_original</code>,
 <code>:date_time_digitized</code> coerced into Time objects.</p>
 
-<h2 id="class-EXIFR::TIFF-label-Orientation"><a href="TIFF/Orientation.html">Orientation</a><span><a href="#class-EXIFR::TIFF-label-Orientation">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="class-EXIFR::TIFF-label-Orientation"><a href="TIFF/Orientation.html">Orientation</a><span><a href="#class-EXIFR::TIFF-label-Orientation">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>The property <code>:orientation</code> describes the subject rotated and/or
 mirrored in relation to the camera.  It is translated to one of the
@@ -169,7 +171,7 @@ methods:</p>
 to a viewable version</p>
 </li></ul>
 
-<h2 id="class-EXIFR::TIFF-label-Examples">Examples<span><a href="#class-EXIFR::TIFF-label-Examples">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="class-EXIFR::TIFF-label-Examples">Examples<span><a href="#class-EXIFR::TIFF-label-Examples">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <pre class="ruby"><span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">TIFF</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;DSC_0218.TIF&#39;</span>).<span class="ruby-identifier">width</span>           <span class="ruby-comment"># =&gt; 3008</span>
 <span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">TIFF</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;DSC_0218.TIF&#39;</span>)[<span class="ruby-value">1</span>].<span class="ruby-identifier">width</span>        <span class="ruby-comment"># =&gt; 160</span>
@@ -274,7 +276,7 @@ to a viewable version</p>
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 366</span>
+            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 372</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">file</span>)
   <span class="ruby-constant">Data</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">file</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span>
     <span class="ruby-ivar">@ifds</span> = [<span class="ruby-constant">IFD</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">data</span>)]
@@ -283,9 +285,9 @@ to a viewable version</p>
       <span class="ruby-ivar">@ifds</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">ifd</span>
     <span class="ruby-keyword">end</span>
 
-    <span class="ruby-ivar">@jpeg_thumbnails</span> = <span class="ruby-ivar">@ifds</span>.<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ifd</span><span class="ruby-operator">|</span>
-      <span class="ruby-keyword">if</span> <span class="ruby-identifier">ifd</span>.<span class="ruby-identifier">jpeg_interchange_format</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">ifd</span>.<span class="ruby-identifier">jpeg_interchange_format_length</span>
-        <span class="ruby-identifier">start</span>, <span class="ruby-identifier">length</span> = <span class="ruby-identifier">ifd</span>.<span class="ruby-identifier">jpeg_interchange_format</span>, <span class="ruby-identifier">ifd</span>.<span class="ruby-identifier">jpeg_interchange_format_length</span>
+    <span class="ruby-ivar">@jpeg_thumbnails</span> = <span class="ruby-ivar">@ifds</span>.<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">v</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword">if</span> <span class="ruby-identifier">v</span>.<span class="ruby-identifier">jpeg_interchange_format</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">v</span>.<span class="ruby-identifier">jpeg_interchange_format_length</span>
+        <span class="ruby-identifier">start</span>, <span class="ruby-identifier">length</span> = <span class="ruby-identifier">v</span>.<span class="ruby-identifier">jpeg_interchange_format</span>, <span class="ruby-identifier">v</span>.<span class="ruby-identifier">jpeg_interchange_format_length</span>
         <span class="ruby-identifier">data</span>[<span class="ruby-identifier">start</span><span class="ruby-operator">..</span>(<span class="ruby-identifier">start</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">length</span>)]
       <span class="ruby-keyword">end</span>
     <span class="ruby-keyword">end</span>.<span class="ruby-identifier">compact</span>
@@ -322,7 +324,13 @@ to a viewable version</p>
           <div class="method-source-code" id="rational-source">
             <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 339</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">rational</span>(<span class="ruby-identifier">n</span>, <span class="ruby-identifier">d</span>)
-  <span class="ruby-constant">Rational</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:reduce</span>) <span class="ruby-operator">?</span> <span class="ruby-constant">Rational</span>.<span class="ruby-identifier">reduce</span>(<span class="ruby-identifier">n</span>, <span class="ruby-identifier">d</span>) <span class="ruby-operator">:</span> <span class="ruby-value">1</span>.<span class="ruby-identifier">quo</span>(<span class="ruby-identifier">d</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">d</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+    <span class="ruby-identifier">n</span>.<span class="ruby-identifier">to_f</span> <span class="ruby-operator">/</span> <span class="ruby-identifier">d</span>.<span class="ruby-identifier">to_f</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-constant">Rational</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:reduce</span>)
+    <span class="ruby-constant">Rational</span>.<span class="ruby-identifier">reduce</span>(<span class="ruby-identifier">n</span>, <span class="ruby-identifier">d</span>)
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">n</span>.<span class="ruby-identifier">quo</span>(<span class="ruby-identifier">d</span>)
+  <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -353,7 +361,7 @@ to a viewable version</p>
 
           
           <div class="method-source-code" id="round-source">
-            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 343</span>
+            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 349</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">round</span>(<span class="ruby-identifier">f</span>, <span class="ruby-identifier">n</span>)
   <span class="ruby-identifier">q</span> = (<span class="ruby-value">10</span> <span class="ruby-operator">**</span> <span class="ruby-identifier">n</span>)
   (<span class="ruby-identifier">f</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">q</span>).<span class="ruby-identifier">round</span>.<span class="ruby-identifier">to_f</span> <span class="ruby-operator">/</span> <span class="ruby-identifier">q</span>
@@ -395,7 +403,7 @@ to a viewable version</p>
 
           
           <div class="method-source-code" id="5B-5D-source">
-            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 394</span>
+            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 400</span>
 <span class="ruby-keyword">def</span> <span class="ruby-operator">[]</span>(<span class="ruby-identifier">index</span>)
   <span class="ruby-identifier">index</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Symbol</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">to_hash</span>[<span class="ruby-identifier">index</span>] <span class="ruby-operator">:</span> <span class="ruby-ivar">@ifds</span>[<span class="ruby-identifier">index</span>]
 <span class="ruby-keyword">end</span></pre>
@@ -428,9 +436,42 @@ to a viewable version</p>
 
           
           <div class="method-source-code" id="each-source">
-            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 389</span>
+            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 395</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">each</span>
   <span class="ruby-ivar">@ifds</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">ifd</span><span class="ruby-operator">|</span> <span class="ruby-keyword">yield</span> <span class="ruby-identifier">ifd</span> }
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-encode_with" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">encode_with</span><span
+            class="method-args">(coder)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="encode_with-source">
+            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 427</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">encode_with</span>(<span class="ruby-identifier">coder</span>)
+  <span class="ruby-identifier">coder</span>[<span class="ruby-string">&quot;ifds&quot;</span>] = <span class="ruby-ivar">@ifds</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -462,7 +503,7 @@ return nil when not available.</p>
 
           
           <div class="method-source-code" id="gps-source">
-            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 440</span>
+            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 454</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">gps</span>
   <span class="ruby-keyword">return</span> <span class="ruby-keyword">nil</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">gps_latitude</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">gps_longitude</span>
   <span class="ruby-constant">GPS</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">gps_latitude</span>.<span class="ruby-identifier">to_f</span> <span class="ruby-operator">*</span> (<span class="ruby-identifier">gps_latitude_ref</span> <span class="ruby-operator">==</span> <span class="ruby-string">&#39;S&#39;</span> <span class="ruby-operator">?</span> <span class="ruby-value">-1</span> <span class="ruby-operator">:</span> <span class="ruby-value">1</span>),
@@ -499,7 +540,7 @@ return nil when not available.</p>
 
           
           <div class="method-source-code" id="height-source">
-            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 432</span>
+            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 446</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">height</span>; <span class="ruby-ivar">@ifds</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">height</span>; <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -535,13 +576,13 @@ return nil when not available.</p>
 
           
           <div class="method-source-code" id="method_missing-source">
-            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 399</span>
+            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 405</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">method_missing</span>(<span class="ruby-identifier">method</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
   <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">empty?</span>
 
   <span class="ruby-keyword">if</span> <span class="ruby-ivar">@ifds</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">method</span>)
     <span class="ruby-ivar">@ifds</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">method</span>)
-  <span class="ruby-keyword">elsif</span> <span class="ruby-constant">TAGS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">method</span>.<span class="ruby-identifier">to_s</span>)
+  <span class="ruby-keyword">elsif</span> <span class="ruby-constant">TAGS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">method</span>)
     <span class="ruby-ivar">@ifds</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">to_hash</span>[<span class="ruby-identifier">method</span>]
   <span class="ruby-keyword">else</span>
     <span class="ruby-keyword">super</span>
@@ -576,7 +617,7 @@ return nil when not available.</p>
 
           
           <div class="method-source-code" id="size-source">
-            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 384</span>
+            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 390</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">size</span>
   <span class="ruby-ivar">@ifds</span>.<span class="ruby-identifier">size</span>
 <span class="ruby-keyword">end</span></pre>
@@ -609,8 +650,41 @@ return nil when not available.</p>
 
           
           <div class="method-source-code" id="to_hash-source">
-            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 435</span>
+            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 449</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">to_hash</span>; <span class="ruby-ivar">@ifds</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">to_hash</span>; <span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-to_yaml_properties" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">to_yaml_properties</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="to_yaml_properties-source">
+            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 431</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">to_yaml_properties</span>
+  [<span class="ruby-string">&#39;@ifds&#39;</span>]
+<span class="ruby-keyword">end</span></pre>
           </div>
           
         </div>
@@ -640,7 +714,7 @@ return nil when not available.</p>
 
           
           <div class="method-source-code" id="width-source">
-            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 429</span>
+            <pre><span class="ruby-comment"># File lib/exifr/tiff.rb, line 443</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">width</span>; <span class="ruby-ivar">@ifds</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">width</span>; <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -660,7 +734,7 @@ return nil when not available.</p>
 
 <footer id="validator-badges" role="contentinfo">
   <p><a href="http://validator.w3.org/check/referer">Validate</a>
-  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
-  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+  <p>Generated by <a href="https://rdoc.github.io/rdoc">RDoc</a> 5.0.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
 </footer>
 

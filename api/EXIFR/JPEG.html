@@ -6,19 +6,17 @@
 
 <title>class EXIFR::JPEG - EXIF Reader for Ruby API Documentation</title>
 
-<link href="../fonts.css" rel="stylesheet">
-<link href="../rdoc.css" rel="stylesheet">
-
 <script type="text/javascript">
   var rdoc_rel_prefix = "../";
+  var index_rel_prefix = "../";
 </script>
 
 <script src="../js/jquery.js"></script>
-<script src="../js/navigation.js"></script>
-<script src="../js/search_index.js"></script>
-<script src="../js/search.js"></script>
-<script src="../js/searcher.js"></script>
 <script src="../js/darkfish.js"></script>
+
+<link href="../css/fonts.css" rel="stylesheet">
+<link href="../css/rdoc.css" rel="stylesheet">
+
 
 
 <body id="top" role="document" class="class">
@@ -105,12 +103,13 @@
 
   <section class="description">
     
-<h1 id="class-EXIFR::JPEG-label-JPEG+decoder"><a href="JPEG.html">JPEG</a> decoder<span><a href="#class-EXIFR::JPEG-label-JPEG+decoder">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+<h1 id="class-EXIFR::JPEG-label-JPEG+decoder"><a href="JPEG.html">JPEG</a> decoder<span><a href="#class-EXIFR::JPEG-label-JPEG+decoder">&para;</a> <a href="#top">&uarr;</a></span></h1>
 
-<h2 id="class-EXIFR::JPEG-label-Examples">Examples<span><a href="#class-EXIFR::JPEG-label-Examples">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="class-EXIFR::JPEG-label-Examples">Examples<span><a href="#class-EXIFR::JPEG-label-Examples">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<pre>EXIFR::JPEG.new(&#39;IMG_3422.JPG&#39;).width         # -&gt; 2272
-EXIFR::JPEG.new(&#39;IMG_3422.JPG&#39;).exif.model    # -&gt; &quot;Canon PowerShot G3&quot;</pre>
+<pre class="ruby"><span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">JPEG</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;IMG_3422.JPG&#39;</span>).<span class="ruby-identifier">width</span>         <span class="ruby-comment"># -&gt; 2272</span>
+<span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">JPEG</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;IMG_3422.JPG&#39;</span>).<span class="ruby-identifier">exif</span>.<span class="ruby-identifier">model</span>    <span class="ruby-comment"># -&gt; &quot;Canon PowerShot G3&quot;</span>
+</pre>
 
   </section>
 
@@ -227,7 +226,7 @@ working with slurped data like blobs.</p>
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File lib/exifr/jpeg.rb, line 30</span>
+            <pre><span class="ruby-comment"># File lib/exifr/jpeg.rb, line 32</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">file</span>)
   <span class="ruby-keyword">if</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">String</span>
     <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">file</span>, <span class="ruby-string">&#39;rb&#39;</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span> <span class="ruby-identifier">examine</span>(<span class="ruby-identifier">io</span>) }
@@ -272,7 +271,7 @@ working with slurped data like blobs.</p>
 
           
           <div class="method-source-code" id="exif-3F-source">
-            <pre><span class="ruby-comment"># File lib/exifr/jpeg.rb, line 39</span>
+            <pre><span class="ruby-comment"># File lib/exifr/jpeg.rb, line 41</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">exif?</span>
   <span class="ruby-operator">!</span><span class="ruby-identifier">exif</span>.<span class="ruby-identifier">nil?</span>
 <span class="ruby-keyword">end</span></pre>
@@ -312,10 +311,10 @@ returned.</p>
 
           
           <div class="method-source-code" id="method_missing-source">
-            <pre><span class="ruby-comment"># File lib/exifr/jpeg.rb, line 57</span>
+            <pre><span class="ruby-comment"># File lib/exifr/jpeg.rb, line 59</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">method_missing</span>(<span class="ruby-identifier">method</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
   <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">empty?</span>
-  <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">methods</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">method</span>.<span class="ruby-identifier">to_s</span>)
+  <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">methods</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">method</span>)
   <span class="ruby-ivar">@exif</span>.<span class="ruby-identifier">send</span> <span class="ruby-identifier">method</span> <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-ivar">@exif</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@exif</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
@@ -347,7 +346,7 @@ returned.</p>
 
           
           <div class="method-source-code" id="thumbnail-source">
-            <pre><span class="ruby-comment"># File lib/exifr/jpeg.rb, line 44</span>
+            <pre><span class="ruby-comment"># File lib/exifr/jpeg.rb, line 46</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">thumbnail</span>
   <span class="ruby-keyword">defined?</span>(<span class="ruby-ivar">@exif</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@exif</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@exif</span>.<span class="ruby-identifier">jpeg_thumbnails</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@exif</span>.<span class="ruby-identifier">jpeg_thumbnails</span>.<span class="ruby-identifier">first</span>
 <span class="ruby-keyword">end</span></pre>
@@ -380,7 +379,7 @@ returned.</p>
 
           
           <div class="method-source-code" id="to_hash-source">
-            <pre><span class="ruby-comment"># File lib/exifr/jpeg.rb, line 49</span>
+            <pre><span class="ruby-comment"># File lib/exifr/jpeg.rb, line 51</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">to_hash</span>
   <span class="ruby-identifier">h</span> = {<span class="ruby-value">:width</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">width</span>, <span class="ruby-value">:height</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">height</span>, <span class="ruby-value">:bits</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">bits</span>, <span class="ruby-value">:comment</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">comment</span>}
   <span class="ruby-identifier">h</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">exif</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">exif?</span>
@@ -404,7 +403,7 @@ returned.</p>
 
 <footer id="validator-badges" role="contentinfo">
   <p><a href="http://validator.w3.org/check/referer">Validate</a>
-  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
-  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+  <p>Generated by <a href="https://rdoc.github.io/rdoc">RDoc</a> 5.0.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
 </footer>
 

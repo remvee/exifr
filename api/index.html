@@ -6,19 +6,17 @@
 
 <title>EXIF Reader for Ruby API Documentation</title>
 
-<link href="./fonts.css" rel="stylesheet">
-<link href="./rdoc.css" rel="stylesheet">
-
 <script type="text/javascript">
   var rdoc_rel_prefix = "./";
+  var index_rel_prefix = "./";
 </script>
 
 <script src="./js/jquery.js"></script>
-<script src="./js/navigation.js"></script>
-<script src="./js/search_index.js"></script>
-<script src="./js/search.js"></script>
-<script src="./js/searcher.js"></script>
 <script src="./js/darkfish.js"></script>
+
+<link href="./css/fonts.css" rel="stylesheet">
+<link href="./css/rdoc.css" rel="stylesheet">
+
 
 
 <body id="top" role="document" class="file">
@@ -74,6 +72,8 @@
   
     <li><a href="./EXIFR/JPEG.html">EXIFR::JPEG</a>
   
+    <li><a href="./EXIFR/JPEG/Reader.html">EXIFR::JPEG::Reader</a>
+  
     <li><a href="./EXIFR/MalformedImage.html">EXIFR::MalformedImage</a>
   
     <li><a href="./EXIFR/MalformedJPEG.html">EXIFR::MalformedJPEG</a>
@@ -95,40 +95,48 @@
 <main role="main">
 
 
-<h1 id="label-EXIF+Reader">EXIF Reader<span><a href="#label-EXIF+Reader">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+<h1 id="label-EXIF+Reader">EXIF Reader<span><a href="#label-EXIF+Reader">&para;</a> <a href="#top">&uarr;</a></span></h1>
+
+<p><a href="https://badge.fury.io/rb/exifr"><img
+src="https://badge.fury.io/rb/exifr.svg" alt="Gem Version" /></a> <a
+href="https://circleci.com/gh/remvee/exifr"><img
+src="https://circleci.com/gh/remvee/exifr/tree/master.svg?style=shield&circle-token=7d957be2d7195f5d07a7c1962926ee626b050c2e"
+alt="Circle CI" /></a></p>
 
 <p>EXIF Reader is a module to read metadata from JPEG and TIFF images.</p>
 
-<h2 id="label-Examples">Examples<span><a href="#label-Examples">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-Examples">Examples<span><a href="#label-Examples">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<pre class="ruby"><span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">JPEG</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;IMG_6841.JPG&#39;</span>).<span class="ruby-identifier">width</span>               <span class="ruby-comment"># =&gt; 2272</span>
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;exifr/jpeg&#39;</span>
+<span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">JPEG</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;IMG_6841.JPG&#39;</span>).<span class="ruby-identifier">width</span>               <span class="ruby-comment"># =&gt; 2272</span>
 <span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">JPEG</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;IMG_6841.JPG&#39;</span>).<span class="ruby-identifier">height</span>              <span class="ruby-comment"># =&gt; 1704</span>
 <span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">JPEG</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;IMG_6841.JPG&#39;</span>).<span class="ruby-identifier">exif?</span>               <span class="ruby-comment"># =&gt; true</span>
 <span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">JPEG</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;IMG_6841.JPG&#39;</span>).<span class="ruby-identifier">model</span>               <span class="ruby-comment"># =&gt; &quot;Canon PowerShot G3&quot;</span>
 <span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">JPEG</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;IMG_6841.JPG&#39;</span>).<span class="ruby-identifier">date_time</span>           <span class="ruby-comment"># =&gt; Fri Feb 09 16:48:54 +0100 2007</span>
 <span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">JPEG</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;IMG_6841.JPG&#39;</span>).<span class="ruby-identifier">exposure_time</span>.<span class="ruby-identifier">to_s</span>  <span class="ruby-comment"># =&gt; &quot;1/15&quot;</span>
 <span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">JPEG</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;IMG_6841.JPG&#39;</span>).<span class="ruby-identifier">f_number</span>.<span class="ruby-identifier">to_f</span>       <span class="ruby-comment"># =&gt; 2.0</span>
+<span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">JPEG</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;enkhuizen.jpg&#39;</span>).<span class="ruby-identifier">gps</span>.<span class="ruby-identifier">latitude</span>       <span class="ruby-comment"># =&gt; 52.7197888888889</span>
+<span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">JPEG</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;enkhuizen.jpg&#39;</span>).<span class="ruby-identifier">gps</span>.<span class="ruby-identifier">longitude</span>      <span class="ruby-comment"># =&gt; 5.28397777777778</span>
 
+<span class="ruby-identifier">require</span> <span class="ruby-string">&#39;exifr/tiff&#39;</span>
 <span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">TIFF</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;DSC_0218.TIF&#39;</span>).<span class="ruby-identifier">width</span>               <span class="ruby-comment"># =&gt; 3008</span>
 <span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">TIFF</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;DSC_0218.TIF&#39;</span>)[<span class="ruby-value">1</span>].<span class="ruby-identifier">width</span>            <span class="ruby-comment"># =&gt; 160</span>
 <span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">TIFF</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;DSC_0218.TIF&#39;</span>).<span class="ruby-identifier">model</span>               <span class="ruby-comment"># =&gt; &quot;NIKON D1X&quot;</span>
 <span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">TIFF</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;DSC_0218.TIF&#39;</span>).<span class="ruby-identifier">date_time</span>           <span class="ruby-comment"># =&gt; Tue May 23 19:15:32 +0200 2006</span>
 <span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">TIFF</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;DSC_0218.TIF&#39;</span>).<span class="ruby-identifier">exposure_time</span>.<span class="ruby-identifier">to_s</span>  <span class="ruby-comment"># =&gt; &quot;1/100&quot;</span>
 <span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">TIFF</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;DSC_0218.TIF&#39;</span>).<span class="ruby-identifier">f_number</span>.<span class="ruby-identifier">to_f</span>       <span class="ruby-comment"># =&gt; 5.0</span>
-
-<span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">JPEG</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;enkhuizen.jpg&#39;</span>).<span class="ruby-identifier">gps</span>.<span class="ruby-identifier">latitude</span>       <span class="ruby-comment"># =&gt; 52.7197888888889</span>
-<span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">JPEG</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;enkhuizen.jpg&#39;</span>).<span class="ruby-identifier">gps</span>.<span class="ruby-identifier">longitude</span>      <span class="ruby-comment"># =&gt; 5.28397777777778</span>
 </pre>
 
-<h2 id="label-Logging+warnings">Logging warnings<span><a href="#label-Logging+warnings">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-Logging+warnings">Logging warnings<span><a href="#label-Logging+warnings">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>When EXIF information is malformed, a warning is logged to STDERR with the
 standard Ruby logger.  Log to some other location by supplying an
 alternative implementation:</p>
 
-<pre>EXIFR.logger = SyslogLogger.new</pre>
+<pre class="ruby"><span class="ruby-constant">EXIFR</span>.<span class="ruby-identifier">logger</span> = <span class="ruby-constant">SyslogLogger</span>.<span class="ruby-identifier">new</span>
+</pre>
 
-<h2 id="label-Time+zone+support">Time zone support<span><a href="#label-Time+zone+support">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-Time+zone+support">Time zone support<span><a href="#label-Time+zone+support">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>EXIF does not support time zones so this code does not support time zones. 
 All time stamps are created in the local time zone with:</p>
@@ -146,27 +154,26 @@ implementation.  For those who prefer UTC:</p>
 <pre class="ruby"><span class="ruby-constant">EXIFR</span><span class="ruby-operator">::</span><span class="ruby-constant">TIFF</span>.<span class="ruby-identifier">mktime_proc</span> = <span class="ruby-identifier">proc</span>{<span class="ruby-operator">|</span><span class="ruby-operator">*</span><span class="ruby-identifier">args</span><span class="ruby-operator">|</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">zone</span>.<span class="ruby-identifier">local</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)}
 </pre>
 
-<h2 id="label-XMP+data+access">XMP data access<span><a href="#label-XMP+data+access">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-XMP+data+access">XMP data access<span><a href="#label-XMP+data+access">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>If you need to access XMP data you can use the xmp gem.  More info and
 examples at <a
 href="https://github.com/amberbit/xmp">github.com/amberbit/xmp</a></p>
 
-<h2 id="label-Author">Author<span><a href="#label-Author">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-Author">Author<span><a href="#label-Author">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>R.W. van &#39;t Veer</p>
 
-<h2 id="label-Copyright">Copyright<span><a href="#label-Copyright">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-Copyright">Copyright<span><a href="#label-Copyright">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>Copyright © 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 - R.W. van
-&#39;t Veer</p>
+<p>Copyright © 2006-2017 - R.W. van &#39;t Veer</p>
 </main>
 
 
 
 <footer id="validator-badges" role="contentinfo">
   <p><a href="http://validator.w3.org/check/referer">Validate</a>
-  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
-  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+  <p>Generated by <a href="https://rdoc.github.io/rdoc">RDoc</a> 5.0.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
 </footer>
 
