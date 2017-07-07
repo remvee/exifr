@@ -1,3 +1,6 @@
+EXIF Reader 1.3.1
+* fix executable bin/exifr
+
 EXIF Reader 1.3.0
 * workaround warnings when using the ruby "-w" option
 * NOTE: requiring only 'exifr' will nolonger provide EXIFR::JPEG or EXIFR::TIFF, require 'exifr/jpeg' or 'exifr/tiff' instead

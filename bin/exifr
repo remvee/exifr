@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-require 'exifr'
+require 'exifr/jpeg'
+require 'exifr/tiff'
 include EXIFR
 
 def pp_jpeg(fname)
