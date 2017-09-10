@@ -118,6 +118,11 @@ class TIFFTest < TestCase
     end
   end
 
+  def test_lens_model
+    t = TIFF.new(f('sony-a7ii.exif'))
+    assert_equal('FE 16-35mm F4 ZA OSS', t.lens_model)
+  end
+
   def test_ifd_dispatch
     assert @t.respond_to?(:f_number)
     assert @t.methods.include?(:f_number)
