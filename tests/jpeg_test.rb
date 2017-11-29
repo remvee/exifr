@@ -119,4 +119,11 @@ class JPEGTest < TestCase
 
     assert count > 0, 'no thumbnails found'
   end
+
+  def test_gps_with_altitude
+    t = JPEG.new(f('gps-altitude.jpg'))
+
+    assert_equal([Rational(230, 1), Rational(0, 1), Rational(0, 1)], t.gps_altitude)
+    assert_equal(230, t.gps.altitude)
+  end
 end

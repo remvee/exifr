@@ -112,6 +112,7 @@ class TIFFTest < TestCase
     assert_equal('WGS84', t.gps_map_datum)
     assert_equal(54, t.gps.latitude.round)
     assert_equal(-7, t.gps.longitude.round)
+    assert_nil(t.gps.altitude)
 
     (all_test_exifs - %w(gps user-comment out-of-range negative-exposure-bias-value).map{|v| f("#{v}.exif")}).each do |fname|
       assert_nil TIFF.new(fname).gps_version_id
