@@ -119,4 +119,20 @@ class JPEGTest < TestCase
 
     assert count > 0, 'no thumbnails found'
   end
+
+def test_gps_with_altitude
+    t = JPEG.new(f('gps-altitude.jpg'))
+    assert_equal('N', t.gps_latitude_ref)
+    assert_equal('W', t.gps_longitude_ref)
+    assert_equal([42.quo(1), 45.quo(1), 797.quo(200)], t.gps_latitude)
+    assert_equal([84.quo(1), 29.quo(1), 7127.quo(250)], t.gps_longitude)
+    assert_equal(43, t.gps.latitude.round)
+    assert_equal(-84, t.gps.longitude.round)
+    assert_equal(230, t.gps.altitude)
+    assert_equal(279, t.gps.image_direction.round)
+
+    (all_test_exifs - %w(gps user-comment out-of-range negative-exposure-bias-value).map{|v| f("#{v}.exif")}).each do |fname|
+      assert_nil TIFF.new(fname).gps_version_id
+    end
+  end
 end
