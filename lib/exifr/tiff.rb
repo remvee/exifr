@@ -456,9 +456,12 @@ module EXIFR
     # Get GPS location, altitude and image direction return nil when not available.
     def gps
       return nil unless gps_latitude && gps_longitude
+
+      altitude = gps_altitude.is_a?(Array) ? gps_altitude.first : gps_altitude
+
       GPS.new(gps_latitude.to_f * (gps_latitude_ref == 'S' ? -1 : 1),
               gps_longitude.to_f * (gps_longitude_ref == 'W' ? -1 : 1),
-              gps_altitude && (gps_altitude.to_f * (gps_altitude_ref == "\1" ? -1 : 1)),
+              altitude && (altitude.to_f * (gps_altitude_ref == "\1" ? -1 : 1)),
               gps_img_direction && gps_img_direction.to_f)
     end
 
