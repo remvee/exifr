@@ -103,6 +103,13 @@ class JPEGTest < TestCase
     end
   end
 
+  def test_methods_method
+    j = JPEG.new(f('exif.jpg'))
+    assert j.methods.include?(:date_time)
+    assert j.methods(true).include?(:date_time)
+    refute j.methods(false).include?(:date_time)
+  end
+
   def test_multiple_app1
     assert JPEG.new(f('multiple-app1.jpg')).exif?
   end

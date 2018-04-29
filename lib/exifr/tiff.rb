@@ -423,8 +423,12 @@ module EXIFR
         TAGS.include?(method)
     end
 
-    def methods # :nodoc:
-      (super + TAGS + IFD.instance_methods(false)).uniq
+    def methods(regular=true) # :nodoc:
+      if regular
+        (super + TAGS + IFD.instance_methods(false)).uniq
+      else
+        super
+      end
     end
 
     def encode_with(coder)
