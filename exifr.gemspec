@@ -18,4 +18,9 @@ spec = Gem::Specification.new do |s|
   s.extra_rdoc_files = %w(README.rdoc CHANGELOG)
 
   s.executables = %w(exifr)
+
+  if s.respond_to?(:add_development_dependency)
+    s.add_development_dependency "test-unit", '3.1.5'
+    s.add_development_dependency "rake", '~> 10'
+  end
 end

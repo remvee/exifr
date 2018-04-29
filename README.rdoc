@@ -50,6 +50,11 @@ Or when the application depends on ActiveSupport for time zone handling:
 If you need to access XMP data you can use the xmp gem.  More info and
 examples at https://github.com/amberbit/xmp
 
+== Development and running tests
+
+On a fresh checkout of the repository, run `bundle install` and then
+`bundle exec rake test`
+
 == Author
 R.W. van 't Veer
 
