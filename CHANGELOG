@@ -1,3 +1,6 @@
+EXIF Reader 1.3.4
+* bug fix; "Modernize #methods method signatures for delegate.rb"; thanks Julik Tarkhanov
+
 EXIF Reader 1.3.3
 * bug fix; "Using first gps altitude value in case 'gps_altitude' is an Array"; thanks Antonio Marques
 
