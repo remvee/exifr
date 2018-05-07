@@ -66,8 +66,12 @@ module EXIFR
       super || methods.include?(method) || (include_all && private_methods.include?(method))
     end
 
-    def methods # :nodoc:
-      super + TIFF::TAGS << :gps
+    def methods(regular=true) # :nodoc:
+      if regular
+        super + TIFF::TAGS << :gps
+      else
+        super
+      end
     end
 
     class << self

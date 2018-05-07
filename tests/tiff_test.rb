@@ -199,4 +199,11 @@ class TIFFTest < TestCase
   def test_nul_terminated_strings
     assert_equal 'GoPro', TIFF.new(f('gopro_hd2.exif')).make
   end
+
+  def test_methods_method
+    t = TIFF.new(f('gopro_hd2.exif'))
+    assert t.methods.include?(:make)
+    assert t.methods(true).include?(:make)
+    refute t.methods(false).include?(:make)
+  end
 end
