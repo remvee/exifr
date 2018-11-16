@@ -1,3 +1,6 @@
+EXIF Reader 1.3.5
+* enhancement; "Support milliseconds at DateTime"; thanks Naoki Iwasawa
+
 EXIF Reader 1.3.4
 * bug fix; "Modernize #methods method signatures for delegate.rb"; thanks Julik Tarkhanov
 
