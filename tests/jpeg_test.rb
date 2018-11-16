@@ -133,4 +133,17 @@ class JPEGTest < TestCase
     assert_equal([Rational(230, 1), Rational(0, 1), Rational(0, 1)], t.gps_altitude)
     assert_equal(230, t.gps.altitude)
   end
+
+  def test_exif_datetime_milliseconds
+    j = JPEG.new(f('exif.jpg'))
+    assert_equal('000', j.date_time.strftime('%L'))
+    assert_equal('000', j.date_time_original.strftime('%L'))
+    assert_equal('000', j.date_time_digitized.strftime('%L'))
+
+    j = JPEG.new(f('ios-mspix-milliseconds.jpg'))
+    assert_equal('978', j.date_time.strftime('%L'))
+    assert_equal('978', j.date_time_original.strftime('%L'))
+    assert_equal('978', j.date_time_digitized.strftime('%L'))
+  end
+
 end
