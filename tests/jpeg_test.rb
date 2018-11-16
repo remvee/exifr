@@ -135,6 +135,11 @@ class JPEGTest < TestCase
   end
 
   def test_exif_datetime_milliseconds
+    if Time.now.strftime('%L') == '%L'
+      STDERR.puts("skipping milliseconds test; not supported on this platform")
+      return
+    end
+
     j = JPEG.new(f('exif.jpg'))
     assert_equal('000', j.date_time.strftime('%L'))
     assert_equal('000', j.date_time_original.strftime('%L'))
