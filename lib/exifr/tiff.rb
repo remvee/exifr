@@ -249,14 +249,7 @@ module EXIFR
 
     time_proc = proc do |value|
       value.map do |v|
-        if v =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
-          begin
-            mktime_proc.call($1.to_i, $2.to_i, $3.to_i, $4.to_i, $5.to_i, $6.to_i)
-          rescue => ex
-            EXIFR.logger.warn("Bad date/time value #{v.inspect}: #{ex}")
-            nil
-          end
-        elsif v =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d).(\d{3})$/
+        if v =~ /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)(?:\.(\d{3}))?$/
           begin
             mktime_proc.call($1.to_i, $2.to_i, $3.to_i, $4.to_i, $5.to_i, $6.to_i, $7.to_i * 1000)
           rescue => ex
