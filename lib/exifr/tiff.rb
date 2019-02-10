@@ -237,6 +237,7 @@ module EXIFR
         0x001c => :gps_area_information,
         0x001d => :gps_date_stamp,
         0x001e => :gps_differential,
+        0x001f => :gps_h_positioning_error
       },
     })
     IFD_TAGS = [:image, :exif, :gps] # :nodoc:
