@@ -19,4 +19,10 @@ spec = Gem::Specification.new do |s|
     s.add_development_dependency "test-unit", '3.1.5'
     s.add_development_dependency "rake", '~> 10'
   end
+
+  if s.respond_to?(:metadata)
+    s.metadata['changelog_uri'] = "https://github.com/remvee/exifr/blob/master/CHANGELOG"
+    s.metadata['source_code_uri'] = "https://github.com/remvee/exifr"
+    s.metadata['bug_tracker_uri'] = "https://github.com/remvee/exifr/issues"
+  end
 end
