@@ -1,6 +1,6 @@
 spec = Gem::Specification.new do |s|
   s.name = 'exifr'
-  s.version = '1.3.6'
+  s.version = '1.3.7-SNAPSHOT'
   s.author = "R.W. van 't Veer"
   s.email = 'exifr@remworks.net'
   s.homepage = 'http://github.com/remvee/exifr/'
@@ -21,8 +21,12 @@ spec = Gem::Specification.new do |s|
   end
 
   if s.respond_to?(:metadata)
-    s.metadata['changelog_uri'] = "https://github.com/remvee/exifr/blob/master/CHANGELOG"
-    s.metadata['source_code_uri'] = "https://github.com/remvee/exifr"
-    s.metadata['bug_tracker_uri'] = "https://github.com/remvee/exifr/issues"
+    s.metadata = {
+      'bug_tracker_uri' => 'https://github.com/remvee/exifr/issues',
+      'changelog_uri' => 'https://github.com/remvee/exifr/blob/master/CHANGELOG',
+      'documentation_uri' => 'https://remvee.github.io/exifr/api/',
+      'homepage_uri'      => 'https://remvee.github.io/exifr/',
+      'source_code_uri' => 'https://github.com/remvee/exifr'
+    }
   end
 end

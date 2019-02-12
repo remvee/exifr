@@ -1,4 +1,7 @@
-EXIF Reader 1.3.4
+EXIF Reader 1.3.7-SNAPSHOT
+* enhancement; "Add metadata for RubyGems"; thanks Stanisław Pitucha
+
+EXIF Reader 1.3.6
 * bug fix; "Support GPSHPositioningError"; thanks Ken-ichi
 
 EXIF Reader 1.3.5
