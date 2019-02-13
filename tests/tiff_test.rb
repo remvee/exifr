@@ -204,6 +204,6 @@ class TIFFTest < TestCase
     t = TIFF.new(f('gopro_hd2.exif'))
     assert t.methods.include?(:make)
     assert t.methods(true).include?(:make)
-    refute t.methods(false).include?(:make)
+    assert ! t.methods(false).include?(:make)
   end
 end
