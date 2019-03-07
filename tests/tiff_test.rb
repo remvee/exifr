@@ -179,6 +179,42 @@ class TIFFTest < TestCase
     assert count > 0, 'no thumbnails found'
   end
 
+  def test_geotiff_tiepoint
+    t = TIFF.new(f('geotiff-bogota.tif'))
+    assert_equal({
+      "GTModelTypeGeoKey" => 1,
+      "GTRasterTypeGeoKey" => 1,
+      "ProjectedCSTypeGeoKey" => 21892
+    }, t.geotiff)
+    assert_nil(t.model_transformation)
+    assert_equal([
+      0.0, 0.0, 0.0, 440720.0, 100000.0, 0.0
+    ], t.model_tiepoint)
+    assert_equal([60.0, 60.0, 0.0], t.model_pixel_scale)
+  end
+
+  def test_geotiff_transformation
+    t = TIFF.new(f('geotiff-image3.tif'))
+    assert_equal({
+      "GTModelTypeGeoKey"=>1, "GTRasterTypeGeoKey"=>1,
+      "ProjCoordTransGeoKey"=>7, "ProjectionGeoKey"=>32767,
+      "GeogGeodeticDatumGeoKey"=>6326, "GeogEllipsoidGeoKey"=>7030,
+      "ProjOriginLongGeoKey"=>0.0, "ProjOriginLatGeoKey"=>0.0,
+      "ProjFalseEastingGeoKey"=>0.0, "ProjFalseNorthingGeoKey"=>0.0,
+      "ProjCenterLatGeoKey"=>0.0, "ProjScaleAtOriginGeoKey"=>1.0,
+      "PCSCitationGeoKey"=>"Mercator; WGS84; WGS84",
+      "ProjectedCSTypeGeoKey"=>32767, "ProjLinearUnitsGeoKey"=>9001
+    }, t.geotiff)
+    assert_equal([
+      0.0, -0.1850509803921559, 0.0, 129.053,
+      0.3001842105263349, 0.0, 0.0, -5.033999999999992,
+      0.0, 0.0, 1.0, 0.0,
+      0.0, 0.0, 0.0, 1.0
+    ], t.first.model_transformation)
+    assert_nil(t.first.model_tiepoint)
+    assert_nil(t.first.model_pixel_scale)
+  end
+
   def test_should_not_loop_endlessly
     TIFF.new(f('endless-loop.exif'))
     assert true

@@ -1,6 +1,7 @@
 # Copyright (c) 2007-2017 - R.W. van 't Veer
 
 require 'exifr'
+require 'exifr/geotiff'
 require 'rational'
 require 'enumerator'
 
@@ -138,6 +139,13 @@ module EXIFR
         0x87AC => :image_layer,
         0x8298 => :copyright,
         0x83bb => :iptc,
+        # geotiff
+        0x87af => :geo_key_directory,
+        0x87b0 => :geo_double_params,
+        0x87b1 => :geo_ascii_params,
+        34264 => :model_transformation,
+        33922 => :model_tiepoint,
+        33550 => :model_pixel_scale,
 
         0x8769 => :exif,
         0x8825 => :gps,
@@ -470,12 +478,16 @@ module EXIFR
               gps_img_direction && gps_img_direction.to_f)
     end
 
+    # Convenience method to access geotiff metadata.
+    def geotiff; @ifds.first.geotiff; end
+
     def inspect # :nodoc:
       @ifds.inspect
     end
 
     class IFD # :nodoc:
       attr_reader :type, :fields, :offset
+      include GeoTIFFParser
 
       def initialize(data, offset = nil, type = :image)
         @data, @offset, @type, @fields = data, offset, type, {}
@@ -595,6 +607,10 @@ module EXIFR
             end
             rationals
           end
+        when 11 # float
+          len, pack = count * 4, proc { |d| d.unpack(data.float + '*') }
+        when 12 # double
+          len, pack = count * 8, proc { |d| d.unpack(data.double + '*') }
         end
 
         if len && pack && @type != 7
@@ -627,7 +643,7 @@ module EXIFR
     end
 
     class Data #:nodoc:
-      attr_reader :short, :long, :file
+      attr_reader :short, :long, :float, :double, :file
 
       def initialize(file)
         @io = file.respond_to?(:read) ? file : (@file = File.open(file, 'rb'))
@@ -635,8 +651,8 @@ module EXIFR
         @pos = 0
 
         case self[0..1]
-        when 'II'; @short, @long = 'v', 'V'
-        when 'MM'; @short, @long = 'n', 'N'
+        when 'II'; @short, @long, @float, @double = 'v', 'V', 'e', 'E'
+        when 'MM'; @short, @long, @float, @double = 'n', 'N', 'g', 'G'
         else
           raise MalformedTIFF, "no byte order information found"
         end
