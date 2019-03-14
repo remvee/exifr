@@ -220,4 +220,8 @@ class TIFFTest < TestCase
     assert t.methods(true).include?(:make)
     assert ! t.methods(false).include?(:make)
   end
+
+  def test_unknow_field
+    assert_equal [1, 1, 1, 1], TIFF.new(f('plain.tif')).first.raw_fields[0x0153] # TIFF Tag SampleFormat
+  end
 end
