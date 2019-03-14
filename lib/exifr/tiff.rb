@@ -604,6 +604,10 @@ module EXIFR
             end
             rationals
           end
+        when 11 # float
+          len, pack = count * 4, proc { |d| d.unpack(data.float + '*') }
+        when 12 # double
+          len, pack = count * 8, proc { |d| d.unpack(data.double + '*') }
         else
           return
         end
@@ -638,7 +642,7 @@ module EXIFR
     end
 
     class Data #:nodoc:
-      attr_reader :short, :long, :file
+      attr_reader :short, :long, :float, :double, :file
 
       def initialize(file)
         @io = file.respond_to?(:read) ? file : (@file = File.open(file, 'rb'))
@@ -646,8 +650,8 @@ module EXIFR
         @pos = 0
 
         case self[0..1]
-        when 'II'; @short, @long = 'v', 'V'
-        when 'MM'; @short, @long = 'n', 'N'
+        when 'II'; @short, @long, @float, @double = 'v', 'V', 'e', 'E'
+        when 'MM'; @short, @long, @float, @double = 'n', 'N', 'g', 'G'
         else
           raise MalformedTIFF, "no byte order information found"
         end
