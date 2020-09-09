@@ -17,7 +17,7 @@ spec = Gem::Specification.new do |s|
 
   if s.respond_to?(:add_development_dependency)
     s.add_development_dependency 'test-unit', '3.1.5'
-    s.add_development_dependency 'rake', '>= 12.3.3'
+    s.add_development_dependency 'rake', '~> 12'
   end
 
   if s.respond_to?(:metadata)
