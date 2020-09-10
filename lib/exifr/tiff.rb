@@ -384,7 +384,12 @@ module EXIFR
         @jpeg_thumbnails = @ifds.map do |v|
           if v.jpeg_interchange_format && v.jpeg_interchange_format_length
             start, length = v.jpeg_interchange_format, v.jpeg_interchange_format_length
-            data[start..(start + length)]
+            if Integer === start && Integer === length
+              data[start..(start + length)]
+            else
+              EXIFR.logger.warn("Non numeric JpegInterchangeFormat data")
+              nil
+            end
           end
         end.compact
       end
