@@ -2,7 +2,7 @@
 #
 # Copyright (c) 2006-2017 - R.W. van 't Veer
 
-require 'test_helper'
+require_relative 'test_helper'
 
 class TIFFTest < TestCase
   def setup
