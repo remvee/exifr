@@ -58,4 +58,4 @@ On a fresh checkout of the repository, run `bundle install` and then
 R.W. van 't Veer
 
 == Copyright
-Copyright (c) 2006-2019 - R.W. van 't Veer
+Copyright (c) 2006-2020 - R.W. van 't Veer

@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2017 - R.W. van 't Veer
+# Copyright (c) 2006-2020 - R.W. van 't Veer
 
 require 'logger'
 

@@ -1,4 +1,5 @@
-EXIF Reader 1.3.7-SNAPSHOT
+EXIF Reader 1.3.7
+* bug fix; "Does not raise error when it has invalid thumbails data"; thanks Fabio Perrella
 * enhancement; "Add metadata for RubyGems"; thanks Stanisław Pitucha
 
 EXIF Reader 1.3.6
