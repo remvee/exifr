@@ -1,3 +1,6 @@
+EXIF Reader 1.3.8
+* bug fix; "Failure to read truncated EXIF/TIFF IFD entry"; thanks Chris Gunther
+
 EXIF Reader 1.3.7
 * bug fix; "Does not raise error when it has invalid thumbails data"; thanks Fabio Perrella
 * enhancement; "Add metadata for RubyGems"; thanks Stanisław Pitucha
