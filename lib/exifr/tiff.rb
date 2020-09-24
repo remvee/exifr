@@ -487,17 +487,19 @@ module EXIFR
 
         pos = offset || @data.readlong(4)
         num = @data.readshort(pos)
-        pos += 2
 
-        num.times do
-          add_field(Field.new(@data, pos))
-          pos += 12
+        if pos && num
+          pos += 2
+
+          num.times do
+            add_field(Field.new(@data, pos))
+            pos += 12
+          end
+
+          @offset_next = @data.readlong(pos)
         end
-
-        @offset_next = @data.readlong(pos)
       rescue => ex
         EXIFR.logger.warn("Badly formed IFD: #{ex}")
-        @offset_next = 0
       end
 
       def method_missing(method, *args)
@@ -525,7 +527,7 @@ module EXIFR
       end
 
       def next?
-        @offset_next != 0 && @offset_next < @data.size
+        @offset_next && @offset_next > 0 && @offset_next < @data.size
       end
 
       def next
@@ -600,6 +602,8 @@ module EXIFR
             end
             rationals
           end
+        else
+          return
         end
 
         if len && pack && @type != 7
