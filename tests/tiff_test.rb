@@ -119,6 +119,10 @@ class TIFFTest < TestCase
     end
   end
 
+  def test_bad_gps
+    assert_nil TIFF.new(f('bad_gps.exif')).gps
+  end
+
   def test_lens_model
     t = TIFF.new(f('sony-a7ii.exif'))
     assert_equal('FE 16-35mm F4 ZA OSS', t.lens_model)

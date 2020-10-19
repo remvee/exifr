@@ -331,7 +331,9 @@ module EXIFR
 
     class Degrees < Array
       def initialize(arr)
-        raise "expected [degrees, minutes, seconds]" unless arr.length == 3
+        unless arr.length == 3 && arr.all?{|v| Rational === v}
+          raise "expected [degrees, minutes, seconds]; got #{arr.inspect}"
+        end
         super
       end
 
