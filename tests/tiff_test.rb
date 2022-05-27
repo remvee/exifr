@@ -165,7 +165,12 @@ class TIFFTest < TestCase
     all_test_tiffs.each do |fname|
       t = TIFF.new(fname)
       y = YAML.dump(t)
-      assert_literally_equal t.to_hash, YAML.load(y).to_hash
+      v = if YAML.respond_to?(:unsafe_load)
+            YAML.unsafe_load(y)
+          else
+            YAML.load(y)
+          end
+      assert_literally_equal t.to_hash, v.to_hash
     end
   end
 
