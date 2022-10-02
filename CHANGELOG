@@ -1,3 +1,7 @@
+EXIF Reader 1.3.10
+* enhancement; access to unknown IFD fields
+* enhancement; support TIFF floats and doubles
+
 EXIF Reader 1.3.9
 * bug fix; "Getting GPS data as NaN for few images"; thanks Gaurav Gupta
 
