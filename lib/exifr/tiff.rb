@@ -375,7 +375,7 @@ module EXIFR
     TAGS = [TAG_MAPPING.keys, TAG_MAPPING.values.map{|v|v.values}].flatten.uniq - IFD_TAGS
 
     # +file+ is a filename or an +IO+ object.  Hint: use +StringIO+ when working with slurped data like blobs.
-    def initialize(file)
+    def initialize(file, load_thumbnails = true)
       Data.open(file) do |data|
         @ifds = [IFD.new(data)]
         while ifd = @ifds.last.next
@@ -383,17 +383,21 @@ module EXIFR
           @ifds << ifd
         end
 
-        @jpeg_thumbnails = @ifds.map do |v|
-          if v.jpeg_interchange_format && v.jpeg_interchange_format_length
-            start, length = v.jpeg_interchange_format, v.jpeg_interchange_format_length
-            if Integer === start && Integer === length
-              data[start..(start + length)]
-            else
-              EXIFR.logger.warn("Non numeric JpegInterchangeFormat data")
-              nil
+        if load_thumbnails
+          @jpeg_thumbnails = @ifds.map do |v|
+            if v.jpeg_interchange_format && v.jpeg_interchange_format_length
+              start, length = v.jpeg_interchange_format, v.jpeg_interchange_format_length
+              if Integer === start && Integer === length
+                data[start..(start + length)]
+              else
+                EXIFR.logger.warn("Non numeric JpegInterchangeFormat data")
+                nil
+              end
             end
-          end
-        end.compact
+          end.compact
+        else
+          @jpeg_thumbnails = []
+        end
       end
     end
 
