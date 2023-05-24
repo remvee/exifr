@@ -29,11 +29,11 @@ module EXIFR
     attr_reader :app1s
 
     # +file+ is a filename or an IO object.  Hint: use StringIO when working with slurped data like blobs.
-    def initialize(file)
+    def initialize(file, load_thumbnails: true)
       if file.kind_of? String
-        File.open(file, 'rb') { |io| examine(io) }
+        File.open(file, 'rb') { |io| examine(io, load_thumbnails: load_thumbnails) }
       else
-        examine(file.dup)
+        examine(file.dup, load_thumbnails: load_thumbnails)
       end
     end
 
@@ -95,7 +95,7 @@ module EXIFR
       end
     end
 
-    def examine(io)
+    def examine(io, load_thumbnails: true)
       io = Reader.new(io)
 
       unless io.getbyte == 0xFF && io.getbyte == 0xD8 # SOI
@@ -121,7 +121,7 @@ module EXIFR
 
       if app1 = @app1s.find { |d| d[0..5] == "Exif\0\0" }
         @exif_data = app1[6..-1]
-        @exif = TIFF.new(StringIO.new(@exif_data))
+        @exif = TIFF.new(StringIO.new(@exif_data), load_thumbnails: load_thumbnails)
       end
     end
   end

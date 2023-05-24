@@ -127,6 +127,13 @@ class JPEGTest < TestCase
     assert count > 0, 'no thumbnails found'
   end
 
+  def test_skippable_thumbnail
+    all_test_jpegs.each do |fname|
+      jpeg = JPEG.new(fname, load_thumbnails: false)
+      assert jpeg.thumbnail.nil?
+    end
+  end
+
   def test_gps_with_altitude
     t = JPEG.new(f('gps-altitude.jpg'))
 
