@@ -190,7 +190,7 @@ class TIFFTest < TestCase
 
   def test_skippable_jpeg_thumbnails
     all_test_tiffs.each do |fname|
-      t = TIFF.new(fname, false)
+      t = TIFF.new(fname, load_thumbnails: false)
       assert t.jpeg_thumbnails.empty?
     end
   end

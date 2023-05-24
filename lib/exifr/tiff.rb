@@ -375,7 +375,7 @@ module EXIFR
     TAGS = [TAG_MAPPING.keys, TAG_MAPPING.values.map{|v|v.values}].flatten.uniq - IFD_TAGS
 
     # +file+ is a filename or an +IO+ object.  Hint: use +StringIO+ when working with slurped data like blobs.
-    def initialize(file, load_thumbnails = true)
+    def initialize(file, load_thumbnails: true)
       Data.open(file) do |data|
         @ifds = [IFD.new(data)]
         while ifd = @ifds.last.next
