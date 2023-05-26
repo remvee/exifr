@@ -7,7 +7,7 @@ spec = Gem::Specification.new do |s|
   s.summary = 'Read EXIF from JPEG and TIFF images'
   s.description = 'EXIF Reader is a module to read EXIF from JPEG and TIFF images.'
   s.licenses = ['MIT']
-  s.required_ruby_version = '>= 1.8.7'
+  s.required_ruby_version = '>= 2.0'
 
   s.files = %w(Rakefile Gemfile bin/exifr)
   s.files += %w(lib/exifr.rb lib/exifr/jpeg.rb lib/exifr/tiff.rb)

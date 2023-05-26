@@ -188,6 +188,13 @@ class TIFFTest < TestCase
     assert count > 0, 'no thumbnails found'
   end
 
+  def test_skippable_jpeg_thumbnails
+    all_test_tiffs.each do |fname|
+      t = TIFF.new(fname, load_thumbnails: false)
+      assert t.jpeg_thumbnails.empty?
+    end
+  end
+
   def test_should_not_loop_endlessly
     TIFF.new(f('endless-loop.exif'))
     assert true
