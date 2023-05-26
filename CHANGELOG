@@ -1,3 +1,7 @@
+EXIF Reader 1.4.0
+* enhancement; ability to skip loading JPEG thumbnails; thanks Ricardo Palacio
+* NOTE: no longer compatible with Ruby 1.8 and 1.9
+
 EXIF Reader 1.3.10
 * enhancement; access to unknown IFD fields
 * enhancement; support TIFF floats and doubles
