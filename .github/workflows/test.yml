@@ -21,6 +21,7 @@ jobs:
           - '3.2'
           - jruby-9.1
           - jruby-9.3
+          - jruby-9.4
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
